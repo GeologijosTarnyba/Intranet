@@ -1,0 +1,63 @@
+﻿@attribute [CustomAuthorize(IntranetEnum.ArticlesEdit)]
+
+@page "/in/intranet/articles/{ParamID:guid}"
+@inject Data.IntranetContext db
+@code {
+  [Parameter] public Guid ParamID{ get; set; }
+
+}
+@code {
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    this.art = await this.db.Articles.FirstOrDefaultAsync(item => item.ID == this.ParamID);
+  }
+  private LGT.Core.Intranet.Article? art {get; set; }
+
+}
+@if(this.art != null){
+  <div class="row">
+    <div class="col">
+      <EditForm Model=this.art OnValidSubmit=@(async () => await SaveChanges())>
+        <ValidationSummary />
+        <DataAnnotationsValidator />
+        <table class="bord">
+          <tr>
+            <td>Prieinamumas</td>
+            <td>
+              <EnumEdit T=@LGT.Core.Accessibility @bind-value=@this.art.Accessibility />
+            </td>
+          </tr>
+          <tr>
+            <td>Name</td>
+            <td><InputText @bind-Value=@this.art.InternalName /></td>
+          </tr>
+          <tr>
+            <td>Title: </td>
+            <td><InputText @bind-Value=@this.art.Name /></td>
+          </tr>
+          <tr>
+            <td>Markdown</td>
+            <td style="width:100%">
+              <InputTextArea style="min-height: 400px; min-width: 100%;" @bind-Value=@art.BodyMarkdown />
+            </td>
+          </tr>
+          <button>Save</button>
+        </table>
+      </EditForm>
+    </div>
+    <div class="col">
+      @if(!string.IsNullOrWhiteSpace(this.art.BodyMarkdown)){
+        <MarkdownComponent Markdown=@this.art.BodyMarkdown />
+      }
+    </div>
+  </div>
+}
+@code {
+  private async Task SaveChanges(){
+    await this.db.SaveChangesAsync();
+  }
+}
+
+<hr/>
+<Files ParamPathAtRoot=@($"files/a/{this.ParamID}") />

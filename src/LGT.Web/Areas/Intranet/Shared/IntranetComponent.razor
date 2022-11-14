@@ -1,0 +1,104 @@
+﻿@inject Data.IntranetContext db
+@code {
+	[Parameter] public int? ParamID { get; set; }
+	[Parameter] public string? ParamKey { get; set; }
+	[Parameter] public RenderFragment ChildContent{ get; set; }
+	[Parameter] public RenderFragment? BelowTitleFragment{ get; set; }
+	[Parameter] public RenderFragment? BesideTitleFragment{ get; set; }
+}
+
+@if(this.ParamID != null || this.ParamKey != null){
+	<ExpList
+		ParamSource=@(db.Pages.Where(item => item.IsPublic && ((this.ParamID != null && item.ID == this.ParamID) || (this.ParamKey != null && item.Key == this.ParamKey))).AsNoTracking()
+			.Select(page => new {
+				page.ID,
+				page.Name,
+				Columns = page.Columns.OrderBy(item => item.Index).Select(column => new {
+					Sizes = column.Sizes,
+					Groups = column.Groups.Where(item => item.IsPublic).OrderBy(item => item.Index).Select(group => new {
+						group.Name,
+						Articles = group.ArticleAssignments.Where(artAss => artAss.Article.Accessibility.HasFlag(Core.Accessibility.IsAccessible)).Select(ass => new {
+							ID = ass.ArticleID,
+							ass.Article.Name,
+							ass.Article.BodyMarkdown,
+						}),
+						Links = group.Links.Where(item => item.IsPublic).OrderBy(item => item.Index).Select(link => new {
+							link.Name,
+							link.Url,
+							link.IsLocked,
+							link.IsTargetBlank,
+							link.Comment
+						})
+					})
+				})
+			})
+		)
+		>
+		<IfSome Context=pge>
+			<div class="row">
+				<div class="col">
+					<h3>@pge.Name</h3>
+					@this.BelowTitleFragment
+				</div>
+				@if (this.BesideTitleFragment != null)
+				{
+					@this.BesideTitleFragment
+				}
+			</div>
+			@if(this.ChildContent != null){
+				<div class="row">
+					@this.ChildContent
+				</div>
+			}
+			<hr/>
+			<div class="row">
+				@foreach (var column in pge.Columns)
+				{
+					<div class=@(column.Sizes.ToString())>
+						@foreach (var group in column.Groups)
+						{
+							@if(group.Links.Any() || group.Articles.Any()){
+								<b>@group.Name</b>
+								<table style="margin-bottom: 16px;">
+								  @foreach (var article in group.Articles)
+									{
+										<tr>
+											<td>
+												<MarkdownComponent Markdown=@article.BodyMarkdown />
+											</td>
+										</tr>
+									}
+									@foreach (var link in group.Links)
+									{
+										var target = link.IsTargetBlank ? "_blank": null;
+										<tr>
+											<td>
+												<a href="@link.Url" target=@target>@link.Name</a>
+												@if (link.IsLocked)
+												{
+													<span class="p-1 oi oi-lock-locked" aria-hidden="true"></span>
+												}
+											</td>
+												@if(link.Comment != null){
+													<td>
+														<span class="p-1">@link.Comment</span>
+													</td>
+												}
+										</tr>
+									}
+								</table>
+							}
+						}
+					</div>
+				}
+			</div>
+		</IfSome>
+		<IfNone>
+			<h5>Puslapis nerastas</h5>
+			<div>
+				Jis arba neegzistuoja arba nėra paskelbtas.
+			</div>
+		</IfNone>
+	</ExpList>
+}
+

@@ -1,0 +1,19 @@
+﻿@inherits CreateClass<LGT.Core.Intranet.Page>
+
+@code {
+  protected override LGT.Core.Intranet.Page? ConstructCore()
+  {
+    return new LGT.Core.Intranet.Page
+    {
+      IsPublic = false,
+      IsImportant = false,
+      
+    };
+  }
+}
+@inject Data.IntranetContext db
+@if(this.Core != null){
+  <Bind_Page @bind-value=@this.Core ParamButtonText=@this.ParamButtonText
+    CallbackOnValidSubmit=@(async () => await this.HandleValidSubmit(db))
+  />
+}

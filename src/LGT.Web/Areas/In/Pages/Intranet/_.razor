@@ -1,0 +1,24 @@
+﻿@attribute [CustomAuthorize(IntranetEnum.All)]
+@page "/in/intranet"
+<h3>Intranetas</h3>
+<FlexAuthorizeView Val=@IntranetEnum.PagesEdit>
+  <Authorized>
+    <div>
+      <a href="/in/intranet/pages">Puslapiai</a>
+    </div>
+  </Authorized>
+</FlexAuthorizeView>
+<FlexAuthorizeView Val=@IntranetEnum.MessagesEdit>
+  <Authorized>
+    <div>
+      <a href="/in/intranet/messages">Žinutės</a>
+    </div>
+  </Authorized>
+</FlexAuthorizeView>
+<FlexAuthorizeView Val=@IntranetEnum.ArticlesEdit>
+  <Authorized>
+    <div>
+      <a href="/in/intranet/articles">Straipsniai</a>
+    </div>
+  </Authorized>
+</FlexAuthorizeView>

@@ -1,0 +1,302 @@
+﻿@attribute [CustomAuthorize(IntranetEnum.PagesEdit)]
+@page "/in/intranet/pages/{ParamPageID:int}"
+@code {
+  [Parameter] public int ParamPageID { get; set; }
+}
+@inject Data.IntranetContext db
+@inject NavigationManager NavManager
+@code {
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+  }
+
+  private enum EditingTypes { Page, Column, Group, Link, ArticleAssignment }
+  private EditingTypes? EditingType { get; set; }
+  private enum TabStates { Edit, Add, Delete }
+  private TabStates ActiveTab { get; set; } = 0;
+  private int? EditingID { get; set; }
+  private Guid? GuidID{ get; set; }
+  private void SelectGroup(int id, int childCount){
+    Select(EditingTypes.Group, id, null);
+  }
+  private void SelectArticleAssignment(Guid id){
+    Select(EditingTypes.ArticleAssignment, null, id);
+  }
+  private void Select(EditingTypes type, int? editingID, Guid? guidID){
+    if (editingID == null && guidID == null)
+      throw new Exception("At least one ID has to be non-null");
+    if (this.EditingType == type){
+      if(editingID != null && this.EditingID == editingID){
+        UnSelect();
+        return ;
+      }
+      if(guidID != null && this.GuidID == guidID){
+        UnSelect();
+        return;
+      }
+    }
+    this.EditingType = type;
+    this.EditingID = editingID;
+    this.GuidID = guidID;
+  }
+  private void UnSelect(){
+    this.EditingType = null;
+    this.EditingID = null;
+    this.GuidID = null;
+    return;
+  }
+  private string? Cls(EditingTypes elementType, int? elementID, Guid? guidID = null){
+    if(elementID == null && guidID == null)
+      return null;
+    if(this.EditingType == elementType && ((elementID != null && this.EditingID == elementID) || (guidID != null && this.GuidID == guidID))) {
+      return "border";
+    }
+    return null;
+  }
+}
+<div class="flex-container">
+  <div class="row">
+    <div class="col-7">
+      <ExpList
+        ParamSource=@(db.Pages.Where(page => page.ID == this.ParamPageID).AsNoTracking()
+          .Select(page => new {
+            page.ID,
+            page.Name,
+            Strike = !page.IsPublic,
+            Columns = page.Columns.OrderBy(item => item.Index).Select(column => new {
+              column.ID,
+              column.Index,
+              Groups = column.Groups.OrderBy(item => item.Index).Select(group => new {
+                group.ID,
+                group.Name,
+                group.Index,
+                Strike = !group.IsPublic,
+                ArticleAssignments = group.ArticleAssignments.OrderByDescending(item => item.Index).Select(ass => new {
+                  ID = ass.ID,
+                  Article = new {
+                    ID = ass.ArticleID,
+                    InternalName = ass.Article.InternalName
+                  }
+                }),
+                Links = group.Links.OrderBy(item => item.Index).ThenBy(item => item.ID).Select(link => new {
+                  link.ID,
+                  link.Name,
+                  link.Index,
+                  Strike = !link.IsPublic,
+                })
+              })
+            })
+          })
+        )
+      >
+        <Wrapper Context=rows>@rows</Wrapper>
+        <IfSome Context="item">
+          <h3 class=@Cls(EditingTypes.Page, item.ID)
+            @onclick=@(() => this.Select(EditingTypes.Page, item.ID, null))
+          >
+            <NameComponent ParamName=@(item.Name) ParamStrike=@item.Strike />
+          </h3>
+          <ol>
+            @foreach (var col in item.Columns)
+            {
+              <li>
+                <span class=@Cls(EditingTypes.Column, col.ID) @onclick=@(() => this.Select(EditingTypes.Column, col.ID, null))>
+                  Stulpelis
+                </span>
+                <ul>
+                  @foreach (var group in col.Groups)
+                  {
+                    <li>
+                      <b class=@Cls(EditingTypes.Group, group.ID) @onclick=@(() => this.SelectGroup(group.ID, group.Links.Select(item => item.Index).DefaultIfEmpty(0).Max()+1))>
+                        <NameComponent ParamName=@group.Name ParamStrike=@group.Strike />
+                      </b>
+                      @if(group.ArticleAssignments.Any()){
+                        <ul>
+                          @foreach (var artAss in group.ArticleAssignments)
+                          {
+                            <li>
+                              <b class=@Cls(EditingTypes.ArticleAssignment, null, artAss.ID) @onclick=@(() => {
+                                SelectArticleAssignment(artAss.ID);
+                              })>
+                                @artAss.Article.InternalName
+                              </b>
+                            </li>
+                          }
+                        </ul>
+                      }
+                      <ul>
+                        @foreach (var link in group.Links)
+                        {
+                          <li>
+                            <span class=@Cls(EditingTypes.Link, link.ID) @onclick=@(() => this.Select(EditingTypes.Link, link.ID, null))>
+                              <NameComponent ParamName=@link.Name ParamStrike=@link.Strike />
+                            </span>
+                          </li>
+                        }
+                        <li>
+                          <Exp ParamText="Pridėti nuorodą">
+                            <Create_Link ParamModelGenerator=@(() => new (){
+                              GroupID = group.ID,
+                              Index = (group.Links.Count()+1),
+                              IsTargetBlank=false,
+                              IsPublic=false,
+                              IsLocked=false
+                            }) 
+                            callbackOnCreate=@(async (core) => {
+                              Select(EditingTypes.Link, core.ID, null);
+                              this.StateHasChanged();
+                            })
+                            />
+                          </Exp>
+                        </li>
+                      </ul>
+                    </li>
+                  }
+                  <li>
+                    <Exp ParamText="Pridėti grupę" ParamIsExpanded="false">
+                      <Create_Group ParamModelGenerator=@(() => new (){
+                        IsPublic = true,
+                        ColumnID = col.ID,
+                        Index = (col.Groups.Count()+1),
+                      }) 
+                        callbackOnCreate=@(async (core) => {
+                          this.StateHasChanged();
+                          Select(EditingTypes.Group, core.ID, null);
+                        })
+                      />
+                    </Exp>
+                  </li>
+                </ul>
+              </li>
+            }
+            <li class="text-info">
+              <Creator_Column
+                ParamPageID=@this.ParamPageID
+                ParamButtonText=@($"Pridėti stulpelį")
+                ParamIndex=@(item.Columns.Select(item => item.Index).DefaultIfEmpty(0).Max()+1)
+                CallbackOnCreate=@((core) => {
+                  Select(EditingTypes.Column, core.ID, null);
+                  this.StateHasChanged();
+                })
+              />
+            </li>
+          </ol>
+          <hr/>
+          <Files ParamPathAtRoot=@($"files/p/{this.ParamPageID}") />
+        </IfSome>
+        <IfNone>
+          <div>Puslapių nėra</div>
+        </IfNone>
+      </ExpList>
+    </div>
+    <div class="col-5" style="position: fixed; right: 0px;">
+      @if(this.EditingType != null){
+        <Tabs>
+          
+          <IfEdit>
+            @if (this.EditingType == EditingTypes.Page && this.EditingID != null)
+            {
+              <Editor_Page ParamID=@this.EditingID.Value 
+                CallbackOnSave=@((core) => {this.StateHasChanged();}) />
+            }
+            else if (this.EditingType == EditingTypes.Column && this.EditingID != null)
+            {
+              <Editor_Column ParamID=@this.EditingID.Value
+                CallbackOnSave=@((core) => {this.StateHasChanged();}) />
+              <hr />
+              <Create_Group ParamModelGenerator=@(() => new (){
+                ColumnID = this.EditingID.Value,
+              }) />
+            }
+            else if (this.EditingType == EditingTypes.Group && this.EditingID != null)
+            {
+              <Editor_Group ParamID=@this.EditingID.Value
+                CallbackOnSave=@((core) => {this.StateHasChanged();}) />
+              <hr/>
+              <h5>Pridėti straipsnį</h5>
+              <Create_Group_Article 
+                ParamModelGenerator=@(() => new (){
+                  GroupID = this.EditingID.Value
+                })
+                callbackOnCreate=this.StateHasChanged
+              />
+            } else if(this.EditingType == EditingTypes.ArticleAssignment && this.GuidID != null){
+              <Editor_Group_Article
+                ParamID=@GuidID.Value 
+                CallbackOnSave=this.StateHasChanged 
+              />
+            }
+            else if (this.EditingType == EditingTypes.Link && this.EditingID != null)
+            {
+              <Editor_Link ParamID=@this.EditingID.Value
+                CallbackOnSave=@((core) => {this.StateHasChanged();}) />
+            }
+          </IfEdit>
+          <IfDelete>
+            @if (this.EditingType == EditingTypes.Page && this.EditingID != null)
+              {
+                <DeleteByID TKey=int TCore=@LGT.Core.Intranet.Page
+                  ParamID=@this.EditingID.Value
+                  ParamButtonText="Ištrinti puslapį"
+                  callback=@(b => {
+                    this.UnSelect();
+                    this.StateHasChanged();
+                  })
+                />
+              }
+            else if (this.EditingType == EditingTypes.Column && this.EditingID != null)
+              {
+                <DeleteByID TKey=int TCore=@LGT.Core.Intranet.Column
+                  ParamID=@this.EditingID.Value
+                  ParamButtonText="Ištrinti stulpelį"
+                  callback=@(b => {
+                    this.UnSelect();
+                    this.StateHasChanged();
+                  })
+                />
+              }
+            else if (this.EditingType == EditingTypes.Group && this.EditingID != null)
+              {
+                <DeleteByID TKey=int TCore=@LGT.Core.Intranet.Group
+                  ParamID=@this.EditingID.Value
+                  ParamButtonText="Ištrinti grupę"
+                  callback=@(b => {
+                    this.UnSelect();
+                    this.StateHasChanged();
+                  })
+                />
+              }
+              else if(this.EditingType == EditingTypes.ArticleAssignment && this.GuidID != null){
+                <DeleteByID 
+                  TKey=@Guid
+                  TCore=@Core.Intranet.Group_Article
+                  ParamID=@GuidID.Value
+                  ParamButtonText="Ištrinti straipsnio priskyrimą"
+                  callback=@(() => {
+                    this.UnSelect();
+                    this.StateHasChanged();
+                  })
+                />
+              }
+            else if (this.EditingType == EditingTypes.Link && this.EditingID != null)
+              {
+                <DeleteByID TKey=int TCore=@LGT.Core.Intranet.Link
+                  ParamID=@this.EditingID.Value
+                  ParamButtonText="Ištrinti nuorodą"
+                  callback=@(b => {
+                    this.UnSelect();
+                    this.StateHasChanged();
+                  })
+                />
+              }
+            </IfDelete>
+        </Tabs>
+      } else {
+        <div>Paspauskite ant elemento kad jį pasirinktumėte.</div>
+      }
+    </div>
+  </div>
+</div>
+
+

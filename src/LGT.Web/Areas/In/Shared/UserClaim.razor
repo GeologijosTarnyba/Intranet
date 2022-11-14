@@ -1,0 +1,28 @@
+﻿@code {
+  [Parameter] public Microsoft.AspNetCore.Identity.IdentityUserClaim<int> ParamUserClaim { get; set; }
+  private bool SomethingChanged = false;
+}
+@inject Data.IntranetContext db
+<EnumFull 
+  ClaimType=@ParamUserClaim.ClaimType
+  ClaimValue=@this.ParamUserClaim.ClaimValue
+  ClaimValueChanged=@((string newValue) => {
+    this.ParamUserClaim.ClaimValue = newValue;
+    this.SomethingChanged = true;
+  })
+/>
+@if(SomethingChanged){
+  <div>
+    <button class="w-100" @onclick=@SaveChanges>Išsaugoti</button>
+  </div>
+}
+@code {
+  private async Task SaveChanges(){
+    var claim = this.db.UserClaims.Find(this.ParamUserClaim.Id);
+    if (claim == null)
+      return;
+    claim.ClaimValue = this.ParamUserClaim.ClaimValue;
+    this.SomethingChanged = false;
+    await this.db.SaveChangesAsync();
+  }
+}

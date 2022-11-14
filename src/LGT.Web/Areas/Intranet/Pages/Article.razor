@@ -1,0 +1,24 @@
+﻿@attribute [AllowAnonymous]
+@layout IntranetLayout
+@page "/a/{ParamID:guid}"
+@code {
+  [Parameter] public Guid ParamID{ get; set; }
+}
+@inject Data.IntranetContext db
+
+<ExpList
+  ParamSource=@(db.Articles.Where(item => item.ID == this.ParamID && item.Accessibility.HasFlag(Core.Accessibility.IsAccessible))
+    .Select(art => art)
+  )
+  >
+  <IfSome Context=art>
+    @if(art.Name != null)
+    {
+      <h3>@art.Name</h3>
+    }
+    <MarkdownComponent Markdown=@art.BodyMarkdown />
+  </IfSome>
+  <IfNone>
+    <div>Straipsnis neegzistuoja arba nėra paskelbtas</div>
+  </IfNone>
+</ExpList>

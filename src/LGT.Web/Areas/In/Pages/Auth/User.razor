@@ -1,0 +1,99 @@
+﻿@attribute [CustomAuthorize(AdminRightsEnum.All)]
+@page "/in/admin/users/{ParamID:int}"
+@code {
+  [Parameter] public int ParamID { get; set; }
+}
+  @inject Data.IntranetContext db
+@code {
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    InitializeCreateData();
+    this.userClaims = await this.db.UserClaims.Where(item => item.UserId == this.ParamID).ToListAsync();
+  }
+  List<Microsoft.AspNetCore.Identity.IdentityUserClaim<int>> userClaims { get; set; }
+
+  private class Claim_CreateData {
+    public int UserID { get; set; }
+    public string? Key { get; set; }
+    public string? Value { get; set; }
+  }
+  private void InitializeCreateData (){
+    this.createData = new Claim_CreateData(){
+      UserID = this.ParamID
+    };
+  }
+  private Claim_CreateData createData { get; set; }
+
+}
+
+<ExpList
+  ParamSource=@(db.Users
+    .Where(item => item.Id == this.ParamID)
+    .OrderBy(item => item.UserName)
+    .AsNoTracking()
+    .Select(user => new {
+      user.Email,
+      Claims = user.ClaimValues.Select(item => item)
+    })
+  )
+>
+  <IfSome Context=user>
+    @{
+      var grs = user.Claims
+        .GroupBy(item => item.ClaimType)
+        .ToDictionary(keySelector: item => item.Key, elementSelector: item => item.Select(item => item));
+    }
+    
+    <table class="bord">
+      <tr>
+        <td>email</td>
+        <td>@user.Email</td>
+      </tr>
+
+      @foreach (var authInfo in new AuthInfo[]{ AuthPolicy.Info, IntranetPolicy.Info, GISPolicy.Info })
+      {
+        <tr>
+          <td>@authInfo</td>
+          @if(grs.ContainsKey(authInfo.Prefix)){
+            var gr = grs[authInfo.Prefix];
+            var userClaim = @gr.First();
+            <td>
+              <UserClaim ParamUserClaim=@userClaim />
+            </td>
+            <td>
+              <DeleteByID TCore=@(Microsoft.AspNetCore.Identity.IdentityUserClaim<int>) TKey=int
+                ParamID=@userClaim.Id
+                ParamShowWarning=false
+                callback=@this.StateHasChanged
+              />
+            </td>
+          } else {
+            <td>
+              -
+            </td>
+            <td>
+              <button @onclick=@(async () => await this.Create(authInfo))>Sukurti</button>
+            </td>
+          }
+        </tr>
+      }
+    </table>
+  </IfSome>
+  <IfNone>
+    Vartotojas neegzistuoja
+  </IfNone>
+</ExpList>
+
+@code {
+  private async Task Create(AuthInfo authInfo){
+    var n = new Microsoft.AspNetCore.Identity.IdentityUserClaim<int>() {
+      UserId = this.ParamID,
+      ClaimType = authInfo.Prefix,
+      ClaimValue = "0"
+    };
+    this.db.Add(n);
+    await this.db.SaveChangesAsync();
+    this.StateHasChanged();
+  }
+}

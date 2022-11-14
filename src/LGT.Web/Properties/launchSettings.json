@@ -1,0 +1,31 @@
+{
+  "profiles": {
+    "LGT.Web": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Intranet:Database:ConnectionString": "geolis2:1521/geolis2",
+        "Intranet:Database:UserName": "INTRANET",
+        "Intranet:Database:Password": "g5Eg2IsTCm7fndbu"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7012;http://localhost:5012"
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:3721",
+      "sslPort": 44304
+    }
+  }
+}

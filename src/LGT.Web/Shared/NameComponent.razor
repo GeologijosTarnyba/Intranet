@@ -1,0 +1,28 @@
+﻿@code {
+  [Parameter] public string? ParamName { get; set; }
+  [Parameter] public bool? ParamStrike { get; set; } = false;
+  [Parameter] public bool? ParamIsSelected{ get; set; }
+
+  private bool Strike => ParamStrike ?? false;
+  private string Name => string.IsNullOrWhiteSpace(this.ParamName) ? "no-name" : this.ParamName;
+  private string? cls =>
+    string.Join(" ",
+    new List<string?>(){
+      (string.IsNullOrWhiteSpace(this.ParamName) ? "no-name" : null), 
+      (this.ParamIsSelected == true ? "border" : null)
+      }
+      .Where(item => item != null)
+    );
+
+}
+
+<span class=@cls>
+  @if (this.Strike)
+  {
+    <s>@this.Name</s>
+  }
+  else
+  {
+    <text>@this.Name</text>
+  }
+</span>

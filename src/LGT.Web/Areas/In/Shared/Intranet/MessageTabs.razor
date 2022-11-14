@@ -1,0 +1,26 @@
+﻿@code {
+  [Parameter] public int? ParamID { get; set; }
+  [Parameter] public EventCallback callback { get; set; }
+}
+
+@if(this.ParamID != null){
+  <Tabs>
+    <IfEdit>
+      <Edit_Message ParamID=@this.ParamID!.Value CallbackOnSave=@this.callback />
+    </IfEdit>
+    <IfDelete>
+      <DeleteByID TCore=@LGT.Core.Intranet.Message TKey="int"
+        ParamID=@this.ParamID!.Value
+        ParamButtonText="Ištrinti žinutę"
+        callback=@((deleted) => {
+          this.callback.InvokeAsync();
+          this.ParamID = null;
+        })
+      />
+    </IfDelete>
+  </Tabs>
+}
+else
+{
+  <Create_Message CallbackOnCreate=@((message) => this.callback.InvokeAsync()) />
+}

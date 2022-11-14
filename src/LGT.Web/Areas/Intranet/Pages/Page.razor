@@ -1,0 +1,84 @@
+﻿@attribute [AllowAnonymous]
+@layout IntranetLayout
+@page "/"
+@page "/p/{ParamKey}"
+@page "/p/{ParamID:int}"
+@code {
+	[Parameter] public int? ParamID { get; set; }
+	[Parameter] public string? ParamKey { get; set; }
+}
+@inject Data.IntranetContext db
+@if (this.ParamKey != null)
+{
+	<IntranetComponent ParamKey=@this.ParamKey />
+}
+else if (this.ParamID != null)
+{
+	<IntranetComponent ParamID=@this.ParamID />
+} else {
+	<IntranetComponent ParamKey="main" >
+		<BelowTitleFragment>
+			<form method="GET" action="https://www.google.lt/search">
+					<input type="text" name="q" value="">
+					<input type="hidden" name="hl" value="lt">
+					<input type="hidden" name="ie" value="UTF-8">
+					<input type="submit" value="Ieškoti Internete">
+				</form>
+		</BelowTitleFragment>
+    <BesideTitleFragment>
+			<ExpList
+				ParamSource=@(db.Messages
+					.Where(item => item.IsPublic && (item.ShowSince <= DateTime.Now && item.Until >= DateTime.Now))
+					.OrderBy(item => item.Index).ThenBy(item => item.Since)
+					.AsNoTracking()
+					.Select(item => new {
+						item.ID,
+						item.Since,
+						item.Until,
+						item.Header,
+						Described = item.ArticleID != null
+					})
+				)>
+				<Wrapper Context="rows">
+					<div class="col">
+						<ul>@rows</ul>
+					</div>
+				</Wrapper>
+				<IfSome Context="message">
+					<li>
+						@if(message.Described){
+							<MessageLinkComponent ParamID=@message.ID ParamName=@message.Header />
+						} else {
+							@message.Header
+						}
+						<span style="padding: 0 0 0 2px">
+							@if(message.Since > DateTime.Now) // Neprasidėjęs
+							{
+								@if (message.Since.Date == DateTime.Today)
+								{
+									<text>nuo @message.Since.ToString("HH:mm")</text>
+								}
+								else
+								{
+									@*<text>nuo @message.Since.ToString("yyyy-MM-dd HH:mm")</text>*@
+								}
+							} else  // Prasidėjęs
+							{
+								@if (message.Until.Date == DateTime.Today)
+								{
+									<text>iki @message.Until.ToString("HH:mm")</text>
+								}
+								else
+								{
+									<text>iki @message.Until.ToString("yyyy-MM-dd HH:mm")</text>
+								}
+							}
+						</span>
+
+					</li>
+				</IfSome>
+				<IfNone></IfNone>
+			</ExpList>
+	  </BesideTitleFragment>
+	</IntranetComponent>
+}

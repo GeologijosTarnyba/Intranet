@@ -1,0 +1,20 @@
+﻿
+<CascadingAuthenticationState>
+  <Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+      <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(LGT.Web.Areas.In.Shared.Nav.MainLayout)" >
+        <NotAuthorized>
+          Neturite teisių prieiti prie šios puslapio dalies
+        </NotAuthorized>
+      </AuthorizeRouteView>
+      <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    
+    <NotFound>
+      <PageTitle>Not found</PageTitle>
+      <LayoutView Layout="@typeof(LGT.Web.Areas.Intranet.Shared.IntranetLayout)">
+        <p role="alert">Sorry, there's nothing at this address.</p>
+      </LayoutView>
+    </NotFound>
+  </Router>
+</CascadingAuthenticationState>

@@ -1,0 +1,35 @@
+﻿@attribute [AllowAnonymous]
+@layout IntranetLayout
+@page "/m/{ParamID:int}"
+
+@code {
+  [Parameter] public int ParamID { get; set; }
+}
+@inject Data.IntranetContext db
+<ExpList
+  ParamSource=@(db.Messages.Where(item => item.ID == this.ParamID).AsNoTracking()
+    .Select(item => new {
+      item.Since,
+      item.Until,
+      item.Header,
+      Article = item.ArticleID == null ? null : new {
+        ID = item.ArticleID,
+        item.Article!.Name,
+        item.Article!.BodyMarkdown,
+      }
+    })
+  )
+  >
+  <IfSome Context=message>
+    <h3>@message.Header</h3>
+    <p>
+      nuo <span class="border">@message.Since.ToString("yyyy-MM-dd HH:mm")</span>
+      iki <span class="border">@message.Until.ToString("yyyy-MM-dd HH:mm")</span>
+    </p>
+    @if(message.Article != null)
+    {
+      <h3>@message.Article.Name</h3>
+      <MarkdownComponent Markdown=@message.Article.BodyMarkdown/>
+    }
+  </IfSome>
+</ExpList>

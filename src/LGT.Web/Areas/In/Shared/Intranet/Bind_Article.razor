@@ -1,0 +1,20 @@
+﻿@inherits Bind<LGT.Core.Intranet.Article>
+<EditForm Model=@this.value OnValidSubmit=@CallbackOnValidSubmit>
+  <table>
+    <tr>
+      <td colspan="2">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+      </td>
+    </tr>
+    <tr>
+      <td>Pavadinimas: </td>
+      <td><InputText @bind-Value=@this.value.InternalName></InputText></td>
+    </tr>
+    <tr>
+      <td>Antraštė: </td>
+      <td><InputText @bind-Value=@this.value.Name></InputText></td>
+    </tr>
+  </table>
+  <button class="w-100" type="submit">@(this.ParamButtonText ?? "Submit")</button>
+</EditForm>

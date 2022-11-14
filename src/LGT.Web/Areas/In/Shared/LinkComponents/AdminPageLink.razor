@@ -1,0 +1,12 @@
+﻿@if (this.ParamID != null)
+{
+  <LinkComponent
+    ParamHref=@($"/in/intranet/pages/{ParamID}")
+    ParamName=@this.ParamName
+  >
+  </LinkComponent>
+}
+@code {
+  [Parameter] public int? ParamID { get; set; }
+  [Parameter] public string? ParamName { get; set; }
+}

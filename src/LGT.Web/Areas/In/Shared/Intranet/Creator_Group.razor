@@ -1,0 +1,33 @@
+﻿@inherits CreatorClass<LGT.Core.Intranet.Group>
+@code 
+{
+  [Parameter] public int? ParamColumnID { get; set; }
+  [Parameter] public int? ParamIndex { get; set; }
+  protected override bool HasRequiredData(){
+    if (ParamColumnID == null)
+      return false;
+    if(ParamIndex == null){
+      return false;
+    }
+    return true;
+  }
+  protected override LGT.Core.Intranet.Group? ConstructCore()
+  {
+    if (!HasRequiredData())
+      return null;
+    return new()
+      {
+        ColumnID = this.ParamColumnID!.Value,
+        Index = this.ParamIndex!.Value,
+        Name = "",
+        IsPublic = true
+      };
+  }
+}
+
+@inject Data.IntranetContext db
+@if(this.HasRequiredData()){
+  <button @onclick=@(async () => await this.Create(db))>
+    @(this.ParamButtonText ?? "Sukurti stulpelį")
+  </button>
+}
