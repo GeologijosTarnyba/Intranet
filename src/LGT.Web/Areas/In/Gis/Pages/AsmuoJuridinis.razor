@@ -1,0 +1,160 @@
+﻿@attribute [CustomAuthorize(GISEnum.Leidimai)]
+@page "/in/gis/juridinisasmuo/{ParamID:int}"
+@inject Data.Context db2
+@code {
+  [Parameter] public int ParamID { get; set; }
+  private IQueryable<Core.Geoldba.JuridinisAsmuo> self => this.db2.JuridiniaiAsmenys.Where(item => item.ID == this.ParamID);
+}
+<ExpList
+  ParamSource=@(self
+    .Select(jasm => new {
+      jasm.ID,
+      Name = jasm.Name1,
+      JARKod = jasm.JARKodas
+    })
+  )
+>
+  <IfSome Context="jasm">
+    <h3>Juridinis asmuo @jasm.Name</h3>
+    <table class="bord">
+      <tr>
+        <td>Kodas (JAR registre?)</td>
+        <td>
+          @if(jasm.JARKod != null)
+          {
+            <a href="/in/gis/JA/@jasm.JARKod">@jasm.JARKod</a>
+          } else
+          {
+            <NameComponent ParamNoName="nenurodyta" />
+          }
+          <br/>
+          <ExpList ParamText="Ieškoti dublikatų" ParamIsExpandable=false ParamIsExpanded=false
+            ParamSource=@(db2.JuridiniaiAsmenys
+              .Where(item => item.JARKodas == jasm.JARKod && item.ID != this.ParamID)
+              .OrderByDescending(item => item.ID)
+              .Select(item => new {item.ID, Name = item.Name1 })
+            )
+          >
+            <Wrapper Context="rows"><ul>@rows</ul></Wrapper>
+            <IfSome Context="dubl">
+              <li>
+                <a href="/in/gis/juridinisasmuo/@dubl.ID">@dubl.Name</a>
+              </li>
+            </IfSome>
+            <IfNone><span>Dublikatų nėra</span></IfNone>
+          </ExpList>
+        </td>
+      </tr>
+      <tr>
+        <td>Leidimai</td>
+        <td>
+          <ExpList ParamText="Rodyti" ParamIsExpandable=true ParamIsExpanded=false
+            ParamSource=@(self.Select(jasm => new {
+              Leidimai = jasm.Leidimai.Select(leid => new {
+                leid.ID,
+                leid.Name,
+                Galioja = (
+                  leid.IsdavesJuridinisAsmuoID == 11) // Išdavė LGT
+                  && (leid.DataPanaikinimo == null || leid.DataPanaikinimo.Value > DateTime.Now) // Nepanaikintas
+                  && (
+                    leid.DataIki == null         // nenurodyta iki kada galioja
+                    ||                           // arba
+                    leid.DataIki >= DateTime.Now // nurodyta ir dar galioja
+                  )
+                ,
+                Sutartys = leid.Sutartys.Select(sut => new {
+                  sut.ID,
+                  sut.Since,
+                  sut.Until,
+                  Objs = sut.ZGRLGavybosObjektai.Select(obj => new {
+                    obj.ID,
+                    Telkinys = obj.TelkinysID == null ? null : new {
+                      ID = obj.TelkinysID,
+                      Name = obj.Telkinys!.Name,
+                    }
+                  })
+                })
+              })
+            }))
+          >
+            <IfSome Context="j">
+              @if (!j.Leidimai.Any())
+              {
+                <div>nėra</div>
+              } else {
+                @foreach (var gr in j.Leidimai.OrderByDescending(item => item.ID).GroupBy(item => item.Galioja).OrderByDescending(item => item.Key))
+                {
+                  <ul>
+                    <li>
+                      <b>@(gr.Key ? "galiojantys" : "negaliojantys")</b>
+                      <ul>
+                        @foreach (var leid in gr)
+                        {
+                          <li>
+                            <a href="/in/gis/leidimas/@leid.ID">@leid.Name</a>
+                            @if (leid.Sutartys.Any())
+                            {
+                              <ul>
+                                @foreach (var sut in leid.Sutartys.OrderByDescending(item => item.Since))
+                                {
+                                  <li>
+                                    <a href="/in/gis/sutartis/@sut.ID">@sut.Since.LT(false) - @sut.Until.LT(false)</a>
+                                    (@if (sut.Objs.Any())
+                                    {
+                                      @foreach (var obj in sut.Objs)
+                                      {
+                                        @if (obj.Telkinys != null)
+                                        {
+                                          <a href="/in/gis/telkinys/@obj.Telkinys.ID">@obj.Telkinys.Name</a>
+                                        }
+                                        else
+                                        {
+                                          <span class="bg-danger">telkinys nenurodytas</span>
+                                        }
+                                      }
+                                    })
+                                  </li>
+                                }
+                              </ul>
+                            }
+                            else
+                            {
+                              <span class="text-danger">sutarčių nėra</span>
+                            }
+                          </li>
+                        }
+                      </ul>
+                    </li>
+                  </ul>
+                }
+              }
+            </IfSome>
+          </ExpList>
+        </td>
+      </tr>
+      <tr>
+        <td>Atsakingas už JVS</td>
+        <td>
+          <ExpList ParamText="Rodyti" ParamIsExpanded="false"
+            ParamSource=@(self.SelectMany(item => item.JungtinesVeiklosSutartys_UzKuriasAtsakingas).Select(jvs => new {
+              jvs.ID,
+              jvs.Name
+            }))
+
+          >
+            <Wrapper Context="rows"><ul>@rows</ul></Wrapper>
+            <IfSome Context="jvs">
+              <li>
+                <a href="/in/gis/jungtinesveiklossutartis/@jvs.ID">@jvs.Name</a>
+              </li>
+            </IfSome>
+            <IfNone>
+              <div>Nėra</div>
+            </IfNone>
+          </ExpList>
+        </td>
+      </tr>
+      
+    </table>
+  </IfSome>
+</ExpList>

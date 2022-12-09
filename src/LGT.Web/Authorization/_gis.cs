@@ -5,6 +5,10 @@ namespace LGT.Web.Authorization;
 public enum GISEnum : Int64
 {
   None = 0,
+  Telkiniai = 1,
+  Leidimai = 2,
+  Greziniai = 4,
+  AsmensDuomenys = (Int64)1 << 60,
   All = Int64.MaxValue
 }
 public static class GISPolicy

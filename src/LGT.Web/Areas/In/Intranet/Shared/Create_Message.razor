@@ -1,0 +1,23 @@
+﻿@inherits CreateClass<LGT.Core.Intranet.Message>
+@code {
+  protected override LGT.Core.Intranet.Message? ConstructCore(){
+    var now = DateTime.Now;
+    return new LGT.Core.Intranet.Message
+    {
+      IsPublic = false,
+      ShowSince = now,
+      Since = new DateTime(now.Year, now.Month, now.Day, 08, 0, 0),
+      Until = new DateTime(now.Year, now.Month, now.Day, 17, 0, 0)
+    };
+  }
+}
+
+@inject Data.IntranetContext db
+@if(this.Core != null){
+  <div class="border">
+    <Bind_Message @bind-value=@this.Core 
+      ParamButtonText="Sukurti naują"
+      CallbackOnValidSubmit=@(async () => await this.HandleValidSubmit(db))
+    />
+  </div>
+}

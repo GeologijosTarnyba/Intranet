@@ -1,0 +1,25 @@
+﻿@code {
+  [Parameter] public string ClaimType { get; set; }
+  [Parameter] public string ClaimValue { get; set; }
+  [Parameter] public EventCallback<string> ClaimValueChanged { get; set; }
+  private Array? values => this.ClaimType switch
+  {
+    GISPolicy.Prefix => Enum.GetValues(typeof(GISEnum)),
+    AuthPolicy.Prefix => Enum.GetValues(typeof(AdminRightsEnum)),
+    IntranetPolicy.Prefix => Enum.GetValues(typeof(IntranetEnum)),
+    _ => null
+  };
+}
+
+@if (this.ClaimType == IntranetPolicy.Info.Prefix)
+{
+  <EnumEdit T=@IntranetEnum value=@IntranetPolicy.NumberToEnum(this.ClaimValue) valueChanged=@(async item => await this.ClaimValueChanged.InvokeAsync(((Int64)item).ToString())) />
+} else if (this.ClaimType == AuthPolicy.Info.Prefix){
+  <EnumEdit T=@AdminRightsEnum value="@AuthPolicy.NumberToEnum(this.ClaimValue)" valueChanged=@(async item => await this.ClaimValueChanged.InvokeAsync(((Int64)item).ToString())) />
+}
+else if (this.ClaimType == GISPolicy.Info.Prefix){
+  <EnumEdit T="@GISEnum" value=@GISPolicy.NumberToEnum(this.ClaimValue) valueChanged=@(async item => await this.ClaimValueChanged.InvokeAsync(((Int64)item).ToString())) />
+}
+else {
+  <b>@this.ClaimType=@this.ClaimValue</b>
+}

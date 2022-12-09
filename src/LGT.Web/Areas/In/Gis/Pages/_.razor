@@ -1,0 +1,8 @@
+﻿@attribute [CustomAuthorize(GISEnum.All)]
+@page "/in/gis"
+<h3>Geologija</h3>
+<FlexAuthorizeView Val=@GISEnum.Telkiniai>
+  <Authorized>
+    <a href="/in/gis/telk">Telkiniai</a>
+  </Authorized>
+</FlexAuthorizeView>

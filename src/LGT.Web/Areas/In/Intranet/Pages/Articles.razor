@@ -1,0 +1,50 @@
+﻿@attribute [CustomAuthorize(IntranetEnum.ArticlesEdit)]
+@page "/in/intranet/articles"
+@inject Data.IntranetContext db
+@code {
+
+}
+
+<div class="row">
+  <div class="col">
+    <ExpList
+      ParamSource=@(db.Articles
+        .Select(article => new {
+          article.ID,
+          Name = article.InternalName,
+          IsAccessable = article.Accessibility.HasFlag(Core.Accessibility.IsAccessible),
+          IsPublic = article.Accessibility.HasFlag(Core.Accessibility.IsListed),
+        })
+        .OrderByDescending(item => item.IsAccessable).ThenBy(item => item.Name)
+      )
+      >
+      <Wrapper Context=rows>
+        <table class="bord">
+          @rows
+        </table>
+
+      </Wrapper>
+      <IfSome Context=article>
+        <tr>
+          <td>
+            <input type="checkbox"  checked=@article.IsAccessable disabled />
+          </td>
+          <td>
+            <input type="checkbox"  checked=@article.IsPublic disabled />
+          </td>
+          <td>
+            <a href="/in/intranet/articles/@article.ID">
+              <NameComponent ParamStrike=@(!article.IsAccessable) ParamName=@article.Name />
+            </a>
+            @*<AdminArticleLinkComponent ParamID=@article.ID ParamTitle=@article.Name />*@
+          </td>
+
+        </tr>
+      </IfSome>
+
+    </ExpList>
+  </div>
+  <div class="col">
+    <LGT.Web.Areas.In.Intranet.Shared.Create_Article ParamButtonText="Sukurti naują straipsnį" CallbackOnCreate=this.StateHasChanged />
+  </div>
+</div>

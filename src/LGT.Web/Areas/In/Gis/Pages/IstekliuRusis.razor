@@ -1,0 +1,30 @@
+﻿@page "/in/gis/istekliurusis/{ParamID}"
+@inject Data.Context db2
+@code {
+  [Parameter] public string ParamID { get; set; }
+  private IQueryable<Core.Geoldba.IstekliuRusis> self => this.db2.IštekliųRusys.Where(item => item.ID == this.ParamID);
+}
+<ExpList
+  ParamSource=@(self.Select(ir => new {
+    ir.ID,
+    ir.Kodas,
+    ir.Name
+  }))  
+>
+  <Wrapper Context="rows"><table class="bord">@rows</table></Wrapper>
+  <IfSome Context="ir">
+    <h3>Išteklių rūšis</h3>
+    <tr>
+      <td>ID</td>
+      <td>@ir.ID</td>
+    </tr>
+    <tr>
+      <td>Kodas</td>
+      <td>@ir.Kodas</td>
+    </tr>
+    <tr>
+      <td>Pavadinimas</td>
+      <td>@ir.Name</td>
+    </tr>
+  </IfSome>
+</ExpList>

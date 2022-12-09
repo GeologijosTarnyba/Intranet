@@ -3,6 +3,7 @@
     "LGT.Web": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "in/gis/telk",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "Intranet:Database:ConnectionString": "geolis2:1521/geolis2",

@@ -20,36 +20,34 @@
   }
 }
 
-
 @if (this.IsExpandable || !this.IsExpanded)
 {
-
   @if (this.ParamTextElement == null)
   {
-            <label>
-              <input type="checkbox" checked=@this.IsExpanded @onchange=@this.ToggleExpand />
+    <label>
+      <input type="checkbox" checked=@this.IsExpanded @onchange=@this.ToggleExpand />
       @(this.ParamText ?? "expand")
-            </label>
+    </label>
   }
   else
   {
     @if (this.ParamText == null)
     {
       @ParamTextElement(
-  @:@{
-    <input type="checkbox" checked=@this.IsExpanded @onchange=@this.ToggleExpand />
-  }
+      @:@{
+        <input type="checkbox" checked=@this.IsExpanded @onchange=@this.ToggleExpand />
+      }
       )
     }
     else
     {
       @ParamTextElement(
-  @:@{
-    <label>
-                  <input type="checkbox" checked=@this.IsExpanded @onchange=@this.ToggleExpand />
-                  @this.ParamText
-    </label>
-  }
+        @:@{
+        <label>
+          <input type="checkbox" checked=@this.IsExpanded @onchange=@this.ToggleExpand />
+          @this.ParamText
+        </label>
+        }
       )
     }
   }

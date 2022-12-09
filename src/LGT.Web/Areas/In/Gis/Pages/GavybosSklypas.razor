@@ -1,0 +1,164 @@
+﻿@attribute [CustomAuthorize(GISEnum.Telkiniai)]
+@page "/in/gis/gavybossklypas/{ParamID:int}"
+@inject Data.Context db2
+@code {
+  [Parameter] public int ParamID{ get; set; }
+  private IQueryable<Core.Geoldba.GavybosSklypas> self => db2.GavybosSklypai.Where(item => item.ID == ParamID);
+}
+<ExpList
+  ParamSource=@(self.Select(skl => new {
+    Name = $"Gavybos sklypas {skl.ID}",
+    Objs = skl.ZGRLGavybosObjektai.Select(obj => new {
+      obj.ID,
+      Sutartis = new {
+        ID = obj.SutartisID,
+        Leidimas = new {
+          ID = obj.Sutartis.LeidimasID,
+          obj.Sutartis.Leidimas.Name,
+          Kam = new {
+            JuridinisAsmuo = obj.Sutartis.Leidimas.Kam_JuridinisAsmuoID == null ? null : new {
+              ID = obj.Sutartis.Leidimas.Kam_JuridinisAsmuoID,
+              obj.Sutartis.Leidimas.Kam_JuridinisAsmuo.Name1
+            }
+          }
+        }
+      }
+    }),
+    Telkinys = new {
+      ID = skl.TelkinysID, 
+      Name = skl.Telkinys.Name,
+    }
+  })
+  )
+>
+  <IfSome Context="skl">
+    <h3>@skl.Name</h3>
+    <table class="bord">
+      @foreach (var obj in skl.Objs)
+      {
+        <tr>
+          <td>Sutartis</td>
+          <td><a href="/in/gis/sutartis/@obj.Sutartis.ID">@obj.Sutartis.ID</a></td>
+        </tr>
+        <tr>
+          <td>Leidimas</td>
+          <td>
+            <a href="/in/gis/leidimas/@obj.Sutartis.Leidimas.ID">@obj.Sutartis.Leidimas.Name</a>
+          </td>
+        </tr>
+        @if(obj.Sutartis.Leidimas.Kam.JuridinisAsmuo != null)
+        {
+          <tr>
+            <td>Įmonei</td>
+            <td>
+              <a href="/in/gis/juridinisasmuo/@obj.Sutartis.Leidimas.Kam.JuridinisAsmuo.ID">
+                @obj.Sutartis.Leidimas.Kam.JuridinisAsmuo?.Name1
+              </a>
+            </td>
+          </tr>
+        }
+      }
+      <tr><td>Telkinys</td>
+        <td>
+          <a href="/in/gis/telkinys/@skl.Telkinys.ID">@skl.Telkinys.Name</a>
+        </td>
+      </tr>
+      <tr><td>Ketvirčiai</td>
+        <td>
+          <ExpList ParamText="Rodyti" ParamIsExpandable="true" ParamIsExpanded="false"
+            ParamSource=@(self.Select(skl => new {
+              Ketvs = skl.NER_GAV_KETVs.Select(ketv => new {
+                Metai = ketv.GAVK_METAI,
+                TelkinioSluoksnis = new {
+                  ID = ketv.TelkinioSluoksnisID,
+                  Index = ketv.TelkinioSluoksnis.TelkinysIndex
+                },
+                MarsederinioPlanoData = ketv.MarkseidData,
+                Ketvirtis = ketv.GAVK_KETV,
+                Gavyba = ketv.GAVK_KIEKIS,
+                Nuostolis = ketv.GAVK_NUOSTOLIS,
+                Pradzia = ketv.GAVK_LIKUTIS_PR,
+                UzKonturo = ketv.GAVK_IST_PASIKEITIMAS,
+                Pabaiga = ketv.GAVK_LIKUTIS_PB,
+                Mazaskaides = ketv.GAVK_KIEKIS_TAME_TARPE, 
+                IstekliuRusis = ketv.IstekliuRusisID == null ? null : new {
+                  ID = ketv.IstekliuRusisID
+                },
+                Pastaba = (string?)ketv.GAVK_PASTABA
+              })
+            }))
+            >
+            <IfSome Context="sklp">
+              @if (sklp.Ketvs.Any())
+              {
+                <table class="bord">
+                  <tr>
+                    <td rowspan="2">Metai</td>
+                    <td rowspan="2">Ketv</td>
+                    <td class="text-center" colspan="10">Duomenys</td>
+                  </tr>
+                  <tr>
+                    <td>Marks</td>
+                    <td>IR</td>
+                    <td>sl.Nr</td>
+                    <td>Pradzia</td>
+                    <td>Gavyba</td>
+                    <td>
+                      @if(sklp.Ketvs.Any(item => item.Mazaskaides != null))
+                      {
+                        <text>
+                          Mažaskaidės
+                        </text>
+                      }
+                    </td>
+                    <td>Nuostolis</td>
+                    <td>Pasikeitimas</td>
+                    <td>Pabaiga</td>
+                    <td>
+                      @if(sklp.Ketvs.Any(item => item.Pastaba != null))
+                      {
+                        <text>Pastaba</text>
+                      }
+                    </td>
+                  </tr>
+              
+                  @foreach (var gr in sklp.Ketvs
+                    .GroupBy(item => (item.Metai, item.Ketvirtis))
+                    .OrderByDescending(item => item.Key)
+                  )
+                  {
+                    var first = gr.First();
+                    @foreach (var ketv in gr)
+                    {
+                        <tr>
+                        @if(ketv == first)
+                        {
+                          <td rowspan="@(gr.Count())">@gr.Key.Metai</td>
+                          <td rowspan="@(gr.Count())">@gr.Key.Ketvirtis</td>
+                        }
+                        <td>@ketv.MarsederinioPlanoData.LT(false)</td>
+                        <td>@ketv.IstekliuRusis?.ID</td>
+                        <td>@ketv.TelkinioSluoksnis.Index</td>
+                        <td>@ketv.Pradzia</td>
+                        <td>@ketv.Gavyba</td>
+                        <td>@ketv.Mazaskaides</td>
+                        <td>@ketv.Nuostolis</td>
+                        <td>@ketv.UzKonturo</td>
+                        <td>@ketv.Pabaiga</td>
+                        <td>@ketv.Pastaba</td>
+                      </tr>
+                    }
+                  }
+                  </table>
+                } else
+                {
+                  <div>duomenų nėra</div>
+                }
+              </IfSome>
+          </ExpList>
+        </td>
+      </tr>
+      
+    </table>
+  </IfSome>
+</ExpList>

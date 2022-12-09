@@ -1,0 +1,19 @@
+﻿@attribute [CustomAuthorize(AdminRightsEnum.All)]
+@page "/in/gis/test"
+<h3>Test</h3>
+@inject Data.Context db
+@code {
+  private int telkinysID = 1618;
+  public string ParamJARKodas { get; set; } = "300556427";
+}
+
+<LGT.Web.Areas.In.Gis.Shared.KETVs 
+  ParamFilter=@(item => 
+    item.GavybosSklypas.ZGRLGavybosObjektai.Any(item => item.Sutartis.Leidimas.Kam_JuridinisAsmuoID != null && item.Sutartis.Leidimas.Kam_JuridinisAsmuo!.JARKodas == this.ParamJARKodas)
+    &&
+    item.TelkinioSluoksnis.TelkinysID == this.telkinysID
+  )
+>
+
+</LGT.Web.Areas.In.Gis.Shared.KETVs>
+

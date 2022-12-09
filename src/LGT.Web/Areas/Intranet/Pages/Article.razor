@@ -7,7 +7,8 @@
 @inject Data.IntranetContext db
 
 <ExpList
-  ParamSource=@(db.Articles.Where(item => item.ID == this.ParamID && item.Accessibility.HasFlag(Core.Accessibility.IsAccessible))
+  ParamSource=@(db.Articles
+    .Where(item => item.ID == this.ParamID && item.Accessibility.HasFlag(Core.Accessibility.IsAccessible))
     .Select(art => art)
   )
   >

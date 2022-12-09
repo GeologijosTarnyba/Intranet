@@ -13,21 +13,23 @@ public class Program
   public static void Main(string[] args)
   {
     var builder = WebApplication.CreateBuilder(args);
-    var intranetDataSource = null
-      ?? Environment.GetEnvironmentVariable("Intranet:Database:ConnectionString") 
-      ?? throw new Exception("Unclear ConnectionString [Intranet:Database:ConnectionString]");
-    var intranetUser = null
-      ?? Environment.GetEnvironmentVariable("Intranet:Database:UserName") 
-      ?? throw new Exception("Unclear UserName [Intranet:Database:UserName]");
-    var intranetUserPassword = null
-      ?? Environment.GetEnvironmentVariable("Intranet:Database:Password") 
-      ?? throw new Exception("Unclear Password [Intranet:Database:Password]");
+
+    var intranetDataSource = null ?? Environment.GetEnvironmentVariable("Intranet:Database:ConnectionString") ?? throw new Exception("Unclear ConnectionString [Intranet:Database:ConnectionString]");
+    var intranetUser = null ?? Environment.GetEnvironmentVariable("Intranet:Database:UserName") ?? throw new Exception("Unclear IntranetUserName [Intranet:Database:UserName]");
+    var intranetUserPassword = null ?? Environment.GetEnvironmentVariable("Intranet:Database:Password") ?? throw new Exception("Unclear IntranetUserPassword [Intranet:Database:Password]");
     builder.Services.AddDbContext<Data.IntranetContext>(
       optionsBuilder => optionsBuilder.UseOracle($"User Id={intranetUser};Password={intranetUserPassword};Data Source={intranetDataSource}",
       b => {
         b.MigrationsAssembly("LGT.Web");
         b.UseOracleSQLCompatibility("12");
       })
+    );
+
+
+    var geolisUser = (string?)null ?? Environment.GetEnvironmentVariable("Geoldba:Database:UserName") ?? throw new Exception("Unclear GeolisUserName [Geoldba:Database:UserName]");
+    var geolisUserPassword = (string?)null ?? Environment.GetEnvironmentVariable("Geoldba:Database:Password") ?? throw new Exception("Unclear GeolisUserPassword [Geoldba:Database:Password]");
+    builder.Services.AddDbContext<Data.Context>(
+      optionBuilder => optionBuilder.UseOracle($"User Id={geolisUser};Password={geolisUserPassword};Data Source=geolis2:1521/geolis2")
     );
 
     builder.Services.AddDatabaseDeveloperPageExceptionFilter();

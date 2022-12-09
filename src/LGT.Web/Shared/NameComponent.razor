@@ -1,16 +1,18 @@
 ﻿@code {
   [Parameter] public string? ParamName { get; set; }
   [Parameter] public bool? ParamStrike { get; set; } = false;
-  [Parameter] public bool? ParamIsSelected{ get; set; }
+  [Parameter] public bool? ParamIsSelected { get; set; }
+  [Parameter] public string ParamNoName { get; set; } = "no-name";
+  [Parameter] public string ParamNoNameClass { get; set; } = "no-name";
 
   private bool Strike => ParamStrike ?? false;
-  private string Name => string.IsNullOrWhiteSpace(this.ParamName) ? "no-name" : this.ParamName;
+  private string Name => string.IsNullOrWhiteSpace(this.ParamName) ? this.ParamNoName : this.ParamName;
   private string? cls =>
     string.Join(" ",
     new List<string?>(){
-      (string.IsNullOrWhiteSpace(this.ParamName) ? "no-name" : null), 
+      (string.IsNullOrWhiteSpace(this.ParamName) ? this.ParamNoNameClass : null),
       (this.ParamIsSelected == true ? "border" : null)
-      }
+    }
       .Where(item => item != null)
     );
 
