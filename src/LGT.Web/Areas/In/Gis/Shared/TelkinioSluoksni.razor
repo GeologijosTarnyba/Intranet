@@ -1,0 +1,73 @@
+﻿@inject Data.Context db
+@code {
+  [Parameter] public int ParamTelkID { get; set; }
+}
+
+<ExpList ParamText="Rodyti" ParamIsExpanded=false ParamIsExpandable=true
+  ParamSource=@(
+    db.Telkiniai
+      .Where(item => item.ID == this.ParamTelkID)
+      .Select(telk => new {
+        Sluoksniai = telk.Sluoksniai
+        .Select(sl => new {
+          sl.ID,
+          sl.TelkinysIndex,
+          IR = (string?)sl.AGS_IST_TRUMP,
+          Ketvs = sl.NER_GAV_KETVs.Select(ketv => new {
+            Metai = ketv.GAVK_METAI,
+            Ketv = ketv.GAVK_KETV,
+            Deadline = new DateTime(ketv.GAVK_METAI, 3*ketv.GAVK_KETV, 1).AddMonths(1).AddSeconds(-1),
+            Skirtumas = ketv.GAVK_LIKUTIS_PR - ketv.GAVK_LIKUTIS_PB
+          }),
+          Istekliai = sl.Istekliai
+            .OrderBy(item => item.IST_GALIOJA_NUO)
+            .Select(ist => new {
+              ist.ID,
+              ist.IST_ISTK_KATEGORIJA,
+              ist.IST_GALIOJA_NUO,
+              ist.IST_GALIOJA_IKI,
+              Kiekis = ist.IST_KIEKIS,
+            })
+          }
+        )
+        .Where(sl => sl.Istekliai.Any())
+      })
+  )
+>
+  <IfSome Context="telk">
+    <table class="bord">
+      <tr>
+        <th>Sl. Nr.</th>
+        <th>Išt</th>
+        <th>Tipas</th>
+        <th>Nuo</th>
+        <th>Iki</th>
+        <th>Kiekis</th>
+        <th>Skirtumas</th>
+        <th>Likutis</th>
+      </tr>
+      @foreach (var sl in telk.Sluoksniai)
+      {
+        var first = sl.Istekliai.First();
+        @foreach (var ist in sl.Istekliai)
+        {
+          var ketvs = sl.Ketvs.Where(ketv => ketv.Deadline > ist.IST_GALIOJA_NUO && (ist.IST_GALIOJA_IKI == null || ketv.Deadline < ist.IST_GALIOJA_IKI.Value));
+          var sum = ketvs.Sum(ketv => ketv.Skirtumas);
+          <tr>
+            @if(ist == first)
+            {
+              <td rowspan="@(sl.Istekliai.Count())">@sl.TelkinysIndex</td>
+            }
+            <td>@sl.IR</td>
+            <td>@ist.IST_ISTK_KATEGORIJA</td>
+            <td>@ist.IST_GALIOJA_NUO.LT(false)</td>
+            <td>@ist.IST_GALIOJA_IKI.LT(false)</td>
+            <td>@ist.Kiekis</td>
+            <td>@sum</td>
+            <td>@(ist.Kiekis-sum)</td>
+          </tr>
+        }
+      }
+    </table>
+  </IfSome>
+</ExpList>

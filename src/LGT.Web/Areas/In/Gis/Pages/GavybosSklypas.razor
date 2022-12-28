@@ -130,7 +130,7 @@
                     var first = gr.First();
                     @foreach (var ketv in gr)
                     {
-                        <tr>
+                      <tr>
                         @if(ketv == first)
                         {
                           <td rowspan="@(gr.Count())">@gr.Key.Metai</td>
@@ -144,7 +144,15 @@
                         <td>@ketv.Mazaskaides</td>
                         <td>@ketv.Nuostolis</td>
                         <td>@ketv.UzKonturo</td>
-                        <td>@ketv.Pabaiga</td>
+                        @{
+                          var isCorrect = ketv.Pradzia - ketv.Gavyba + ketv.Nuostolis + ketv.UzKonturo;
+                        }
+                        <td>
+                          @ketv.Pabaiga
+                          @if(isCorrect != ketv.Pabaiga){
+                            <span class="text-danger">@isCorrect</span>
+                          }
+                        </td>
                         <td>@ketv.Pastaba</td>
                       </tr>
                     }

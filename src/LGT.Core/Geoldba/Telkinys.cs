@@ -6,13 +6,14 @@ public class Telkinys
   //public ICollection<Views.W_ZGR_MARKSEID_PLANAI> W_ZGR_MARKSEID_PLANAI { get; set; }
   #endregion
 
+  public ICollection<GIS_ISTEKLIU_PLOTAI> GIS_ISTEKLIU_PLOTAI { get; set; }
+  public ICollection<TELK_AKTYV_LIKUTIS> AktyvusLikutis { get; set; }
   public ICollection<Telkinys_Tyrimas> TyrimaiAssignments { get; set; }
   public ICollection<GavybosSklypas> GavybosSklypai { get; set; }
   public ICollection<TelkinioSluoksnis> Sluoksniai { get; set; }
   public ICollection<ZGRLGavybosObjektas> ZGRLGavybosObjektai { get; set; }
   public ICollection<GREZINIO_PRIKL_TELK> GreziniaiAssignments { get; set; }
 
-  public ICollection<GIS_ISTEKLIU_PLOTAI> IstekliuPlotai { get; set; }
 
   [Key][Column(name: "TELK_KODAS")]
   public int ID { get; set; } //TELK_KODAS->NUMBER(5,0)->No->->1->Unikalus, aut. gen. kodas, skirtas ry?iui su grafika.

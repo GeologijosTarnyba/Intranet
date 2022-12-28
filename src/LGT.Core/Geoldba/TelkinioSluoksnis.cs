@@ -5,9 +5,12 @@
 [Table(name: "APIB_GEOL_SL", Schema = "GEOLDBA")]
 public class TelkinioSluoksnis
 {
+
+  public ICollection<GIS_ISTEKLIU_PLOTAI> GIS_ISTEKLIU_PLOTAI { get; set; }
   public ICollection<TelkinioSluoksnioTyrimas> Tyrimai { get; set; }
   public ICollection<NER_GAV_KETV> NER_GAV_KETVs { get; set; }
   public ICollection<IstekliuPanaudojimas> IstekliuPanaudojimai { get; set; }
+  public ICollection<Isteklis> Istekliai { get; set; }
   [Key]
   [Column("AGS_SL_NR")] 
   public int ID { get; set; } //AGS_SL_NR->NUMBER(6,0)->No->->1->Unikalus, automatiškai generuojamas kodas.

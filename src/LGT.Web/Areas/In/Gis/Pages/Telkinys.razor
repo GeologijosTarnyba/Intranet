@@ -46,11 +46,11 @@
         <tr><td>Išteklių plotai</td>
           <td>
             <ExpList ParamIsExpanded="false" ParamIsExpandable="true"
-              ParamSource=@(self.SelectMany(item => item.IstekliuPlotai)
+              ParamSource=@(self.SelectMany(item => item.GIS_ISTEKLIU_PLOTAI)
                 .OrderBy(item => item.ID)
                 .Select(ist => new {
                   ID = ist.ID,
-                  KAT = ist.IPL_ISTK_KATEGORIJA
+                  KAT = ist.IstekliuKategorijaID
                 })
               )
             >
@@ -63,9 +63,15 @@
             </ExpList>
           </td>
         </tr>
+        <tr><td>Sluoksniai</td>
+          <td>
+            <LGT.Web.Areas.In.Gis.Shared.TelkinioSluoksni ParamTelkID=@this.ParamID />
+          </td>
+
+        </tr>
         <tr><td>Kasybos sklypai</td>
           <td>
-            <ExpList ParamText="Rodyti" ParamIsExpandable="true" ParamIsExpanded="true" 
+            <ExpList ParamText="Rodyti" ParamIsExpandable="true" ParamIsExpanded="false" 
               ParamSource=@(self
                 .Select(telk => new {
                   Objs = telk.ZGRLGavybosObjektai.Select(obj => new {

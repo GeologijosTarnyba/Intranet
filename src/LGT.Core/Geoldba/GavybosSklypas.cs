@@ -6,6 +6,8 @@ public class GavybosSklypas
   #region Views
   //public ICollection<Views.W_ZGR_MARKSEID_PLANAI> W_ZGR_MARKSEID_PLANAI { get; set; }
   #endregion
+  public ICollection<TELK_AKTYV_LIKUTIS> TelkAktyvusLikutis { get; set; }
+  public ICollection<GAVSKL_ISTEKLIAI> Istekliai { get; set; }
   public ICollection<ZGRLGavybosObjektas> ZGRLGavybosObjektai { get; set; }
   public ICollection<NER_GAV_KETV> NER_GAV_KETVs { get; set; }
 

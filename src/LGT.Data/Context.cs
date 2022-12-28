@@ -15,6 +15,7 @@ public class Context : DbContext
   public DbSet<Core.Geoldba.Grezinys> Greziniai { get; set; }
 
   public DbSet<Core.Geoldba.IstekliuRusis> IštekliųRusys { get; set; }
+  public DbSet<Core.Geoldba.Isteklis> Istekliai { get; set; }
   public DbSet<Core.Geoldba.GavybosSklypas> GavybosSklypai { get; set; }
   public DbSet<Core.Geoldba.Telkinys> Telkiniai { get; set; }
   public DbSet<Core.Geoldba.TelkinioSluoksnis> TelkinioSluoksniai { get; set; }
@@ -53,5 +54,17 @@ public class Context : DbContext
     // HasAlternateKey
     // Relations
     mb.Entity<Core.Geoldba.JuridinisAsmuo>().HasMany(item => item.Leidimai).WithOne(item => item.Kam_JuridinisAsmuo);
+
+    // Fake keys: // TODO: ???
+    mb.Entity<Core.Geoldba.GAVSKL_ISTEKLIAI>().HasKey(item => new { item.GavybosSklypasID, item.IstekliuRusisID, item.GSI_IST_DATA });
+
+    mb.Entity<Core.Geoldba.TELK_AKTYV_LIKUTIS>().HasKey(item => new
+    {
+      item.TelkinysID,
+      item.GavybosSklypasID,
+      item.IstekliuRusisID,
+      item.LIKA_LIK_METAI,
+      item.LIKA_FAKT_DATA // todo:remove row, kai ištaisys klaidą Simonas (jei ne klaida - pašalinti komentarą)
+    });
   }
 }

@@ -4,8 +4,6 @@
   private IQueryable<Core.Geoldba.GIS_ISTEKLIU_PLOTAI> self => this.db.IstekliuPlotai.Where(item => item.ID == this.ParamID);
 }
 @inject Data.Context db
-
-
 <ExpList
   ParamSource=@(self.Select(ist => new {
     ist.ID,
@@ -14,7 +12,7 @@
       Name = ist.Telkinys.Name,
     },
     TelkinioSluoksnis = new {
-      ID = ist.TelkinioSluoksnisID
+      ID = ist.GrafikosTipasID
     }
   }))
 >
@@ -35,5 +33,4 @@
       </tr>
     </table>
   </IfSome>
-
 </ExpList>

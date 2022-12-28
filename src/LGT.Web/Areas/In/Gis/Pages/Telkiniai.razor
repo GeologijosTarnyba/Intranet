@@ -20,7 +20,7 @@
     <ExpList ParamSource=@(db2.Telkiniai
       .Where(telk =>
         telk.Name.ToLower().Contains(searchString2) &&
-        telk.IstekliuPlotai.Any(item => this.chosenKeys.Contains(item.TelkinioSluoksnisID))
+        telk.GIS_ISTEKLIU_PLOTAI.Any(item => this.chosenKeys.Contains(item.GrafikosTipasID))
       )
       .OrderBy(item => item.Name).Select(item => new { item.ID, item.Name }))>
       <Wrapper Context="rows">
