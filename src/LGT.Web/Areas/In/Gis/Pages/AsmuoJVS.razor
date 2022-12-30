@@ -1,6 +1,6 @@
 ﻿@attribute [CustomAuthorize(GISEnum.AsmensDuomenys)]
 @page "/in/gis/jungtinesveiklossutartis/{ParamID:int}"
-@inject Data.Context db2
+@inject Data.GeolisContext db2
 @code {
   [Parameter] public int ParamID{ get; set; }
   private IQueryable<Core.Geoldba.JungtinesVeiklosSutartis> self => this.db2.JungtinesVeiklosSutartys.Where(item => item.ID == this.ParamID);

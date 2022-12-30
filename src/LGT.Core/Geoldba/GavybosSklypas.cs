@@ -10,6 +10,7 @@ public class GavybosSklypas
   public ICollection<GAVSKL_ISTEKLIAI> Istekliai { get; set; }
   public ICollection<ZGRLGavybosObjektas> ZGRLGavybosObjektai { get; set; }
   public ICollection<NER_GAV_KETV> NER_GAV_KETVs { get; set; }
+  public ICollection<NER_ISK_GAV> NER_ISK_GAVs { get; set; }
 
   [Key][Column(name: "GSKL_KODAS")] public int ID { get; set; } //GSKL_KODAS->NUMBER(6,0)->No->->1->Kasybos sklype esantis "geologinių" išteklių kiekis
   [Column(name: "GSKL_TELK_KODAS")] public int TelkinysID { get; set; } //GSKL_TELK_KODAS->NUMBER(5,0)->No->->2->Unikalus, aut. gen. kodas, skirtas ry?iui su grafika.

@@ -9,6 +9,7 @@ public class TelkinioSluoksnis
   public ICollection<GIS_ISTEKLIU_PLOTAI> GIS_ISTEKLIU_PLOTAI { get; set; }
   public ICollection<TelkinioSluoksnioTyrimas> Tyrimai { get; set; }
   public ICollection<NER_GAV_KETV> NER_GAV_KETVs { get; set; }
+  public ICollection<NER_ISK_GAV> NER_ISK_GAVs { get; set; }
   public ICollection<IstekliuPanaudojimas> IstekliuPanaudojimai { get; set; }
   public ICollection<Isteklis> Istekliai { get; set; }
   [Key]

@@ -2,6 +2,8 @@
 [Table(name: "NER_GAV_KETV", Schema = "GEOLDBA")]
 public class NER_GAV_KETV
 {
+  public NER_ISK_GAV? Apjungejas { get; set; }
+
   [Column("GAVK_GSKL_KODAS")] public int GavybosSklypasID { get; set; } //GAVK_GSKL_KODAS->NUMBER(6,0)->No->->1->
   public GavybosSklypas GavybosSklypas { get; set; }
   [Column("GAVK_AGS_SL_NR")] public int TelkinioSluoksnisID { get; set; } //GAVK_AGS_SL_NR->NUMBER(6,0)->No->->2->

@@ -1,6 +1,6 @@
 ﻿@attribute [CustomAuthorize(GISEnum.All)]
 @page "/in/gis/telk"
-@inject Data.Context db2
+@inject Data.GeolisContext db2
 @code {
   private string? searchString{ get; set; }
   private string? searchString2{ get; set; }

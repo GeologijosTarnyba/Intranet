@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 namespace LGT.Data;
-public class Context : DbContext
+public class GeolisContext : DbContext
 {
   //Views
   public DbSet<Core.Geoldba.Views.W_GSKL_LEID> W_GSKL_LEIDs { get; set; }
@@ -29,8 +29,8 @@ public class Context : DbContext
   //public DbSet<Inv.Inv> Invs { get; set; }
 
   #region Constructors
-  public Context() : base() { }
-  public Context(DbContextOptions options) : base(options)
+  public GeolisContext() : base() { }
+  public GeolisContext(DbContextOptions options) : base(options)
   {
   }
   #endregion
@@ -66,5 +66,12 @@ public class Context : DbContext
       item.LIKA_LIK_METAI,
       item.LIKA_FAKT_DATA // todo:remove row, kai ištaisys klaidą Simonas (jei ne klaida - pašalinti komentarą)
     });
+
+    mb.Entity<Core.Geoldba.NER_ISK_GAV>().HasKey(item => new {item.GavybosSklypasID, item.TelkinioSluoksnisID, item.Metai });
+
+    mb.Entity<Core.Geoldba.NER_GAV_KETV>().HasOne(item => item.Apjungejas).WithMany(item => item.Apjungtieji)
+      .HasPrincipalKey(item => new { item.Metai, item.GavybosSklypasID, item.TelkinioSluoksnisID })
+      .HasForeignKey(item => new { item.GAVK_METAI, item.GavybosSklypasID, item.TelkinioSluoksnisID })
+    ;
   }
 }

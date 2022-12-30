@@ -28,7 +28,7 @@ public class Program
 
     var geolisUser = (string?)null ?? Environment.GetEnvironmentVariable("Geoldba:Database:UserName") ?? throw new Exception("Unclear GeolisUserName [Geoldba:Database:UserName]");
     var geolisUserPassword = (string?)null ?? Environment.GetEnvironmentVariable("Geoldba:Database:Password") ?? throw new Exception("Unclear GeolisUserPassword [Geoldba:Database:Password]");
-    builder.Services.AddDbContext<Data.Context>(
+    builder.Services.AddDbContext<Data.GeolisContext>(
       optionBuilder => optionBuilder.UseOracle($"User Id={geolisUser};Password={geolisUserPassword};Data Source=geolis2:1521/geolis2")
     );
 

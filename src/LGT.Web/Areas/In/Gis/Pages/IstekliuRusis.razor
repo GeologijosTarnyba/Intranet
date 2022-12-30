@@ -1,5 +1,5 @@
 ﻿@page "/in/gis/istekliurusis/{ParamID}"
-@inject Data.Context db2
+@inject Data.GeolisContext db2
 @code {
   [Parameter] public string ParamID { get; set; }
   private IQueryable<Core.Geoldba.IstekliuRusis> self => this.db2.IštekliųRusys.Where(item => item.ID == this.ParamID);

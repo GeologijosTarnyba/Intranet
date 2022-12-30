@@ -5,7 +5,7 @@
   [Parameter] public int ParamID { get; set; }
   private IQueryable<LGT.Core.Geoldba.Leidimas> self => db.Leidimai.Where(item => item.ID == this.ParamID);
 }
-@inject Data.Context db
+@inject Data.GeolisContext db
 
 <ExpList
   ParamSource=@(self

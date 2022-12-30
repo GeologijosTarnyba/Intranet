@@ -1,4 +1,4 @@
-﻿@inject Data.Context db
+﻿@inject Data.GeolisContext db
 @code {
   [Parameter] public int ParamTelkID { get; set; }
 }
@@ -13,15 +13,34 @@
           sl.ID,
           sl.TelkinysIndex,
           IR = (string?)sl.AGS_IST_TRUMP,
-          Ketvs = sl.NER_GAV_KETVs.Select(ketv => new {
+          Ketvs = sl.NER_GAV_KETVs
+          .OrderBy(item => item.GAVK_METAI).ThenBy(item=> item.GAVK_KETV)
+          .Select(ketv => new {
             Metai = ketv.GAVK_METAI,
             Ketv = ketv.GAVK_KETV,
+            IR = (string?)ketv.IstekliuRusisID,
             Deadline = new DateTime(ketv.GAVK_METAI, 3*ketv.GAVK_KETV, 1).AddMonths(1).AddSeconds(-1),
-            Skirtumas = ketv.GAVK_LIKUTIS_PR - ketv.GAVK_LIKUTIS_PB
+            Skirtumas = ketv.GAVK_LIKUTIS_PR - ketv.GAVK_LIKUTIS_PB,
+            Gavyba = ketv.GAVK_KIEKIS,
+            Nuostolis = ketv.GAVK_NUOSTOLIS,
+            Pasikeitimas = ketv.GAVK_UZ_KONT,
+            GavybosSklypas = new {ID = ketv.GavybosSklypasID }
+
+          }),
+          Metines = sl.NER_ISK_GAVs.Select(met => new {
+            Metai = met.Metai,
+            IR = (string?)met.IstekliuRusisID,
+            Deadline = new DateTime(met.Metai, 12, 31),
+            Skirtumas = met.GAV_KIEKIS - met.GAV_NUOSTOLIS + met.GAV_UZ_KONT,
+            Gavyba = met.GAV_KIEKIS,
+            Nuostolis = met.GAV_NUOSTOLIS,
+         Pasikeitimas = met.GAV_UZ_KONT,
+            Text = $"{met.GAV_KIEKIS} {met.GAV_NUOSTOLIS} {met.GAV_UZ_KONT}",
           }),
           Istekliai = sl.Istekliai
             .OrderBy(item => item.IST_GALIOJA_NUO)
             .Select(ist => new {
+              ist.Comment,
               ist.ID,
               ist.IST_ISTK_KATEGORIJA,
               ist.IST_GALIOJA_NUO,
@@ -43,8 +62,11 @@
         <th>Nuo</th>
         <th>Iki</th>
         <th>Kiekis</th>
-        <th>Skirtumas</th>
+        <td>Gavyba</td>
+        <td>Nuostolis</td>
+        <td>Pasikeitimas</td>
         <th>Likutis</th>
+        <th></th>
       </tr>
       @foreach (var sl in telk.Sluoksniai)
       {
@@ -52,19 +74,39 @@
         @foreach (var ist in sl.Istekliai)
         {
           var ketvs = sl.Ketvs.Where(ketv => ketv.Deadline > ist.IST_GALIOJA_NUO && (ist.IST_GALIOJA_IKI == null || ketv.Deadline < ist.IST_GALIOJA_IKI.Value));
-          var sum = ketvs.Sum(ketv => ketv.Skirtumas);
+          var sumKetv = ketvs.Sum(ketv => ketv.Skirtumas);
+          var mets = sl.Metines.Where(met => met.Deadline > ist.IST_GALIOJA_NUO && (ist.IST_GALIOJA_IKI == null || met.Deadline < ist.IST_GALIOJA_IKI.Value));
+          var sumMet = mets.Sum(met => met.Skirtumas);
+          var naujiKetv = ketvs.Where(ketv => !mets.Any(item => item.Metai == ketv.Metai)); // Ketvirčiai nesutraukti į metines statistikas
           <tr>
             @if(ist == first)
             {
-              <td rowspan="@(sl.Istekliai.Count())">@sl.TelkinysIndex</td>
+              var count = sl.Istekliai.Count(); 
+              <td rowspan="@count">
+                @sl.TelkinysIndex
+              </td>
             }
             <td>@sl.IR</td>
             <td>@ist.IST_ISTK_KATEGORIJA</td>
             <td>@ist.IST_GALIOJA_NUO.LT(false)</td>
             <td>@ist.IST_GALIOJA_IKI.LT(false)</td>
             <td>@ist.Kiekis</td>
-            <td>@sum</td>
-            <td>@(ist.Kiekis-sum)</td>
+            @if(!mets.Any() && !ketvs.Any())
+            {
+              <td colspan="4"></td>
+            } else
+            {
+              var isgauta = mets.Sum(item => item.Gavyba) + naujiKetv.Sum(item => item.Gavyba);
+              var nuostolis = mets.Sum(item => item.Nuostolis) + naujiKetv.Sum(item => item.Nuostolis);
+              var pasikeitimas = mets.Sum(item => item.Pasikeitimas) + naujiKetv.Sum(item => item.Pasikeitimas);
+              <td>@(isgauta)</td>
+              <td>@(nuostolis)</td>
+              <td>@(pasikeitimas)</td>
+              <td>
+                @(ist.Kiekis - isgauta + nuostolis - pasikeitimas)
+              </td>
+            }
+            <td>@ist.Comment</td>
           </tr>
         }
       }

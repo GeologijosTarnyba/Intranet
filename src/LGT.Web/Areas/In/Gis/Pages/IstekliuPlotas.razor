@@ -3,7 +3,7 @@
   [Parameter] public int ParamID { get; set; }
   private IQueryable<Core.Geoldba.GIS_ISTEKLIU_PLOTAI> self => this.db.IstekliuPlotai.Where(item => item.ID == this.ParamID);
 }
-@inject Data.Context db
+@inject Data.GeolisContext db
 <ExpList
   ParamSource=@(self.Select(ist => new {
     ist.ID,

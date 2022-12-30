@@ -4,7 +4,7 @@
   [Parameter] public int ParamID { get; set; }
   private IQueryable<Core.Geoldba.Telkinys> self => db2.Telkiniai.Where(item => item.ID == ParamID);
 }
-@inject Data.Context db2
+@inject Data.GeolisContext db2
 <ExpList ParamSource=@(self
     .Select(telk => new { 
       telk.ID,

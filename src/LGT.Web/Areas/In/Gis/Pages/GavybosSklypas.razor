@@ -1,6 +1,6 @@
 ﻿@attribute [CustomAuthorize(GISEnum.Telkiniai)]
 @page "/in/gis/gavybossklypas/{ParamID:int}"
-@inject Data.Context db2
+@inject Data.GeolisContext db2
 @code {
   [Parameter] public int ParamID{ get; set; }
   private IQueryable<Core.Geoldba.GavybosSklypas> self => db2.GavybosSklypai.Where(item => item.ID == ParamID);

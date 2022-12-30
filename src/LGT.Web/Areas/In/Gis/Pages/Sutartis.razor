@@ -1,6 +1,6 @@
 ﻿@attribute [CustomAuthorize(GISEnum.Leidimai)]
 @page "/in/gis/sutartis/{ParamID:int}"
-@inject Data.Context db2
+@inject Data.GeolisContext db2
 @code {
   [Parameter] public int ParamID{ get; set; }
   private IQueryable<Core.Geoldba.Sutartis> self => this.db2.Sutartys.Where(item => item.ID == this.ParamID);

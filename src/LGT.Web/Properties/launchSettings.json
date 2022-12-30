@@ -11,7 +11,7 @@
         "Intranet:Database:Password": "g5Eg2IsTCm7fndbu"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7012;http://localhost:5012"
+      "applicationUrl": "https://localhost:443;http://localhost:80"
     },
     "IIS Express": {
       "commandName": "IISExpress",

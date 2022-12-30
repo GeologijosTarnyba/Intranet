@@ -4,7 +4,7 @@
   [Parameter]
   public bool? ParamIsExpanded{ get; set; }
 }
-@inject Data.Context db
+@inject Data.GeolisContext db
 
 
 <ExpList ParamText="Rodyti" ParamIsExpandable="@this.ParamIsExpandable" ParamIsExpanded="@this.ParamIsExpanded"

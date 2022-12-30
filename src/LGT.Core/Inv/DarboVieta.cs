@@ -6,7 +6,7 @@ public class DarboVieta
   [Column("DV_KAB")] public string? Kabinetas { get; set; } //DV_KAB->VARCHAR2(9 BYTE)->Yes->->1->
   // // TODO: Map
   //[Column("DV_TV")]
-  //public string? DV_TV { get; set; } //DV_TV->VARCHAR2(7 BYTE)->Yes->->2->
+  //public string? DV_TV { get; set; }
   [Column("DV_PASTABOS")] public string? Comment { get; set; } //DV_PASTABOS->VARCHAR2(100 BYTE)->Yes->->3->
   [Column("DV_SKY_SUTR")] public string? SkyriusID { get; set; } //DV_SKY_SUTR->VARCHAR2(5 BYTE)->Yes->->4->
   public Skyrius? Skyrius { get; set; }

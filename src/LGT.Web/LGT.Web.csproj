@@ -8,7 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Shared\SwitchCase.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="Shared\SwitchCase.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,5 +39,13 @@
     <Folder Include="wwwroot\files\a\" />
     <Folder Include="wwwroot\files\p\" />
     <Folder Include="wwwroot\p\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\SwitchCase.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Shared\SwitchCase.razor" />
   </ItemGroup>
 </Project>

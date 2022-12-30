@@ -4,7 +4,7 @@
   [Parameter] public string ParamJarKodas { get; set; }
 }
 
-@inject Data.Context db
+@inject Data.GeolisContext db
 <ExpList
   ParamSource=@(db.JuridiniaiAsmenys
     .Where(item => item.JARKodas == ParamJarKodas)
