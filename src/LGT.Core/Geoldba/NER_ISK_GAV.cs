@@ -29,6 +29,9 @@ public class NER_ISK_GAV
   //[Column("GAV_KOEF_TM")] public decimal? GAV_KOEF_TM { get; set; } 
   //[Column("GAV_KOEF_TT_TM")] public decimal? GAV_KOEF_TT_TM { get; set; } 
   [Column("GAV_DOK_DATA")] public DateTime? GAV_DOK_DATA { get; set; }  // dokumentų (markšeiderinių planų) pateikimo data. Jei metuose buvo keli matavimai - paskutinio.
-  //[Column("GAV_NUOST_2015")] public decimal? GAV_NUOST_2015 { get; set; } 
+  /// <summary>
+  /// GAVK_IST_PASIKEITIMAS laiko sumo ketvirtinėse
+  /// </summary>
+  [Column("GAV_NUOST_2015")] public decimal? GAV_NUOST_2015 { get; set; } 
   [Column("GAV_PASTABA")] public string? Comment { get; set; }
 }

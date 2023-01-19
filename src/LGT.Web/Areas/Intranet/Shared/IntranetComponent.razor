@@ -5,6 +5,8 @@
 	[Parameter] public RenderFragment ChildContent{ get; set; }
 	[Parameter] public RenderFragment? BelowTitleFragment{ get; set; }
 	[Parameter] public RenderFragment? BesideTitleFragment{ get; set; }
+	private DateTime now = DateTime.Now;
+
 }
 
 @if(this.ParamID != null || this.ParamKey != null){
@@ -27,7 +29,8 @@
 							link.Url,
 							link.IsLocked,
 							link.IsTargetBlank,
-							link.Comment
+							link.Comment,
+							IsNew = (link.NewUntil != null && link.NewUntil > now)
 						})
 					})
 				})
@@ -77,6 +80,9 @@
 												@if (link.IsLocked)
 												{
 													<span class="p-1 oi oi-lock-locked" aria-hidden="true"></span>
+												}
+												@if(link.IsNew){
+													<span style="background-color: #00ff90; padding: 2px; margin: 3px; border-radius: 5px">nauja!</span>
 												}
 											</td>
 												@if(link.Comment != null){

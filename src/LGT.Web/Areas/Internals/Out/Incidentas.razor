@@ -1,0 +1,142 @@
+﻿@page "/incidentai/{ParamID:int}"
+@code
+{
+  [Parameter] public int ParamID { get; set; }
+}
+<h3>Incidentas</h3>
+@inject LGT.Internals.Database db
+<ExpList ParamSource=@(
+  db.Set<LGT.Internals.Models.Incidents.Incidentas>()
+    .Where(inci => inci.ID == this.ParamID)
+    .Select(inci => new {
+      inci.ID,
+      inci.CreatedAt, inci.Since, inci.Until,
+      inci.Desc,
+      Kreipiniai = inci.Kreipiniai
+        .Select(kr => new {
+          kr.UName,
+          kr.Link,
+          kr.SolutionText,
+          Darboviete = new {
+            ID = kr.DarbovieteID, 
+            Name = kr.Darboviete.Name
+          },
+          Sprendimai = kr.Sprendimai
+          .OrderBy(item => item.Since).ThenBy(item => item.CreatedAt)
+          .Select(spr => new {
+            spr.ID,
+            Darbuotojas = new { 
+              ID = spr.Darbuotojas.ID,
+              spr.Darbuotojas.Name,
+              Asmuo = spr.Darbuotojas.AsmuoID == null ? null : new {
+                ID = spr.Darbuotojas.AsmuoID,
+                Name = spr.Darbuotojas.Asmuo.FullName
+              }
+            },
+            spr.Since,
+            spr.Until,
+            spr.SolutionMarkdown
+          })
+        })
+      ,
+      Skundai = inci.Skundai.Select(sk => new {
+        sk.ID, sk.At, sk.Markdown,
+        Pranese = new {
+          Pareigybe = sk.DarbuotojasID == null ? null : new {
+            Darboviete = new {
+              ID = sk.Darbuotojas.DarbovieteID, 
+              Name = sk.Darbuotojas.Darboviete.Name
+            },
+            Asmuo = sk.Darbuotojas.AsmuoID == null ? null : new {
+              ID = sk.Darbuotojas.AsmuoID,
+              FullName = sk.Darbuotojas.Asmuo.FullName,
+            },
+            Name = sk.Darbuotojas.Name
+          },
+          Asmuo = sk.AsmuoID == null ? null : new {
+            ID = sk.AsmuoID,
+            FullName = sk.Asmuo.FullName
+          }
+        }
+      })
+    })
+)>
+  <IfSome Context="inci">
+    <table class="bord">
+      <tr><td>Sukurta</td><td>@inci.CreatedAt.LT(true)</td></tr>
+      <tr><td>Nuo</td><td>@inci.Since.LT(true)</td></tr>
+      <tr><td>Iki</td><td>@inci.Until.LT(true)</td></tr>
+      <tr>
+        <td>Aprašymas</td>
+        <td>@inci.Desc</td>
+      </tr>
+      <tr>
+        <td>Pranešimai</td>
+        <td>
+          @if(inci.Skundai.Any()){
+            <table>
+              @foreach (var a in inci.Skundai.OrderByDescending(item => item.At))
+              {
+                <tr><td>@a.At.LT(true)</td></tr>
+                <tr>
+                  <td>
+                    @if(a.Pranese.Pareigybe != null){
+                      <a href="/darboviete/@a.Pranese.Pareigybe.Darboviete.ID">@a.Pranese?.Pareigybe.Darboviete.Name</a>
+                      <span style="margin: 0px 3px;">@a.Pranese?.Pareigybe.Name</span>
+                      @if(a.Pranese.Pareigybe.Asmuo != null){
+                        <a href="/asmuo/@a.Pranese.Pareigybe.Asmuo.ID">@a.Pranese.Pareigybe.Asmuo?.FullName</a>
+                      }
+                    } else {
+                      <text></text>@a.Pranese.Asmuo?.FullName
+                    }
+                  </td>
+                </tr>
+                <tr><td><MarkdownComponent Markdown=@a.Markdown /></td></tr>
+              }
+            </table>
+          }
+        </td>
+      </tr>
+      <tr>
+        <td>Kreipiniai</td>
+        <td>
+          @if(inci.Kreipiniai.Any()){
+            <table class="bord">
+              @foreach(var kr in inci.Kreipiniai){
+
+                @if(kr.UName != null || kr.Link != null){
+                  <tr>
+                    <td>
+                      <a href="/darboviete/@kr.Darboviete.ID">@kr.Darboviete.Name</a>
+                      @{ string krname = kr.UName ?? "no-name"; }
+                      @if (kr.Link == null)
+                      {
+                        <text></text>@krname
+                      } else {
+                        <a style="margin:0 3px" href="@kr.Link">@krname</a>
+                      }
+                    </td>
+                  </tr>
+                }
+                <tr>
+                  <td>
+                    <MarkdownComponent Markdown=@kr.SolutionText />
+                    @if (kr.Sprendimai.Any()){
+                      <ul>
+                        @foreach(var spr in kr.Sprendimai){
+                          <li>
+                            @(spr.Darbuotojas.Asmuo.Name ?? spr.Darbuotojas.Name ?? $"id: {spr.Darbuotojas.ID}"): <MarkdownComponent Markdown=@spr.SolutionMarkdown />
+                          </li>
+                        }
+                      </ul>
+                    }
+                  </td>
+                </tr>
+              }
+            </table>
+          }
+        </td>
+      </tr>
+    </table>
+  </IfSome>
+</ExpList>

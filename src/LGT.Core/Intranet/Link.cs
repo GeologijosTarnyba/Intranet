@@ -16,6 +16,7 @@ public class Link : IIDed<int>
   [Comment("Prie uzrakintu nuorodu bus rodoma spynele.")]
   public bool IsLocked { get; set; } = false;
   public bool IsTargetBlank { get; set; }
+  public DateTime? NewUntil { get; set; }
   #region Constructors
   public Link() : base() { }
   public Link(Group group, string name, string url) : this()

@@ -2,9 +2,9 @@
 
 #nullable disable
 
-namespace LGT.Web.Migrations
+namespace LGT.Web.Migrations.DatabaseMigrations
 {
-    public partial class removedMarkdownfieldfromGroups : Migration
+    public partial class DarbuotojasASm : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

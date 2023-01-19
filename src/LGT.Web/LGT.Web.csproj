@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-LGT.Web-03B6285B-4089-4C64-9E56-6032C90192C7</UserSecretsId>
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +25,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="6.0.10" />
     <PackageReference Include="Oracle.EntityFrameworkCore" Version="6.21.61" />
@@ -32,9 +34,11 @@
   <ItemGroup>
     <ProjectReference Include="..\LGT.Core\LGT.Core.csproj" />
     <ProjectReference Include="..\LGT.Data\LGT.Data.csproj" />
+    <ProjectReference Include="..\LGT.Internals\LGT.Internals.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Internals\Shared\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="wwwroot\files\a\" />
     <Folder Include="wwwroot\files\p\" />

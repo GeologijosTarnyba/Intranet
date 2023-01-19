@@ -15,6 +15,7 @@ public class IntranetContext : IdentityDbContext<CoreUser, IdentityRole<int>, in
   public IntranetContext(DbContextOptions<IntranetContext> options)
       : base(options)
   {
+
   }
   #endregion
   protected override void OnModelCreating(ModelBuilder mb)

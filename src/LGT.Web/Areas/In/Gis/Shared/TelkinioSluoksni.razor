@@ -16,26 +16,26 @@
           Ketvs = sl.NER_GAV_KETVs
           .OrderBy(item => item.GAVK_METAI).ThenBy(item=> item.GAVK_KETV)
           .Select(ketv => new {
-            Metai = ketv.GAVK_METAI,
-            Ketv = ketv.GAVK_KETV,
+            Metai = ketv.GAVK_METAI, Ketv = ketv.GAVK_KETV,
             IR = (string?)ketv.IstekliuRusisID,
             Deadline = new DateTime(ketv.GAVK_METAI, 3*ketv.GAVK_KETV, 1).AddMonths(1).AddSeconds(-1),
-            Skirtumas = ketv.GAVK_LIKUTIS_PR - ketv.GAVK_LIKUTIS_PB,
+
             Gavyba = ketv.GAVK_KIEKIS,
             Nuostolis = ketv.GAVK_NUOSTOLIS,
-            Pasikeitimas = ketv.GAVK_UZ_KONT,
-            GavybosSklypas = new {ID = ketv.GavybosSklypasID }
-
+            UZ_KONT = ketv.GAVK_UZ_KONT,
+            IST_PASIKEITIMAS = ketv.GAVK_IST_PASIKEITIMAS,
+            PR = ketv.GAVK_LIKUTIS_PR,
+            PB = ketv.GAVK_LIKUTIS_PB
           }),
           Metines = sl.NER_ISK_GAVs.Select(met => new {
             Metai = met.Metai,
             IR = (string?)met.IstekliuRusisID,
             Deadline = new DateTime(met.Metai, 12, 31),
-            Skirtumas = met.GAV_KIEKIS - met.GAV_NUOSTOLIS + met.GAV_UZ_KONT,
+
             Gavyba = met.GAV_KIEKIS,
             Nuostolis = met.GAV_NUOSTOLIS,
-         Pasikeitimas = met.GAV_UZ_KONT,
-            Text = $"{met.GAV_KIEKIS} {met.GAV_NUOSTOLIS} {met.GAV_UZ_KONT}",
+            UZ_KONT = met.GAV_UZ_KONT,
+            IST_PASIKEITIMAS = met.GAV_NUOST_2015
           }),
           Istekliai = sl.Istekliai
             .OrderBy(item => item.IST_GALIOJA_NUO)
@@ -62,22 +62,18 @@
         <th>Nuo</th>
         <th>Iki</th>
         <th>Kiekis</th>
-        <td>Gavyba</td>
-        <td>Nuostolis</td>
-        <td>Pasikeitimas</td>
-        <th>Likutis</th>
-        <th></th>
+        <td>ketv/met</td>
       </tr>
       @foreach (var sl in telk.Sluoksniai)
       {
         var first = sl.Istekliai.First();
         @foreach (var ist in sl.Istekliai)
         {
-          var ketvs = sl.Ketvs.Where(ketv => ketv.Deadline > ist.IST_GALIOJA_NUO && (ist.IST_GALIOJA_IKI == null || ketv.Deadline < ist.IST_GALIOJA_IKI.Value));
-          var sumKetv = ketvs.Sum(ketv => ketv.Skirtumas);
-          var mets = sl.Metines.Where(met => met.Deadline > ist.IST_GALIOJA_NUO && (ist.IST_GALIOJA_IKI == null || met.Deadline < ist.IST_GALIOJA_IKI.Value));
-          var sumMet = mets.Sum(met => met.Skirtumas);
-          var naujiKetv = ketvs.Where(ketv => !mets.Any(item => item.Metai == ketv.Metai)); // Ketvirčiai nesutraukti į metines statistikas
+          var ketvs = sl.Ketvs.Where(ketv => ketv.Deadline > ist.IST_GALIOJA_NUO && (ist.IST_GALIOJA_IKI == null || ketv.Deadline < ist.IST_GALIOJA_IKI.Value)).OrderBy(item => item.Metai).ThenBy(item => item.Ketv);
+          var mets = sl.Metines.Where(met => met.Deadline > ist.IST_GALIOJA_NUO && (ist.IST_GALIOJA_IKI == null || met.Deadline < ist.IST_GALIOJA_IKI.Value)).OrderBy(item => item.Metai);
+          var naujiKetv = ketvs
+          //.Where(ketv => !mets.Any(item => item.Metai == ketv.Metai))
+          ; // Ketvirčiai nesutraukti į metines statistikas
           <tr>
             @if(ist == first)
             {
@@ -96,15 +92,43 @@
               <td colspan="4"></td>
             } else
             {
-              var isgauta = mets.Sum(item => item.Gavyba) + naujiKetv.Sum(item => item.Gavyba);
-              var nuostolis = mets.Sum(item => item.Nuostolis) + naujiKetv.Sum(item => item.Nuostolis);
-              var pasikeitimas = mets.Sum(item => item.Pasikeitimas) + naujiKetv.Sum(item => item.Pasikeitimas);
-              <td>@(isgauta)</td>
-              <td>@(nuostolis)</td>
-              <td>@(pasikeitimas)</td>
               <td>
-                @(ist.Kiekis - isgauta + nuostolis - pasikeitimas)
+                <table class="bord w-100">
+                  <tr>
+                    <td>At</td>
+                    <td>start</td>
+                    <td>Gavyba</td>
+                    <td>Nuostlis</td>
+                    <td>Pasikeitimas</td>
+                    <td>UzKont</td>
+                    <td>end</td>
+                  </tr>
+                  @foreach(var met in mets){
+                    <tr>
+                      <td>@(met.Metai)</td>
+                      <td></td>
+                      <td>@(met.Gavyba)</td>
+                      <td>@(met.Nuostolis)</td>
+                      <td>@(met.IST_PASIKEITIMAS)</td>
+                      <td>@(met.UZ_KONT)</td>
+                      <td></td>
+                    </tr>
+                  }
+                  @foreach (var ketv in naujiKetv)
+                  {
+                    <tr>
+                      <td>@(ketv.Metai)Q@(ketv.Ketv)</td>
+                      <td>@(ketv.PR)</td>
+                      <td>@(ketv.Gavyba)</td>
+                      <td>@(ketv.Nuostolis)</td>
+                      <td>@(ketv.IST_PASIKEITIMAS)</td>
+                      <td>@(ketv.UZ_KONT)</td>
+                      <td>@(ketv.PB)</td>
+                    </tr>
+                  }
+                </table>
               </td>
+            
             }
             <td>@ist.Comment</td>
           </tr>
@@ -113,3 +137,7 @@
     </table>
   </IfSome>
 </ExpList>
+
+@code {
+  
+}

@@ -1,0 +1,172 @@
+﻿@page "/in/internals/forma"
+@page "/incidentai"
+@layout LayoutA4Landscape
+@inject LGT.Internals.Database db
+@code {
+  private DateTime pildymoPradzia { get; set; } = new DateTime(2022, 12, 27);
+  private DateTime pildymoPabaiga { get; set; }
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    var now = DateTime.Now;
+    var year = now.Year;
+    var month = now.Month;
+    pildymoPabaiga = new DateTime(year, month, DateTime.DaysInMonth(year, month), 23, 59, 59);
+  }
+
+  private int? val { get; set; }
+  private bool ShowOngoing { get; set; } = true;
+  private bool ShowLinks { get; set; } = true;
+  private bool ShowPlaniniai { get; set; } = true;
+}
+@{
+  int j = 0;
+}
+<div class="docx">
+  <p style='margin:0;font-size:15px;font-family:"Times New Roman";' class="text-center">
+    <strong>
+      <span style='font-size:13px;font-family:"Times New Roman";'>
+        Lietuvos geologijos tarnybos
+      </span>
+    </strong>
+  </p>
+  <p style='margin:0cm;font-size:15px;font-family:"Arial",sans-serif;margin-bottom:12.0pt;text-align:center;'>
+    <strong style='font-size:13px;font-family:"Times New Roman";'>Elektroninės informacijos saugos incidentų</strong>
+    <strong style='font-size:13px;font-family:"Times New Roman";'>REGISTRAVIMO ŽURNALAS</strong>
+  </p>
+  <p>
+    <span style='font-size:13px;font-family:"Times New Roman";'>
+      Periodas: 
+      <span class="only-print">
+      nuo @pildymoPradzia.ToString("yyyy-MM-dd")
+      iki @pildymoPabaiga.ToString("yyyy-MM-dd")
+      </span>
+      <span class="no-print">
+        <input type="date" @bind-value=@pildymoPradzia format="yyyy-MM-dd" />
+        <input type="date" @bind-value=@pildymoPabaiga format="yyyy-MM-dd" />
+        <label>
+          <input type="checkbox" @bind-value=@this.ShowOngoing checked=@this.ShowOngoing/>
+          Rodyti vykstančius
+        </label>
+        <label>
+          <input type="checkbox" @bind-value=@this.ShowLinks checked=@this.ShowLinks/>
+          Rodyti nuorodas
+        </label>
+        <label>
+          <input type="checkbox" @bind-value=@this.ShowPlaniniai checked=@this.ShowPlaniniai/>
+          Rodyti užregistruotus prieš įvykstant
+        </label>
+        <button onclick="window.print()">Spausdinti</button>
+      </span>
+    </span>
+  </p>
+  <table class="bord w-100 docx-table text-center">
+    <tr>
+      <th rowspan="2" style="width: 36px">Eil. Nr.</th>
+      <th colspan="8">Elektroninės informacijos saugos incidentas</th>
+    </tr>
+    <tr>
+      <th colspan="2" style="width: 200px">Tarnybos informacinio ištekliaus pavadinimas</th>
+      <th style="width: 0px;">Požymio kodas</th>
+      <th>Įvykio aprašymas</th>
+      <th style="width:60px;">Pradžia</th>
+      <th style="width:60px;">Pabaiga</th>
+      <th>Pašalino</th>
+      <th>Sutrikimo priežastis</th>
+    </tr>
+    <LGT.Web.Shared.ExpList 
+  ParamSource=@(db.Incidentai
+  .Where(item => 
+    item.IsPublic != false 
+    && (item.Since >= pildymoPradzia)
+    && (item.Until == null || item.Until < pildymoPabaiga)
+    && (ShowOngoing || item.Until != null)
+  )
+  .OrderByDescending(item => item.Since)
+  .Select(inc => new {
+    inc.ID,
+    InformacinisIsteklius = new { ID = inc.InformacinisIstekliusID, inc.InformacinisIsteklius.Name, 
+
+      Priklauso = new { ID = inc.InformacinisIsteklius.DarbovieteID, inc.InformacinisIsteklius.Darboviete.Name }
+    },
+    Pozymis = new { ID = inc.PozymisID },
+    Aprasymas = inc.Desc,
+    Isankstinis = inc.Since > inc.CreatedAt,
+    inc.Since,
+    inc.Until,
+    Krepiniai = inc.Kreipiniai
+    .OrderByDescending(item => item.Since)
+    .ThenBy(item => item.CreatedAt)
+    .Select(item => new {
+      Imone = item.DarbovieteID == null ? null : new {
+        ID = item.DarbovieteID,
+        Name = item.Darboviete.Name
+      },
+      Nuoroda = item.Link,
+      Name = item.UName
+    }),
+    inc.Reason
+  })
+  .Where(item => ShowPlaniniai || !item.Isankstinis)
+  )
+>
+  <IfSome Context=inc>
+    <tr>
+      <td>@(++j)</td>
+      @if(inc.InformacinisIsteklius.Priklauso.ID == "lgt"){
+        <td colspan="2">
+          @inc.InformacinisIsteklius.Name
+        </td>
+      }
+      else {
+        <td>
+          @inc.InformacinisIsteklius.Priklauso.Name
+        </td>
+        <td>
+          @inc.InformacinisIsteklius.Name
+        </td>
+      }
+      <td>@inc.Pozymis.ID</td>
+      <td>
+        @{ string aprasymas = inc.Aprasymas; }
+        @if(this.ShowLinks){
+          <a href="/incidentai/@inc.ID">@aprasymas</a>
+        } else {
+          <text></text>
+          @aprasymas
+        }
+      </td>
+      <td>@inc.Since.LT(true)</td>
+      <td>@inc.Until.LT(true)</td>
+      <td style="text-align:left">
+        @if (inc.Krepiniai.Any())
+        {
+          @foreach (var kreip in inc.Krepiniai)
+          {
+            @if (this.ShowLinks && kreip.Nuoroda != null ){
+              <a href="@kreip.Nuoroda" target="_blank">
+                @kreip.Imone.Name
+              </a>
+            } else {
+              <u>@kreip.Imone.Name</u>
+            }
+            <br/>
+          }
+        }
+      </td>
+      <td>@inc.Reason</td>
+    </tr>
+  </IfSome>
+</LGT.Web.Shared.ExpList>
+  </table>
+  <p style="font-size:10px;font-family:'Times New Roman'';" class="p-2">
+    Elektroninės informacijos saugos incidento situacijos požymiai:<br/>
+    <ExpList ParamSource=@(
+      db.Set<LGT.Internals.Models.Incidents.IncidentoPozymis>()
+    )>
+      <IfSome Context="poz">
+        @(poz.ID). @(poz.Name);
+      </IfSome>
+    </ExpList>
+  </p>
+</div>

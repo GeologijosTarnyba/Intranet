@@ -5,15 +5,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Oracle.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
 namespace LGT.Web.Migrations
 {
     [DbContext(typeof(IntranetContext))]
-    [Migration("20221104095058_Initial commit")]
-    partial class Initialcommit
+    [Migration("20230112111018_Added Link.NewUntil column")]
+    partial class AddedLinkNewUntilcolumn
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -22,28 +21,26 @@ namespace LGT.Web.Migrations
                 .HasAnnotation("ProductVersion", "6.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 30);
 
-            OracleModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
             modelBuilder.Entity("LGT.Core.Intranet.Article", b =>
                 {
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("RAW(16)");
+                        .HasColumnType("TEXT");
 
                     b.Property<long>("Accessibility")
-                        .HasColumnType("NUMBER(19)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("BodyMarkdown")
-                        .HasColumnType("NVARCHAR2(2000)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("InternalName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("NVARCHAR2(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("NVARCHAR2(255)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("ID");
 
@@ -54,18 +51,13 @@ namespace LGT.Web.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("NUMBER(10)");
-
-                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
-
-                    b.Property<int>("GroupsCount")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Index")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("PageID")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
 
@@ -78,29 +70,24 @@ namespace LGT.Web.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("NUMBER(10)");
-
-                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("ColumnID")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Index")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsPublic")
-                        .HasColumnType("NUMBER(1)");
-
-                    b.Property<int>("LinksCount")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Markdown")
-                        .HasColumnType("NVARCHAR2(2000)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("NVARCHAR2(255)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("ID");
 
@@ -113,16 +100,16 @@ namespace LGT.Web.Migrations
                 {
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("RAW(16)");
+                        .HasColumnType("TEXT");
 
                     b.Property<Guid>("ArticleID")
-                        .HasColumnType("RAW(16)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("GroupID")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Index")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
 
@@ -137,39 +124,40 @@ namespace LGT.Web.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("NUMBER(10)");
-
-                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Comment")
                         .HasMaxLength(255)
-                        .HasColumnType("NVARCHAR2(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("GroupID")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Index")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsLocked")
-                        .HasColumnType("NUMBER(1)")
+                        .HasColumnType("INTEGER")
                         .HasComment("Prie uzrakintu nuorodu bus rodoma spynele.");
 
                     b.Property<bool>("IsPublic")
-                        .HasColumnType("NUMBER(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsTargetBlank")
-                        .HasColumnType("NUMBER(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("NVARCHAR2(255)");
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("NewUntil")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasMaxLength(1024)
-                        .HasColumnType("NVARCHAR2(1024)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("ID");
 
@@ -182,32 +170,30 @@ namespace LGT.Web.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("NUMBER(10)");
-
-                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                        .HasColumnType("INTEGER");
 
                     b.Property<Guid?>("ArticleID")
-                        .HasColumnType("RAW(16)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Header")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("NVARCHAR2(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Index")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsPublic")
-                        .HasColumnType("NUMBER(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("ShowSince")
-                        .HasColumnType("TIMESTAMP(7)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Since")
-                        .HasColumnType("TIMESTAMP(7)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Until")
-                        .HasColumnType("TIMESTAMP(7)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("ID");
 
@@ -220,32 +206,27 @@ namespace LGT.Web.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("NUMBER(10)");
-
-                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
-
-                    b.Property<int>("ColumnsCount")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsImportant")
-                        .HasColumnType("NUMBER(1)")
+                        .HasColumnType("INTEGER")
                         .HasComment("Svarbus puslapiai bus matomi intraneto apacios viduryje");
 
                     b.Property<bool>("IsPublic")
-                        .HasColumnType("NUMBER(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Key")
                         .HasMaxLength(16)
-                        .HasColumnType("NVARCHAR2(16)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Nam")
                         .HasMaxLength(32)
-                        .HasColumnType("NVARCHAR2(32)")
+                        .HasColumnType("TEXT")
                         .HasComment("Trumpas pavadinimas naudojamas svarbiu puslapiu skiltyje");
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("NVARCHAR2(255)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("ID");
 
@@ -256,56 +237,54 @@ namespace LGT.Web.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("NUMBER(10)");
-
-                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("NVARCHAR2(2000)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("NVARCHAR2(256)");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("NUMBER(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("NUMBER(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("TIMESTAMP(7) WITH TIME ZONE");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("NVARCHAR2(256)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("NVARCHAR2(256)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("NVARCHAR2(2000)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("NVARCHAR2(2000)");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("NUMBER(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("NVARCHAR2(2000)");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("NUMBER(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("NVARCHAR2(256)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -314,8 +293,7 @@ namespace LGT.Web.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("\"NormalizedUserName\" IS NOT NULL");
+                        .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -324,28 +302,25 @@ namespace LGT.Web.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("NUMBER(10)");
-
-                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("NVARCHAR2(2000)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("NVARCHAR2(256)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .HasColumnType("NVARCHAR2(256)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("\"NormalizedName\" IS NOT NULL");
+                        .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
                 });
@@ -354,18 +329,16 @@ namespace LGT.Web.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("NUMBER(10)");
-
-                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("NVARCHAR2(2000)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("NVARCHAR2(2000)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -378,19 +351,17 @@ namespace LGT.Web.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("NUMBER(10)");
-
-                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ClaimType")
                         .IsRequired()
-                        .HasColumnType("NVARCHAR2(450)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("NVARCHAR2(2000)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -403,17 +374,17 @@ namespace LGT.Web.Migrations
                 {
                     b.Property<string>("LoginProvider")
                         .HasMaxLength(128)
-                        .HasColumnType("NVARCHAR2(128)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderKey")
                         .HasMaxLength(128)
-                        .HasColumnType("NVARCHAR2(128)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("NVARCHAR2(2000)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -425,10 +396,10 @@ namespace LGT.Web.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -440,18 +411,18 @@ namespace LGT.Web.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("NUMBER(10)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("LoginProvider")
                         .HasMaxLength(128)
-                        .HasColumnType("NVARCHAR2(128)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasMaxLength(128)
-                        .HasColumnType("NVARCHAR2(128)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Value")
-                        .HasColumnType("NVARCHAR2(2000)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -469,22 +440,22 @@ namespace LGT.Web.Migrations
                     b.OwnsOne("LGT.Core.Intranet.ColumnSizes", "Sizes", b1 =>
                         {
                             b1.Property<int>("ColumnID")
-                                .HasColumnType("NUMBER(10)");
+                                .HasColumnType("INTEGER");
 
                             b1.Property<int?>("Default")
-                                .HasColumnType("NUMBER(10)");
+                                .HasColumnType("INTEGER");
 
                             b1.Property<int?>("LG")
-                                .HasColumnType("NUMBER(10)");
+                                .HasColumnType("INTEGER");
 
                             b1.Property<int?>("MD")
-                                .HasColumnType("NUMBER(10)");
+                                .HasColumnType("INTEGER");
 
                             b1.Property<int?>("SM")
-                                .HasColumnType("NUMBER(10)");
+                                .HasColumnType("INTEGER");
 
                             b1.Property<int?>("XS")
-                                .HasColumnType("NUMBER(10)");
+                                .HasColumnType("INTEGER");
 
                             b1.HasKey("ColumnID");
 

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LGT.Web.Migrations
 {
-    public partial class Initialcommit : Migration
+    public partial class InitialSQLITEcommit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,11 +13,11 @@ namespace LGT.Web.Migrations
                 name: "Articles",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(type: "RAW(16)", nullable: false),
-                    Accessibility = table.Column<long>(type: "NUMBER(19)", nullable: false),
-                    InternalName = table.Column<string>(type: "NVARCHAR2(255)", maxLength: 255, nullable: false),
-                    Name = table.Column<string>(type: "NVARCHAR2(255)", maxLength: 255, nullable: true),
-                    BodyMarkdown = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true)
+                    ID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Accessibility = table.Column<long>(type: "INTEGER", nullable: false),
+                    InternalName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    BodyMarkdown = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -28,11 +28,11 @@ namespace LGT.Web.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "NUMBER(10)", nullable: false)
-                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
-                    Name = table.Column<string>(type: "NVARCHAR2(256)", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "NVARCHAR2(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -43,22 +43,22 @@ namespace LGT.Web.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "NUMBER(10)", nullable: false)
-                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
-                    UserName = table.Column<string>(type: "NVARCHAR2(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "NVARCHAR2(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "NVARCHAR2(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "NVARCHAR2(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "NUMBER(1)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "NUMBER(1)", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "NUMBER(1)", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "TIMESTAMP(7) WITH TIME ZONE", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "NUMBER(1)", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "NUMBER(10)", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
+                    PasswordHash = table.Column<string>(type: "TEXT", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "TEXT", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -69,14 +69,13 @@ namespace LGT.Web.Migrations
                 name: "Pages",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "NUMBER(10)", nullable: false)
-                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
-                    Key = table.Column<string>(type: "NVARCHAR2(16)", maxLength: 16, nullable: true),
-                    Name = table.Column<string>(type: "NVARCHAR2(255)", maxLength: 255, nullable: true),
-                    IsPublic = table.Column<bool>(type: "NUMBER(1)", nullable: false),
-                    IsImportant = table.Column<bool>(type: "NUMBER(1)", nullable: false, comment: "Svarbus puslapiai bus matomi intraneto apacios viduryje"),
-                    Nam = table.Column<string>(type: "NVARCHAR2(32)", maxLength: 32, nullable: true, comment: "Trumpas pavadinimas naudojamas svarbiu puslapiu skiltyje"),
-                    ColumnsCount = table.Column<int>(type: "NUMBER(10)", nullable: false)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Key = table.Column<string>(type: "TEXT", maxLength: 16, nullable: true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    IsPublic = table.Column<bool>(type: "INTEGER", nullable: false),
+                    IsImportant = table.Column<bool>(type: "INTEGER", nullable: false, comment: "Svarbus puslapiai bus matomi intraneto apacios viduryje"),
+                    Nam = table.Column<string>(type: "TEXT", maxLength: 32, nullable: true, comment: "Trumpas pavadinimas naudojamas svarbiu puslapiu skiltyje")
                 },
                 constraints: table =>
                 {
@@ -87,15 +86,15 @@ namespace LGT.Web.Migrations
                 name: "Messages",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "NUMBER(10)", nullable: false)
-                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
-                    IsPublic = table.Column<bool>(type: "NUMBER(1)", nullable: false),
-                    Index = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    ShowSince = table.Column<DateTime>(type: "TIMESTAMP(7)", nullable: false),
-                    Since = table.Column<DateTime>(type: "TIMESTAMP(7)", nullable: false),
-                    Until = table.Column<DateTime>(type: "TIMESTAMP(7)", nullable: false),
-                    Header = table.Column<string>(type: "NVARCHAR2(255)", maxLength: 255, nullable: false),
-                    ArticleID = table.Column<Guid>(type: "RAW(16)", nullable: true)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    IsPublic = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Index = table.Column<int>(type: "INTEGER", nullable: false),
+                    ShowSince = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Since = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Until = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Header = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    ArticleID = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -111,11 +110,11 @@ namespace LGT.Web.Migrations
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "NUMBER(10)", nullable: false)
-                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
-                    RoleId = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    ClaimType = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    RoleId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ClaimType = table.Column<string>(type: "TEXT", nullable: true),
+                    ClaimValue = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -132,11 +131,11 @@ namespace LGT.Web.Migrations
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "NUMBER(10)", nullable: false)
-                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
-                    UserId = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    ClaimType = table.Column<string>(type: "NVARCHAR2(450)", nullable: false),
-                    ClaimValue = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ClaimType = table.Column<string>(type: "TEXT", nullable: false),
+                    ClaimValue = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -154,10 +153,10 @@ namespace LGT.Web.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "NVARCHAR2(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "NVARCHAR2(128)", maxLength: 128, nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true),
-                    UserId = table.Column<int>(type: "NUMBER(10)", nullable: false)
+                    LoginProvider = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
+                    ProviderKey = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "TEXT", nullable: true),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -174,8 +173,8 @@ namespace LGT.Web.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    RoleId = table.Column<int>(type: "NUMBER(10)", nullable: false)
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    RoleId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -198,10 +197,10 @@ namespace LGT.Web.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "NVARCHAR2(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "NVARCHAR2(128)", maxLength: 128, nullable: false),
-                    Value = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true)
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    LoginProvider = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
+                    Value = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -218,16 +217,14 @@ namespace LGT.Web.Migrations
                 name: "Columns",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "NUMBER(10)", nullable: false)
-                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
-                    PageID = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    Index = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    Sizes_Default = table.Column<int>(type: "NUMBER(10)", nullable: true),
-                    Sizes_LG = table.Column<int>(type: "NUMBER(10)", nullable: true),
-                    Sizes_MD = table.Column<int>(type: "NUMBER(10)", nullable: true),
-                    Sizes_SM = table.Column<int>(type: "NUMBER(10)", nullable: true),
-                    Sizes_XS = table.Column<int>(type: "NUMBER(10)", nullable: true),
-                    GroupsCount = table.Column<int>(type: "NUMBER(10)", nullable: false)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false),
+                    PageID = table.Column<int>(type: "INTEGER", nullable: false),
+                    Index = table.Column<int>(type: "INTEGER", nullable: false),
+                    Sizes_Default = table.Column<int>(type: "INTEGER", nullable: true),
+                    Sizes_LG = table.Column<int>(type: "INTEGER", nullable: true),
+                    Sizes_MD = table.Column<int>(type: "INTEGER", nullable: true),
+                    Sizes_SM = table.Column<int>(type: "INTEGER", nullable: true),
+                    Sizes_XS = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -244,14 +241,13 @@ namespace LGT.Web.Migrations
                 name: "Groups",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "NUMBER(10)", nullable: false)
-                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
-                    ColumnID = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    Index = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    Name = table.Column<string>(type: "NVARCHAR2(255)", maxLength: 255, nullable: false),
-                    IsPublic = table.Column<bool>(type: "NUMBER(1)", nullable: false),
-                    Markdown = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true),
-                    LinksCount = table.Column<int>(type: "NUMBER(10)", nullable: false)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ColumnID = table.Column<int>(type: "INTEGER", nullable: false),
+                    Index = table.Column<int>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    IsPublic = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Markdown = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -268,10 +264,10 @@ namespace LGT.Web.Migrations
                 name: "Group_Article",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(type: "RAW(16)", nullable: false),
-                    GroupID = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    Index = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    ArticleID = table.Column<Guid>(type: "RAW(16)", nullable: false)
+                    ID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GroupID = table.Column<int>(type: "INTEGER", nullable: false),
+                    Index = table.Column<int>(type: "INTEGER", nullable: false),
+                    ArticleID = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -294,16 +290,16 @@ namespace LGT.Web.Migrations
                 name: "Links",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "NUMBER(10)", nullable: false)
-                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
-                    GroupID = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    Index = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    Name = table.Column<string>(type: "NVARCHAR2(255)", maxLength: 255, nullable: false),
-                    Comment = table.Column<string>(type: "NVARCHAR2(255)", maxLength: 255, nullable: true),
-                    Url = table.Column<string>(type: "NVARCHAR2(1024)", maxLength: 1024, nullable: false),
-                    IsPublic = table.Column<bool>(type: "NUMBER(1)", nullable: false),
-                    IsLocked = table.Column<bool>(type: "NUMBER(1)", nullable: false, comment: "Prie uzrakintu nuorodu bus rodoma spynele."),
-                    IsTargetBlank = table.Column<bool>(type: "NUMBER(1)", nullable: false)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    GroupID = table.Column<int>(type: "INTEGER", nullable: false),
+                    Index = table.Column<int>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    Comment = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    Url = table.Column<string>(type: "TEXT", maxLength: 1024, nullable: false),
+                    IsPublic = table.Column<bool>(type: "INTEGER", nullable: false),
+                    IsLocked = table.Column<bool>(type: "INTEGER", nullable: false, comment: "Prie uzrakintu nuorodu bus rodoma spynele."),
+                    IsTargetBlank = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -325,8 +321,7 @@ namespace LGT.Web.Migrations
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
-                unique: true,
-                filter: "\"NormalizedName\" IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserLogins_UserId",
@@ -347,8 +342,7 @@ namespace LGT.Web.Migrations
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
-                unique: true,
-                filter: "\"NormalizedUserName\" IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Columns_PageID",

@@ -2,11 +2,12 @@ table.bord th,
 table.bord td {
   border: solid black 1px;
 }
-table.input-table
-{
+
+table.input-table {
   /*todo: first column: text align right, second column 100% width, table: w-100*/
   width: 100%;
 }
+
 .td-center td {
   text-align: center;
 }
@@ -14,6 +15,7 @@ table.input-table
 ul {
   margin-bottom: 0px;
 }
+
 .cell {
   display: grid;
   width: max-content;
@@ -33,4 +35,42 @@ ul {
 
 .cell--bottomLeft {
   grid-column-start: 1;
+}
+
+@media print {
+  /*https://stackoverflow.com/questions/355313/how-do-i-hide-an-element-when-printing-a-web-page*/ s
+  .no-print, .no-print * {
+    display: none !important;
+  }
+
+  .only-print {
+  }
+  .print-black {
+    background-color: red;
+  }
+}
+
+@media not print {
+  .only-print, .only-print * {
+    display: none !important;
+  }
+}
+
+
+.docx-table {
+}
+
+  .docx-table th {
+    text-align: center;
+    font-size: 13px;
+    font-family: "Times New Roman";
+  }
+
+  .docx-table td {
+    font-size: 12px;
+    font-family: "Times New Roman";
+  }
+
+.markdown p {
+  margin-bottom: 0;
 }
