@@ -1,0 +1,39 @@
+﻿@using L2Tools.Blazor.Shared.Inputs;
+@inherits Create2<Incidentas, LGT.Internals.Database>
+@code {
+  #region Constructors
+  public CreateIncidentas()
+  {
+    this.ParamInit = (prev) => new Incidentas()
+    {
+      Since = DateTime.Now
+    }
+    ;
+  }
+  #endregion
+}
+@if(this.model != null){
+  <CreateFormatTable Model=@this.model OnValidSubmit=@this.DoCreate>
+    <FlexAuthorizeView Val=@(AdminRightsEnum.Incidentai)>
+      <Authorized Context="authState">
+      </Authorized>
+      <NotAuthorized Context="notauthState">
+      </NotAuthorized>
+    </FlexAuthorizeView>
+    <InputAny ParamName="Informacinis išteklius" @bind-value=@this.model.InformacinisIstekliusID>
+      <ValueFragment>
+        <ChooseInformacinisIsteklius @bind-id=@this.model.InformacinisIstekliusID />
+      </ValueFragment>
+    </InputAny>
+    <InputAny ParamName="Požymis" @bind-value=@this.model.PozymisID ParamIsOptional="true" ParamIsPrefered="true" ParamDefaultFunc=@(() => null) >
+      <ValueFragment>
+        <ChooseIncidentoPozymis @bind-id=@this.model.PozymisID />
+      </ValueFragment>
+    </InputAny>
+    <InputMarkdown ParamName="Aprašymas" ParamIsOptional="false" @bind-value=@this.model.Desc />
+    <InputDateTime ParamName="Pradžia" ParamIsOptional="false" @bind-value=@this.model.Since ParamDefaultFunc=@(() => System.DateTime.Now) />
+    <InputDateTime ParamName="Pabaiga" ParamIsOptional="true" @bind-value=@this.model.Until />
+    <InputMarkdown ParamName="Priežastis" ParamIsOptional="true" @bind-value=@this.model.Reason ParamIsPrefered="true" />
+    <InputBoolean ParamName="Ar viešas" ParamIsOptional=true @bind-value=@this.model.IsPublic />
+  </CreateFormatTable>
+}

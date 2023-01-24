@@ -1,0 +1,83 @@
+﻿@code {
+  [Parameter] public int? id { get; set; }
+  [Parameter] public EventCallback<int?> idChanged { get; set; }
+  [Parameter] public string? DarbovieteID { get; set; }
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    if (this.chosenDarbovieteID == null)
+    {
+      this.chosenDarbovieteID = DarbovieteID;
+    }
+  }
+}
+@inject LGT.Internals.Database db
+@if(DarbovieteID == null){
+  <ChooseDarboviete 
+    id=@chosenDarbovieteID
+    idChanged=@(async (val) => {
+      chosenDarbovieteID = val;
+      await Unchoose();
+    })
+    ParamExtraFilter=@(darboviete => darboviete.DarbuotojasAssignments.Any())
+  />
+}
+@if (this.id == null)
+{
+  @if (chosenDarbovieteID != null)
+  {
+    <ExpList ParamSource=@(
+      db.Set<Darbuotojas>().Where(item => item.DarbovieteID == chosenDarbovieteID)
+        .Select(td => new {
+          td.ID,
+          Name = td.Name!,
+          Asmuo = td.AsmuoID == null ? null : new {ID = td.AsmuoID, Name = td.Asmuo!.FullName }
+        })
+    )>
+      <Wrapper Context="rows">
+        <ul>@rows</ul>
+      </Wrapper>
+      <IfSome Context="td">
+        @{
+          var n = td.Asmuo == null ? td.Name : $"{td.Name} ({td.Asmuo.Name})";
+        }
+        <li>
+          <ActionButton onclick=@(async () => await Choose(td.ID, n))>
+            <Name ParamName=@td.Name />
+            @if(td.Asmuo != null)
+            {
+              <text> (@td.Asmuo.Name)</text>
+            }
+          </ActionButton>
+        </li>
+      </IfSome>
+      <IfNone>
+        <div class="text-danger">darbovietė neturi darbuotojų</div>
+      </IfNone>
+    </ExpList>
+  }
+}
+else
+{
+  <text>&raquo;</text>
+  <ActionButton onclick=@(async () => await Unchoose())>
+    <Name ParamName=@(this.chosenName) />
+  </ActionButton>
+}
+@code {
+  private string? chosenName;
+  private string? chosenDarbovieteID;
+  private async Task Choose(int id, string name)
+  {
+    await this.idChanged.InvokeAsync(id);
+    this.chosenName = name;
+  }
+  private async Task Unchoose()
+  {
+    if(id != null)
+    {
+      await this.idChanged.InvokeAsync(null);
+    }
+    this.chosenName = null;
+  }
+}

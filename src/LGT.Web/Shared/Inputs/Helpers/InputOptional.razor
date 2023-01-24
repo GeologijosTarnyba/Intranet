@@ -1,0 +1,68 @@
+﻿@typeparam T
+@code {
+  [Parameter] public T? value { get; set; }
+  [Parameter] public EventCallback<T?> valueChanged { get; set; }
+  [Parameter] public bool ParamIsPrefered { get; set; } = false;
+}
+@code {
+  [Parameter] public Func<T>? ParamDefaultFunc { get; set; }
+  [Parameter] public RenderFragment? NameFragment { get; set; }
+  [Parameter] public RenderFragment? ValueFragment { get; set; }
+  override protected async Task OnAfterRenderAsync(bool firstRender)
+  {
+    await base.OnAfterRenderAsync(firstRender);
+    if(firstRender && this.ParamIsPrefered)
+    {
+      await this.SetToggle(true);
+    }
+  }
+  private bool HasValue { get; set; } = false;
+}
+
+@if (this.NameFragment == null)
+{
+  <Error>NameFragment not available</Error>
+}
+else if (this.ValueFragment == null)
+{
+  <Error>ValueFragment not available</Error>
+}
+else if (this.ParamDefaultFunc == null) {
+  <Error>ParamDefaultFunc not available</Error>
+}
+else
+{
+  <CreateFormatRow>
+    <NameFragment>
+      <label class="@((this.HasValue && (this.value == null || this.value.Equals(default(T)))) ? "text-danger" : null)">
+        @NameFragment
+        <input type="checkbox" checked=@this.HasValue @onchange=@this.Toggle  />
+      </label>
+    </NameFragment>
+    <ValueFragment>
+      @if (this.HasValue)
+      {
+        @ValueFragment
+      }
+    </ValueFragment>
+  </CreateFormatRow>
+}
+
+@code {
+  private async Task Toggle()
+  {
+    await SetToggle(!this.HasValue);
+  }
+  private async Task SetToggle(bool newState)
+  {
+    this.HasValue = newState;
+    if (this.HasValue && this.ParamDefaultFunc != null)
+    {
+      await this.valueChanged.InvokeAsync(this.ParamDefaultFunc.Invoke());
+    }
+    else
+    {
+      await this.valueChanged.InvokeAsync(default(T));
+    }
+  }
+}

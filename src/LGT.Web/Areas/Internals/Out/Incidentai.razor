@@ -56,7 +56,13 @@
           <input type="checkbox" @bind-value=@this.ShowPlaniniai checked=@this.ShowPlaniniai/>
           Rodyti užregistruotus prieš įvykstant
         </label>
-        <button onclick="window.print()">Spausdinti</button>
+        <p class="text-center">
+          <button onclick="window.print()">Spausdinti</button>
+          <button>
+          <a href="/incidentai/pranesti">Pranešti apie sutrikimą</a>
+          
+          </button>
+        </p>
       </span>
     </span>
   </p>
@@ -98,9 +104,9 @@
     .OrderByDescending(item => item.Since)
     .ThenBy(item => item.CreatedAt)
     .Select(item => new {
-      Imone = item.DarbovieteID == null ? null : new {
-        ID = item.DarbovieteID,
-        Name = item.Darboviete.Name
+      Imone = item.AptarnaujantiImoneID == null ? null : new {
+        ID = item.AptarnaujantiImoneID,
+        Name = item.AptarnaujantiImone!.Name
       },
       Nuoroda = item.Link,
       Name = item.UName
@@ -148,7 +154,9 @@
                 @kreip.Imone.Name
               </a>
             } else {
-              <u>@kreip.Imone.Name</u>
+              <u>
+              @kreip.Imone.Name
+              </u>
             }
             <br/>
           }

@@ -1,0 +1,45 @@
+﻿@code {
+  [Parameter] public int? id { get; set; }
+  [Parameter] public EventCallback<int?> idChanged { get; set; }
+}
+@inject LGT.Internals.Database db
+@if (this.id == null)
+{
+  <ExpList ParamSource=@(
+    db.Set<Asmuo>()
+      .Select(item => new {item.ID, Name = item.FullName })
+  )>
+    <Wrapper Context="rows">
+      <ul>@rows</ul>
+    </Wrapper>
+    <IfSome Context="asm">
+      <li>
+        <ActionButton onclick=@(async () => await Choose(asm.ID, asm.Name))>
+          @asm.Name
+        </ActionButton>
+      </li>
+    </IfSome>
+    <IfNone>-</IfNone>
+  </ExpList>
+  
+}
+else
+{
+  <ActionButton onclick=@Unchoose>
+    <Name ParamName=@name />
+  </ActionButton>
+}
+
+@code {
+  private string? name { get; set; }
+  private async Task Unchoose()
+  {
+    await this.idChanged.InvokeAsync(null);
+    this.name = null;
+  }
+  private async Task Choose(int id, string name)
+  {
+    await this.idChanged.InvokeAsync(id);
+    this.name = name;
+  }
+}

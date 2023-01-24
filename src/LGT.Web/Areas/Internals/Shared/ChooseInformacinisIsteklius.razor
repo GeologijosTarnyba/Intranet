@@ -1,0 +1,76 @@
+﻿@code {
+  [Parameter] public string? id { get; set; }
+  [Parameter] public EventCallback<string?> idChanged { get; set; }
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    if(this.chosenDarbovieteID == null)
+    {
+      this.chosenDarbovieteID = this.ParamDarbovieteID;
+    }
+  }
+  [Parameter] public string? ParamDarbovieteID { get; set; }
+}
+@inject LGT.Internals.Database db
+@if(ParamDarbovieteID == null){
+  <ChooseDarboviete 
+    id=@chosenDarbovieteID
+    idChanged=@(async (val) => {
+      chosenDarbovieteID = val;
+      await Unchoose();
+    }) 
+    ParamExtraFilter=@(darboviete => darboviete.InformaciniaiIstekliai.Any())
+  />
+}
+@if (this.id == null)
+{
+  @if (chosenDarbovieteID != null)
+  {
+    <ExpList ParamSource=@(
+      db.Set<InformacinisIsteklius>()
+        .Where(item => item.DarbovieteID == chosenDarbovieteID)
+        .Select(td => new {
+          td.ID,
+          Name = td.Name!
+        })
+    )>
+      <Wrapper Context="rows">
+        <ul>@rows</ul>
+      </Wrapper>
+      <IfSome Context="td">
+        <li>
+          <ActionButton onclick=@(async () => await Choose(td.ID, td.Name))>
+            <Name ParamName=@td.Name />
+          </ActionButton>
+        </li>
+      </IfSome>
+      <IfNone>
+        <div class="text-danger">darbovietė neturi informacinių sistemų</div>
+      </IfNone>
+    </ExpList>
+  }
+}
+else
+{
+  <text>&raquo;</text>
+  <ActionButton onclick=@(async () => await Unchoose())>
+    <Name ParamName=@(this.chosenName) />
+  </ActionButton>
+}
+@code {
+  private string? chosenName;
+  private string? chosenDarbovieteID;
+  private async Task Choose(string id, string name)
+  {
+    await this.idChanged.InvokeAsync(id);
+    this.chosenName = name;
+  }
+  private async Task Unchoose()
+  {
+    if(id != null)
+    {
+      await this.idChanged.InvokeAsync(null);
+    }
+    this.chosenName = null;
+  }
+}

@@ -17,6 +17,37 @@ namespace LGT.Web.Migrations.DatabaseMigrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.10");
 
+            modelBuilder.Entity("LGT.Internals.Models.Incidents.AptarnavimoSutartis", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AptarnaujantiImoneID")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValueSql("datetime()");
+
+                    b.Property<DateTime?>("Since")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Iki");
+
+                    b.Property<DateTime?>("Until")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Nuo");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("AptarnaujantiImoneID");
+
+                    b.ToTable("I_AptarnavimoSutartis", (string)null);
+                });
+
             modelBuilder.Entity("LGT.Internals.Models.Incidents.Incidentas", b =>
                 {
                     b.Property<int>("ID")
@@ -83,10 +114,12 @@ namespace LGT.Web.Migrations.DatabaseMigrations
             modelBuilder.Entity("LGT.Internals.Models.Incidents.InformacinisIsteklius", b =>
                 {
                     b.Property<string>("ID")
+                        .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DarbovieteID")
                         .IsRequired()
+                        .HasMaxLength(32)
                         .HasColumnType("TEXT")
                         .HasColumnName("Priklauso");
 
@@ -96,6 +129,7 @@ namespace LGT.Web.Migrations.DatabaseMigrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ParentID")
+                        .HasMaxLength(255)
                         .HasColumnType("TEXT")
                         .HasColumnName("Parent");
 
@@ -114,25 +148,31 @@ namespace LGT.Web.Migrations.DatabaseMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("AptarnaujantiImoneID")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime?>("CreatedAt")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasDefaultValueSql("datetime()");
 
-                    b.Property<string>("DarbovieteID")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<int?>("IncidentasID")
-                        .IsRequired()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Link")
                         .HasColumnType("TEXT")
                         .HasColumnName("Nuoroda");
 
-                    b.Property<DateTime?>("Since")
+                    b.Property<string>("RequestText")
+                        .HasMaxLength(1000)
                         .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("Since")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Nuo");
 
                     b.Property<string>("SolutionText")
                         .HasMaxLength(1000)
@@ -143,9 +183,12 @@ namespace LGT.Web.Migrations.DatabaseMigrations
                         .HasColumnName("Krepinys");
 
                     b.Property<DateTime?>("Until")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Iki");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("AptarnaujantiImoneID");
 
                     b.HasIndex("IncidentasID");
 
@@ -160,6 +203,10 @@ namespace LGT.Web.Migrations.DatabaseMigrations
 
                     b.Property<int?>("AsmuoID")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Asmuo_FreeForm")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("At")
                         .HasColumnType("TEXT");
@@ -177,11 +224,13 @@ namespace LGT.Web.Migrations.DatabaseMigrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Markdown")
+                        .IsRequired()
                         .HasMaxLength(2000)
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("TypeID")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("TypeID");
 
                     b.HasKey("ID");
 
@@ -223,10 +272,6 @@ namespace LGT.Web.Migrations.DatabaseMigrations
                         .HasColumnType("TEXT")
                         .HasDefaultValueSql("datetime()");
 
-                    b.Property<string>("DarbovieteID")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<int?>("DarbuotojasID")
                         .IsRequired()
                         .HasColumnType("INTEGER");
@@ -247,9 +292,9 @@ namespace LGT.Web.Migrations.DatabaseMigrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("DarbovieteID", "DarbuotojasID");
+                    b.HasIndex("DarbuotojasID");
 
-                    b.HasIndex("DarbovieteID", "KreipinysID");
+                    b.HasIndex("KreipinysID");
 
                     b.ToTable("I_Sprendimas", (string)null);
                 });
@@ -279,6 +324,9 @@ namespace LGT.Web.Migrations.DatabaseMigrations
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
+
+                    b.Property<int?>("OrderWeight")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
 
@@ -340,6 +388,8 @@ namespace LGT.Web.Migrations.DatabaseMigrations
 
                     b.HasIndex("AsmuoID");
 
+                    b.HasIndex("DarbovieteID");
+
                     b.ToTable("K_Darbuotojas", (string)null);
                 });
 
@@ -347,7 +397,21 @@ namespace LGT.Web.Migrations.DatabaseMigrations
                 {
                     b.HasBaseType("LGT.Internals.Models.Kontaktai.Darboviete");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
                     b.ToTable("I_AptarnaujantiImone", (string)null);
+                });
+
+            modelBuilder.Entity("LGT.Internals.Models.Incidents.AptarnavimoSutartis", b =>
+                {
+                    b.HasOne("LGT.Internals.Models.Incidents.AptarnaujantiImone", "AptarnaujantiImone")
+                        .WithMany("Sutartys")
+                        .HasForeignKey("AptarnaujantiImoneID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AptarnaujantiImone");
                 });
 
             modelBuilder.Entity("LGT.Internals.Models.Incidents.Incidentas", b =>
@@ -386,19 +450,17 @@ namespace LGT.Web.Migrations.DatabaseMigrations
 
             modelBuilder.Entity("LGT.Internals.Models.Incidents.Kreipinys", b =>
                 {
-                    b.HasOne("LGT.Internals.Models.Kontaktai.Darboviete", "Darboviete")
-                        .WithMany("Kreipiniai")
-                        .HasForeignKey("DarbovieteID")
+                    b.HasOne("LGT.Internals.Models.Incidents.AptarnaujantiImone", "AptarnaujantiImone")
+                        .WithMany("Krepiniai")
+                        .HasForeignKey("AptarnaujantiImoneID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("LGT.Internals.Models.Incidents.Incidentas", "Incidentas")
                         .WithMany("Kreipiniai")
-                        .HasForeignKey("IncidentasID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IncidentasID");
 
-                    b.Navigation("Darboviete");
+                    b.Navigation("AptarnaujantiImone");
 
                     b.Navigation("Incidentas");
                 });
@@ -434,15 +496,13 @@ namespace LGT.Web.Migrations.DatabaseMigrations
                 {
                     b.HasOne("LGT.Internals.Models.Kontaktai.Darbuotojas", "Darbuotojas")
                         .WithMany("Sprendimai")
-                        .HasForeignKey("DarbovieteID", "DarbuotojasID")
-                        .HasPrincipalKey("DarbovieteID", "ID")
+                        .HasForeignKey("DarbuotojasID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("LGT.Internals.Models.Incidents.Kreipinys", "Kreipinys")
                         .WithMany("Sprendimai")
-                        .HasForeignKey("DarbovieteID", "KreipinysID")
-                        .HasPrincipalKey("DarbovieteID", "ID")
+                        .HasForeignKey("KreipinysID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -506,8 +566,6 @@ namespace LGT.Web.Migrations.DatabaseMigrations
                     b.Navigation("DarbuotojasAssignments");
 
                     b.Navigation("InformaciniaiIstekliai");
-
-                    b.Navigation("Kreipiniai");
                 });
 
             modelBuilder.Entity("LGT.Internals.Models.Kontaktai.Darbuotojas", b =>
@@ -515,6 +573,13 @@ namespace LGT.Web.Migrations.DatabaseMigrations
                     b.Navigation("Skundai");
 
                     b.Navigation("Sprendimai");
+                });
+
+            modelBuilder.Entity("LGT.Internals.Models.Incidents.AptarnaujantiImone", b =>
+                {
+                    b.Navigation("Krepiniai");
+
+                    b.Navigation("Sutartys");
                 });
 #pragma warning restore 612, 618
         }

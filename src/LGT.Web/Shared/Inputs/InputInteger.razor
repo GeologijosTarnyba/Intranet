@@ -1,0 +1,25 @@
+﻿@code {
+  [Parameter] public bool ParamIsOptional { get; set; }
+  [Parameter] public bool ParamIsPrefered { get; set; } = false;
+  [Parameter] public int? value { get; set; }
+  [Parameter] public EventCallback<int?> valueChanged { get; set; }
+  [Parameter] public Func<int?> ParamDefaultFunc { get; set; } = () => 0;
+  [Parameter] public string? ParamName { get; set; }
+  [Parameter] public RenderFragment? NameFragment { get; set; }
+}
+<InputAny
+  ParamIsOptional=@ParamIsOptional ParamIsPrefered=@ParamIsPrefered
+  ParamDefaultFunc=@ParamDefaultFunc
+  value=@value valueChanged=@valueChanged
+  ParamName=@ParamName
+  NameFragment=@NameFragment
+>
+  <ValueFragment>
+    <InputNumber 
+      Value=@value 
+      ValueChanged=@valueChanged 
+      ValueExpression=@(() => this.value) 
+      class="w-100"
+    />
+  </ValueFragment>
+</InputAny>

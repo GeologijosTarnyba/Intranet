@@ -14,11 +14,11 @@ public class Database : DbContext
   protected override void OnModelCreating(ModelBuilder mb)
   {
     base.OnModelCreating(mb);
-    mb.Entity<Kreipinys>().HasKey(item => new {item.ID});
     #region ToTables
     string incidentai = "I_";
     mb.Entity<Incidentas>().ToTable($"{incidentai}{nameof(Incidentas)}");
     mb.Entity<AptarnaujantiImone>().ToTable($"{incidentai}{nameof(AptarnaujantiImone)}");
+    mb.Entity<AptarnavimoSutartis>().ToTable($"{incidentai}{nameof(AptarnavimoSutartis)}");
     mb.Entity<Kreipinys>().ToTable($"{incidentai}{nameof(Kreipinys)}");
     mb.Entity<Sprendimas>().ToTable($"{incidentai}{nameof(Sprendimas)}");
     mb.Entity<IncidentoPozymis>().ToTable($"{incidentai}{nameof(IncidentoPozymis)}");
@@ -30,18 +30,12 @@ public class Database : DbContext
     mb.Entity<Darboviete>().ToTable($"{kontaktai}{nameof(Darboviete)}");
     mb.Entity<Darbuotojas>().ToTable($"{kontaktai}{nameof(Darbuotojas)}");
     #endregion
-    mb.Entity<Sprendimas>().HasOne(item => item.Kreipinys).WithMany(item => item.Sprendimai)
-      .HasForeignKey(item => new {item.DarbovieteID, item.KreipinysID })
-      .HasPrincipalKey(item => new { item.DarbovieteID, item.ID });
-    mb.Entity<Sprendimas>().HasOne(item => item.Darbuotojas).WithMany(item => item.Sprendimai)
-      .HasForeignKey(item => new { item.DarbovieteID, item.DarbuotojasID })
-      .HasPrincipalKey(item => new {item.DarbovieteID, item.ID });
-    mb.Entity<Skundas>().Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DT_NOW);
-    mb.Entity<Darbuotojas>().Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DT_NOW);
-
-
-    mb.Entity<Kreipinys>().Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DT_NOW);
-    mb.Entity<Sprendimas>().Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DT_NOW);
-    mb.Entity<Incidentas>().Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DT_NOW);
+    
+    mb.Entity<Darbuotojas>().Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DT_NOW).IsRequired();
+    mb.Entity<Skundas>().Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DT_NOW).IsRequired();
+    mb.Entity<Kreipinys>().Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DT_NOW).IsRequired();
+    mb.Entity<Sprendimas>().Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DT_NOW).IsRequired();
+    mb.Entity<Incidentas>().Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DT_NOW).IsRequired();
+    mb.Entity<AptarnavimoSutartis>().Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DT_NOW).IsRequired();
   }
 }

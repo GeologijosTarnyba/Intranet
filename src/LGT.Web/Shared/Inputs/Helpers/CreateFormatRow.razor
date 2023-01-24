@@ -1,0 +1,18 @@
+﻿@code {
+  [Parameter] public RenderFragment? NameFragment { get; set; }
+  [Parameter] public RenderFragment? ValueFragment { get; set; }
+}
+
+@if(NameFragment == null) { }
+else if(ValueFragment == null) { }
+else
+{
+  <tr>
+    <td>
+      @NameFragment
+    </td>
+    <td style="height: 33px">
+      @ValueFragment
+    </td>
+  </tr>
+}

@@ -1,0 +1,39 @@
+﻿@code {
+  [Parameter] public bool ParamIsOptional { get; set; }
+  [Parameter] public bool ParamIsPrefered { get; set; } = false;
+  [Parameter] public DateTime? value { get; set; }
+  [Parameter] public EventCallback<DateTime?> valueChanged { get; set; }
+  [Parameter] public Func<DateTime?> ParamDefaultFunc { get; set; } = () => new DateTime(2023, 01, 01, 20, 00, 00);
+  [Parameter] public string? ParamName { get; set; }
+  [Parameter] public RenderFragment? NameFragment { get; set; }
+  public InputDateTime()
+  {
+    this.ParamDefaultFunc = (() =>
+    {
+      var now = System.DateTime.Now;
+      return new System.DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
+    });
+  }
+}
+<InputAny T="@(System.DateTime?)"
+  ParamIsOptional=@ParamIsOptional ParamIsPrefered=@ParamIsPrefered
+  ParamDefaultFunc=@ParamDefaultFunc
+  value=@value valueChanged=@valueChanged
+  ParamName=@ParamName
+  NameFragment=@NameFragment
+>
+  <ValueFragment>
+    <input type="datetime" 
+      value=@value
+      @onchange=@(async (ev) => {
+        try {
+          var dt = System.DateTime.Parse((string)ev.Value);
+          await valueChanged.InvokeAsync(dt);
+        }
+        catch {
+
+        }
+      })
+      class="w-100" style="min-width: 170px" />
+  </ValueFragment>
+</InputAny>

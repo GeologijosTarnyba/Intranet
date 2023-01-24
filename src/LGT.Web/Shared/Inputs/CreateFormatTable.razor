@@ -1,0 +1,24 @@
+﻿@inherits EditForm
+@code {
+  [Parameter] public bool ParamCantCreate { get; set; } = false;
+}
+@if (EditContext != null)
+{
+  <EditForm EditContext=@this.EditContext OnValidSubmit=@this.OnValidSubmit>
+    <table class="bord">
+      <tr>
+        <td>Name</td>
+        <td>Value</td>
+      </tr>
+      @if(ChildContent != null)
+      {
+        @this.ChildContent(this.EditContext)
+      }
+      <CreateFormatDouble>
+        <button class="w-100" disabled=@ParamCantCreate>Išsaugoti</button>
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+      </CreateFormatDouble>
+    </table>
+  </EditForm>
+}

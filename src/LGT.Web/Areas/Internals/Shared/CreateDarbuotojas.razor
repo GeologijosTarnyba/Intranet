@@ -1,0 +1,29 @@
+﻿@using L2Tools.Blazor.Shared.Inputs;
+@inherits Create2<Darbuotojas, LGT.Internals.Database>
+@code {
+  #region Constructors
+  public CreateDarbuotojas()
+  {
+    this.ParamInit = (prev) => new()
+    {
+      Since = DateTime.Now
+    }
+    ;
+  }
+  #endregion
+}
+@if (this.model != null)
+{
+  <CreateFormatTable Model=@this.model OnValidSubmit=@this.DoCreate>
+    <InputDarboviete @bind-id=@model.DarbovieteID  />
+    <InputString @bind-value=@model.Name ParamName="Pareigybė" />
+    <InputAsmuo @bind-id=@model.AsmuoID ParamIsOptional="true" ParamIsPrefered="true" />
+    <InputString @bind-value=@model.Email ParamName="Email" ParamIsOptional="true" ParamIsPrefered="true" />
+    <InputString @bind-value=@model.Tel1 ParamName="Tel1" ParamIsOptional="true" />
+    <InputString @bind-value=@model.Tel2 ParamName="Tel2" ParamIsOptional="true" />
+    <InputString @bind-value=@model.Tel3 ParamName="Tel3" ParamIsOptional="true" />
+    <InputString @bind-value=@model.Tel4 ParamName="Tel4" ParamIsOptional="true" />
+    <InputDateTime @bind-value=@model.Since ParamName="Dirba nuo" ParamIsOptional="true" />
+    <InputDateTime @bind-value=@model.Until ParamName="Dirbo iki" ParamIsOptional="true" />
+  </CreateFormatTable>
+}

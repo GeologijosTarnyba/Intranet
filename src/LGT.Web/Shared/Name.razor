@@ -1,0 +1,9 @@
+﻿@code {
+  [Parameter] public string? ParamName { get; set; }
+
+}
+@if(string.IsNullOrWhiteSpace(this.ParamName)){
+  <span class="no-name">no-name</span>
+} else {
+  <span>@this.ParamName</span>
+}

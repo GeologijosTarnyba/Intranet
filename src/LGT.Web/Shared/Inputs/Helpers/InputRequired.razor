@@ -1,0 +1,27 @@
+﻿@typeparam T
+@code {
+  [Parameter] public T? value { get; set; }
+  [Parameter] public string? ParamName { get; set; }
+  [Parameter] public RenderFragment? ChildContent { get; set; }
+  
+}
+@if(ChildContent == null){
+
+} 
+else {
+  <CreateFormatRow>
+    <NameFragment>
+      @if(this.value == null || value.Equals(default(T)))
+      {
+        <span class="text-danger">@this.ParamName</span>
+      } else
+      {
+        @this.ParamName
+      }
+      <span class="text-danger"> *</span>
+    </NameFragment>
+    <ValueFragment>
+      @ChildContent
+    </ValueFragment>
+  </CreateFormatRow>
+}

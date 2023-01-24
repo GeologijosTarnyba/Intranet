@@ -1,0 +1,18 @@
+﻿@using L2Tools.Blazor.Shared.Inputs;
+@inherits Create2<Asmuo, LGT.Internals.Database>
+@code {
+  #region Constructors
+  public CreateAsmuo()
+  {
+    this.ParamInit = (prev) => new (){}
+    ;
+  }
+  #endregion
+}
+@if (this.model != null)
+{
+  <CreateFormatTable Model=@this.model OnValidSubmit=@this.DoCreate>
+    <InputString ParamName="Vardas Pavardė" @bind-value=@model.FullName />
+  </CreateFormatTable>
+}
+

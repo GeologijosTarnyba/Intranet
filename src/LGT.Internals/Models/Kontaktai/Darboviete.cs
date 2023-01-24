@@ -9,7 +9,10 @@ public class Darboviete : IIDed<string>
   [Required]
   public string? Name { get; set; }
 
+
+  public int? OrderWeight { get; set; }
+
   public ICollection<Darbuotojas> DarbuotojasAssignments { get; set; }
   public ICollection<InformacinisIsteklius> InformaciniaiIstekliai { get; set; }
-  public ICollection<Kreipinys> Kreipiniai { get; set; }
+  
 }

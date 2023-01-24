@@ -3,10 +3,12 @@
   [Parameter] public string Markdown { get; set; } = string.Empty;
   
   private string Preview => 
-    Markdig.Markdown.ToHtml(this.Markdown, new Markdig.MarkdownPipelineBuilder().UseAdvancedExtensions().Build())
-      //Markdig.Markdown.ToHtml(this.Markdown)
+    string.IsNullOrWhiteSpace(Markdown) 
+      ? string.Empty 
+      : Markdig.Markdown.ToHtml(this.Markdown, new Markdig.MarkdownPipelineBuilder().UseAdvancedExtensions().Build())
   ;
 }
+
 <div class="markdown">
   @((MarkupString)this.Preview)
 </div>

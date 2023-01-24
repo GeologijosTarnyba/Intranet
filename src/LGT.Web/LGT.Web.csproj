@@ -14,6 +14,16 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="Shared\Inputs\CreateFormatDouble.razor" />
+    <None Include="Shared\Inputs\CreateFormatTable.razor" />
+    <None Include="Shared\Inputs\Helpers\CreateFormatRow.razor" />
+    <None Include="Shared\Inputs\Helpers\InputOptional.razor" />
+    <None Include="Shared\Inputs\Helpers\InputRequired.razor" />
+    <None Include="Shared\Inputs\InputAny.razor" />
+    <None Include="Shared\Inputs\InputBoolean.razor" />
+    <None Include="Shared\Inputs\InputDateTime.razor" />
+    <None Include="Shared\Inputs\InputInteger.razor" />
+    <None Include="Shared\Inputs\InputString.razor" />
     <None Include="Shared\SwitchCase.razor" />
   </ItemGroup>
 
@@ -38,7 +48,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Internals\Shared\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="wwwroot\files\a\" />
     <Folder Include="wwwroot\files\p\" />

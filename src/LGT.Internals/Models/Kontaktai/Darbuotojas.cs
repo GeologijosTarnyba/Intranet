@@ -4,7 +4,7 @@ namespace LGT.Internals.Models.Kontaktai;
 public class Darbuotojas : IIDed<int>
 {
   public int ID { get; set; }
-  [Required] public DateTime? CreatedAt { get; set; }
+  public DateTime? CreatedAt { get; set; }
   public Darboviete Darboviete { get; set; }
   [Column("Darboviete")]
   public string DarbovieteID { get; set; }

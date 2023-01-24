@@ -5,6 +5,7 @@ public enum AdminRightsEnum : Int64
 {
   None = 0,
   EditUsers = 1,
+  Incidentai = 2,
   All = Int64.MaxValue
 }
 public static class AuthPolicy

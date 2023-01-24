@@ -56,10 +56,8 @@ ul {
   }
 }
 
-
 .docx-table {
 }
-
   .docx-table th {
     text-align: center;
     font-size: 13px;
@@ -73,4 +71,7 @@ ul {
 
 .markdown p {
   margin-bottom: 0;
+}
+.no-name {
+  background-color: #f27373;
 }
