@@ -73,5 +73,6 @@ public class GeolisContext : DbContext
       .HasPrincipalKey(item => new { item.Metai, item.GavybosSklypasID, item.TelkinioSluoksnisID })
       .HasForeignKey(item => new { item.GAVK_METAI, item.GavybosSklypasID, item.TelkinioSluoksnisID })
     ;
+    mb.Entity<Core.Geoldba.NER_GAV_1999>().HasKey(item => new {item.TelkinysID, item.TelkinioSluoksnisID});
   }
 }

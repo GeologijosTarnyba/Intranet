@@ -5,7 +5,7 @@
 [Table(name: "APIB_GEOL_SL", Schema = "GEOLDBA")]
 public class TelkinioSluoksnis
 {
-
+  public ICollection<NER_GAV_1999> GavybosAtaskaitos_Pries1999 { get; set; }
   public ICollection<GIS_ISTEKLIU_PLOTAI> GIS_ISTEKLIU_PLOTAI { get; set; }
   public ICollection<TelkinioSluoksnioTyrimas> Tyrimai { get; set; }
   public ICollection<NER_GAV_KETV> NER_GAV_KETVs { get; set; }

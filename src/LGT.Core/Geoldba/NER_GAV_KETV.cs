@@ -45,6 +45,9 @@ public class NER_GAV_KETV
   /// </summary>
   [Column("GAVK_IST_PASIKEITIMAS")]
   public decimal? GAVK_IST_PASIKEITIMAS { get; set; } //GAVK_IST_PASIKEITIMAS->NUMBER(8,3)->Yes->->19->Išteklių pasikeitimas: "peržvalgyti" ir patvirtinti ištekliai (prieaugis arba nurasymas) laikotarpio metu.
+  /// <summary>
+  /// Įmonei (leidimui) likęs gavybos kiekis periodo pradžioje
+  /// </summary>
   [Column("GAVK_LIKUTIS_PR")]
   public decimal? GAVK_LIKUTIS_PR { get; set; } //GAVK_LIKUTIS_PR->NUMBER(8,3)->Yes->->20->
   [Column("GAVK_LIKUTIS_PB")]

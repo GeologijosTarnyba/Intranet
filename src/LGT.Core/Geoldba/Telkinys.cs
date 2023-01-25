@@ -5,7 +5,7 @@ public class Telkinys
   #region View
   //public ICollection<Views.W_ZGR_MARKSEID_PLANAI> W_ZGR_MARKSEID_PLANAI { get; set; }
   #endregion
-
+  public ICollection<NER_GAV_1999> GavybosAtaskaitos_Pries1999 { get; set; }
   public ICollection<GIS_ISTEKLIU_PLOTAI> GIS_ISTEKLIU_PLOTAI { get; set; }
   public ICollection<TELK_AKTYV_LIKUTIS> AktyvusLikutis { get; set; }
   public ICollection<Telkinys_Tyrimas> TyrimaiAssignments { get; set; }
