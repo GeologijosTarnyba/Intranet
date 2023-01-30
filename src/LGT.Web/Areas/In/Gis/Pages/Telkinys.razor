@@ -78,7 +78,7 @@
                     obj.GavybosSklypasID,
                     Leidimas = new {
                       ID = obj.Sutartis.LeidimasID,
-                      Name = obj.Sutartis.Leidimas.Name,
+                      Name = obj.Sutartis.Leidimas!.Name,
                      Galioja = 
                       (obj.Sutartis.Leidimas.IsdavesJuridinisAsmuoID == 11) // Išdavė LGT
                        && (
@@ -158,6 +158,12 @@
                 </table>
               </IfSome>
             </ExpList>
+          </td>
+        </tr>
+        <tr>
+          <td>Dokumentai</td>
+          <td>
+            <LGT.Web.Areas.In.Gis.Shared.TelkinioDokumentai ParamTelkID=@ParamID />
           </td>
         </tr>
         

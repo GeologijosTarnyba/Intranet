@@ -13,7 +13,7 @@ public class Telkinys
   public ICollection<TelkinioSluoksnis> Sluoksniai { get; set; }
   public ICollection<ZGRLGavybosObjektas> ZGRLGavybosObjektai { get; set; }
   public ICollection<GREZINIO_PRIKL_TELK> GreziniaiAssignments { get; set; }
-
+  public ICollection<TEL_PRI_DOK> DocumentAssignments { get; set; }
 
   [Key][Column(name: "TELK_KODAS")]
   public int ID { get; set; } //TELK_KODAS->NUMBER(5,0)->No->->1->Unikalus, aut. gen. kodas, skirtas ry?iui su grafika.
