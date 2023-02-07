@@ -3,8 +3,8 @@
 @layout LayoutA4Landscape
 @inject LGT.Internals.Database db
 @code {
-  private DateTime pildymoPradzia { get; set; } = new DateTime(2022, 12, 27);
-  private DateTime pildymoPabaiga { get; set; }
+  private DateTime? pildymoPradzia { get; set; } = new DateTime(2022, 12, 27);
+  private DateTime? pildymoPabaiga { get; set; } = new DateTime(2023, 12, 31);
   override protected async Task OnParametersSetAsync()
   {
     await base.OnParametersSetAsync();
@@ -34,37 +34,36 @@
     <strong style='font-size:13px;font-family:"Times New Roman";'>Elektroninės informacijos saugos incidentų</strong>
     <strong style='font-size:13px;font-family:"Times New Roman";'>REGISTRAVIMO ŽURNALAS</strong>
   </p>
-  <p>
-    <span style='font-size:13px;font-family:"Times New Roman";'>
-      Periodas: 
-      <span class="only-print">
-      nuo @pildymoPradzia.ToString("yyyy-MM-dd")
-      iki @pildymoPabaiga.ToString("yyyy-MM-dd")
-      </span>
-      <span class="no-print">
-        <input type="date" @bind-value=@pildymoPradzia format="yyyy-MM-dd" />
-        <input type="date" @bind-value=@pildymoPabaiga format="yyyy-MM-dd" />
-        <label>
-          <input type="checkbox" @bind-value=@this.ShowOngoing checked=@this.ShowOngoing/>
-          Rodyti vykstančius
-        </label>
-        <label>
-          <input type="checkbox" @bind-value=@this.ShowLinks checked=@this.ShowLinks/>
-          Rodyti nuorodas
-        </label>
-        <label>
-          <input type="checkbox" @bind-value=@this.ShowPlaniniai checked=@this.ShowPlaniniai/>
-          Rodyti užregistruotus prieš įvykstant
-        </label>
-        <p class="text-center">
-          <button onclick="window.print()">Spausdinti</button>
-          <button>
-          <a href="/incidentai/pranesti">Pranešti apie sutrikimą</a>
-          
-          </button>
-        </p>
-      </span>
+  <p style='font-size:13px;font-family:"Times New Roman";'>
+    Periodas: 
+    <span class="only-print">
+      nuo @pildymoPradzia?.ToString("yyyy-MM-dd")
+      iki @pildymoPabaiga?.ToString("yyyy-MM-dd")
     </span>
+    <span class="no-print">
+      nuo <LGT.Web.Shared.Inputs.BindDateTime @bind-value=@pildymoPradzia ParamFormat="yyyy-MM-dd" ParamClass=@string.Empty ParamStyle="width: 70px"/>
+      iki <LGT.Web.Shared.Inputs.BindDateTime @bind-value=@pildymoPabaiga ParamFormat="yyyy-MM-dd" ParamClass=@string.Empty ParamStyle="width: 70px"/>
+    </span>
+    <p class="text-center no-print">
+      <label>
+        <input type="checkbox" @bind-value=@this.ShowOngoing checked=@this.ShowOngoing/>
+        Rodyti vykstančius
+      </label>
+      <label>
+        <input type="checkbox" @bind-value=@this.ShowLinks checked=@this.ShowLinks/>
+        Rodyti nuorodas
+      </label>
+      <label>
+        <input type="checkbox" @bind-value=@this.ShowPlaniniai checked=@this.ShowPlaniniai/>
+        Rodyti užregistruotus prieš įvykstant
+      </label>
+    </p>
+    <p class="text-center no-print">
+      <button onclick="window.print()">Spausdinti</button>
+        <a href="/incidentai/pranesti">
+          Pranešti apie sutrikimą
+        </a>
+    </p>
   </p>
   <table class="bord w-100 docx-table text-center">
     <tr>

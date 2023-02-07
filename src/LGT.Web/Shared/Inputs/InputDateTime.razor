@@ -14,26 +14,39 @@
       return new System.DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
     });
   }
+  [Parameter] public bool ParamShowSeconds { get; set; } = false;
+  [Parameter] public bool ParamShowHours { get; set; } = true;
+  private string Format
+  {
+    get
+    {
+      if (ParamShowSeconds)
+      {
+        return "yyyy-MM-dd HH:mm:ss";
+      }
+      if (ParamShowHours)
+      {
+        return "yyyy-MM-dd HH:mm";
+      }
+      return "yyyy-MM-dd";
+    }
+  }
 }
 <InputAny T="@(System.DateTime?)"
-  ParamIsOptional=@ParamIsOptional ParamIsPrefered=@ParamIsPrefered
-  ParamDefaultFunc=@ParamDefaultFunc
-  value=@value valueChanged=@valueChanged
-  ParamName=@ParamName
-  NameFragment=@NameFragment
->
+          ParamIsOptional=@ParamIsOptional ParamIsPrefered=@ParamIsPrefered
+          ParamDefaultFunc=@ParamDefaultFunc
+          value=@value valueChanged=@valueChanged
+          ParamName=@ParamName
+          NameFragment=@NameFragment>
   <ValueFragment>
-    <input type="datetime" 
-      value=@value
-      @onchange=@(async (ev) => {
-        try {
-          var dt = System.DateTime.Parse((string)ev.Value);
-          await valueChanged.InvokeAsync(dt);
-        }
-        catch {
-
-        }
-      })
-      class="w-100" style="min-width: 170px" />
+    <BindDateTime 
+      value=@value valueChanged=@valueChanged 
+      ParamFormat=@Format 
+      ParamClass="w-100"
+      ParamStyle="min-width:170px;"
+      
+      />
+    
   </ValueFragment>
+
 </InputAny>
