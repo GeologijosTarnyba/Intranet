@@ -15,11 +15,6 @@
   NameFragment=@NameFragment
 >
   <ValueFragment>
-    <InputNumber 
-      Value=@value 
-      ValueChanged=@valueChanged 
-      ValueExpression=@(() => this.value) 
-      class="w-100"
-    />
+    <BindInteger value=@value valueChanged=@valueChanged ParamClass="w-100" />
   </ValueFragment>
 </InputAny>

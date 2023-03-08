@@ -21,7 +21,7 @@ public class Grezinys
   /// Gręžinio žiočių absoliutinis aukštis.
   /// </summary>
   [Column("GR_ZIOCIU_ALTITUDE")]
-  public decimal AbsoliutinisAukstis { get; set; } //GR_ZIOCIU_ALTITUDE->NUMBER(6,2)->No->->4->Gręžinio žiočių absoliutinis aukštis.
+  public decimal ZiociuAbsoliutinisAukstis { get; set; } //GR_ZIOCIU_ALTITUDE->NUMBER(6,2)->No->->4->Gręžinio žiočių absoliutinis aukštis.
   /// <summary>
   /// Geografinio taško kodas, išorinis raktas į GEOG_TASKAI
   /// </summary>
@@ -62,8 +62,9 @@ public class Grezinys
   ///// Išorinis raktas į ORGANIZACIJAS/IMONES (išgręžusi gręžinį)
   ///// </summary>
   // // TODO:map
-  //[Column("GR_ISGR_ORGIM_KOD")]
-  //public int? GR_ISGR_ORGIM_KOD { get; set; } //GR_ISGR_ORGIM_KOD->NUMBER(5,0)->Yes->->11->Išorinis raktas į ORGANIZACIJAS/IMONES (išgręžusi gręžinį)
+  [Column("GR_ISGR_ORGIM_KOD")]
+  public int? IsgrezusiImoneID { get; set; } //GR_ISGR_ORGIM_KOD->NUMBER(5,0)->Yes->->11->Išorinis raktas į ORGANIZACIJAS/IMONES (išgręžusi gręžinį)
+  public JuridinisAsmuo IsgrezusiImone { get; set; }
   /// <summary>
   /// Išorinis raktas į PIRMINIAI_DOKUMENTAI
   /// </summary>
@@ -85,51 +86,33 @@ public class Grezinys
   [NotMapped()]
   [Column("GR_TELK_KOD")]
   public int? TelkinysID { get; set; } //GR_TELK_KOD->NUMBER(5,0)->Yes->->15->
-  // // TODO:map
-  //[Column("GR_ADRESAS")]
-  //public string? GR_ADRESAS { get; set; } //GR_ADRESAS->VARCHAR2(50 BYTE)->Yes->->16->
-  // // TODO:map
+  [Column("GR_ADRESAS")]
+  public string? GR_ADRESAS { get; set; } //GR_ADRESAS->VARCHAR2(50 BYTE)->Yes->->16->
   //[Column("GR_PATIKIMAS")]
   //public string? GR_PATIKIMAS { get; set; } //GR_PATIKIMAS->VARCHAR2(1 BYTE)->Yes->->17->
-  // // TODO:map
   //[Column("GR_KERNAS")]
   //public string? GR_KERNAS { get; set; } //GR_KERNAS->VARCHAR2(1 BYTE)->Yes->->18->
-  // // TODO:map
   //[Column("GR_RANG_ORGIM_KOD")]
   //public int? GR_RANG_ORGIM_KOD { get; set; } //GR_RANG_ORGIM_KOD->NUMBER(5,0)->Yes->->19->
-  // // TODO:map
   //[Column("GR_ATV_ID")]
   //public string GR_ATV_ID { get; set; } //GR_ATV_ID->VARCHAR2(20 BYTE)->No->->20->
   // // TODO:map
   //[Column("GR_PAP_ATV_ID")]
   //public string? GR_PAP_ATV_ID { get; set; } //GR_PAP_ATV_ID->VARCHAR2(20 BYTE)->Yes->->21->
   // // TODO:map
-  //[Column("GR_IREG_DATA")]
-  //public DateTime? GR_IREG_DATA { get; set; } //GR_IREG_DATA->DATE->Yes->->22->
-  // // TODO:map
-  //[Column("GR_ISREG_DATA")]
-  //public DateTime? GR_ISREG_DATA { get; set; } //GR_ISREG_DATA->DATE->Yes->->23->
-  // // TODO:map
-  //[Column("GR_NTR_DATA")]
-  //public DateTime? GR_NTR_DATA { get; set; } //GR_NTR_DATA->DATE->Yes->->24->
-  // // TODO:map
-  //[Column("GR_NTR_NR")]
-  //public string? GR_NTR_NR { get; set; } //GR_NTR_NR->VARCHAR2(20 BYTE)->Yes->->25->
-  // // TODO:map
-  //[Column("GR_ILGIS")]
-  //public decimal? GR_ILGIS { get; set; } //GR_ILGIS->NUMBER(7,2)->Yes->->26->
-  // // TODO:map
-  //[Column("GR_SAN_ZONA")]
-  //public decimal? GR_SAN_ZONA { get; set; } //GR_SAN_ZONA->NUMBER(7,2)->Yes->->27->
-  // // TODO:map
-  //[Column("GR_PATVIRTINTAS")]
-  //public string GR_PATVIRTINTAS { get; set; } //GR_PATVIRTINTAS->CHAR(1 BYTE)->No->T'->28->
-  // // TODO:map
-  //[Column("GR_PASTABA")]
-  //public string? GR_PASTABA { get; set; } //GR_PASTABA->VARCHAR2(250 BYTE)->Yes->->29->
-  // // TODO:map
-  //[Column("GR_GAT_NR")]
-  //public string? GR_GAT_NR { get; set; } //GR_GAT_NR->VARCHAR2(10 BYTE)->Yes->->30->
+  [Column("GR_IREG_DATA")]
+  public DateTime? IregistravimoData { get; set; } //GR_IREG_DATA->DATE->Yes->->22->
+  [Column("GR_ISREG_DATA")]
+  public DateTime? IsregistravimoData { get; set; } //GR_ISREG_DATA->DATE->Yes->->23->
+  [Column("GR_NTR_DATA")]
+  public DateTime? GR_NTR_DATA { get; set; } //GR_NTR_DATA->DATE->Yes->->24->
+  [Column("GR_NTR_NR")]
+  public string? GR_NTR_NR { get; set; } //GR_NTR_NR->VARCHAR2(20 BYTE)->Yes->->25->
+  [Column("GR_ILGIS")] public decimal? Ilgis { get; set; } //GR_ILGIS->NUMBER(7,2)->Yes->->26->
+  [Column("GR_SAN_ZONA")] public decimal? GR_SAN_ZONA { get; set; } //GR_SAN_ZONA->NUMBER(7,2)->Yes->->27->
+  [Column("GR_PATVIRTINTAS")] public string GR_PATVIRTINTAS { get; set; } //GR_PATVIRTINTAS->CHAR(1 BYTE)->No->T'->28->
+  [Column("GR_PASTABA")] public string? GR_PASTABA { get; set; } //GR_PASTABA->VARCHAR2(250 BYTE)->Yes->->29->
+  //[Column("GR_GAT_NR")] public string? GR_GAT_NR { get; set; } //GR_GAT_NR->VARCHAR2(10 BYTE)->Yes->->30->
   /// <summary>
   /// Atšakos gręžinio nr (kuriam gręžiniui priklauso atšaka)
   /// </summary>

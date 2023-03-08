@@ -1,7 +1,209 @@
-﻿@attribute [CustomAuthorize(GISEnum.Leidimai)]
+﻿@attribute [CustomAuthorize(GISEnum.Greziniai)]
 @page "/in/gis/grezinys/{ParamID:int}"
+@inject LGT.Data.GeolisContext db
 @code {
-  [Parameter] public int ParamID{ get; set; }
+  [Parameter] public int ParamID { get; set; }
 }
 <h3>Grezinys</h3>
-nepadaryta.
+<ExpList ParamSource=@(
+  db.Greziniai
+    .Where(gr => gr.ID == ParamID)
+    .Select(gr => new {
+      gr.ID,
+      Legalizuotas = gr.GR_LEGALIZUOTAS == "T",
+      Patvirtintas = gr.GR_PATVIRTINTAS == "T",
+      Isgreze = new {
+        Data = gr.IsgrezimoData,
+        Imone = gr.IsgrezusiImoneID == null ? null : new {
+          ID = gr.IsgrezusiImoneID,
+          gr.IsgrezusiImone.JARKodas,
+          gr.IsgrezusiImone.Name1,
+          gr.IsgrezusiImone.Name2,
+          gr.IsgrezusiImone.NameShort
+        }
+      },
+      Uzregistravimas = new {
+        Data = gr.IregistravimoData,
+        LGTDarbuotojas = gr.GR_AU_VARTOTOJAS
+      },
+      Isregistravimas = gr.IsregistravimoData == null ? null : new {
+        Data = gr.IsregistravimoData
+      },
+      Savininkas = gr.SavininkasID == null ? null : new { 
+        ID = gr.SavininkasID,
+        Vardas = gr.Savininkas!.Vardas,
+        Pavarde = gr.Savininkas!.Pavarde
+      },
+      Shape = new {
+        Ilgis = gr.Ilgis,
+        Gylis = gr.Gylis,
+        gr.GR_SAN_ZONA,
+        Ziotys = gr.Ziociu_X == null ? null : new {
+          X = gr.Ziociu_X,
+          Y = gr.Ziociu_Y,
+          Z = gr.ZiociuAbsoliutinisAukstis
+        },
+        Kirtaviete = gr.Kirtavietes_X == null ? null : new {
+          X = gr.Kirtavietes_X,
+          Y = gr.Kirtavietes_Y
+        },
+        GeogTaskas = new {
+          ID = gr.GeogTaskasID,
+          X = gr.GeogTaskas.X,
+          Y = gr.GeogTaskas.Y,
+          Ilguma = gr.GeogTaskas.Ilguma,
+          Platuma = gr.GeogTaskas.Platuma
+        },
+      },
+      Location = new {
+        gr.GR_ADRESAS,
+        gr.GR_NTR_DATA,
+        gr.GR_NTR_NR
+      },
+      Other = new {
+        gr.AtaskaitaID,
+        gr.GR_JVS_ID_RANGOVAS,
+        gr.GR_NURODOMAS_KODU,
+        gr.GR_PATVIRTINTAS,
+        gr.GR_PASTABA,
+      },
+      Telkiniai = gr.TelkiniaiAssignments.Select(telkAss => new {
+        ID = telkAss.TelkinysID,
+        Name = telkAss.Telkinys!.Name
+      })
+    })
+)>
+  <Wrapper Context="rows">
+    <table class="bord">
+      @rows
+    </table>
+  </Wrapper>
+  <IfSome Context="gr">
+    <tr><td>ID</td>
+      <td>
+        @gr.ID
+        @if (gr.Patvirtintas)
+        {
+          <span class="bg-info m-1">Patvirtintas</span>
+        }
+        @if (gr.Legalizuotas)
+        {
+          <span class="bg-info m-1">Legalizuotas</span>
+        }
+      </td>
+    </tr>
+    <tr><td>Išgręžta</td>
+      <td>
+        @gr.Isgreze.Data.LT(false)<br/>
+        @if(gr.Isgreze.Imone != null)
+        {
+          <a href="/in/gis/juridinisasmuo/@gr.Isgreze.Imone.ID">
+            <Name ParamName=@(gr.Isgreze.Imone.Name1 ?? gr.Isgreze.Imone.Name2 ?? gr.Isgreze.Imone.NameShort) />
+          </a>
+        }
+      </td>
+    </tr>
+    <tr><td>Užregistruota</td>
+      <td>
+        @if(gr.Uzregistravimas != null)
+        {
+          <text>
+
+            @gr.Uzregistravimas.Data.LT(false)
+            @if(gr.Uzregistravimas.LGTDarbuotojas != null)
+            {
+              <text> 
+                by @gr.Uzregistravimas.LGTDarbuotojas
+              </text>
+            }
+          </text>
+        }
+      </td>
+    </tr>
+    <tr><td>Išregistruota</td>
+      @if(gr.Isregistravimas == null)
+      {
+        <td>-</td>
+      }
+      else
+      {
+        <td>
+          @gr.Isregistravimas.Data.LT(false)
+        </td>
+      }
+    </tr>
+    <tr><td>Savininkas</td>
+      @if(gr.Savininkas != null)
+      {
+        <td>@gr.Savininkas.Vardas @gr.Savininkas.Pavarde</td>
+      } 
+      else
+      {
+        <td>-</td>
+      }
+    </tr>
+    <tr><td>Shape</td>
+      <td>
+        <table>
+          <tr><td>Gylis</td>
+            <td>@gr.Shape.Gylis</td>
+          </tr>
+          <tr><td>Ilgis</td>
+            <td>@gr.Shape.Ilgis</td>
+          </tr>
+          @if(gr.Shape.Ziotys != null)
+          {
+            <tr><td>Žiotys</td>
+              <td>
+                (@gr.Shape.Ziotys.X, @gr.Shape.Ziotys.Y, @gr.Shape.Ziotys.Z)
+              </td>
+            </tr>
+          }
+          <tr><td>San. zona radius</td>
+            <td>@gr.Shape.GR_SAN_ZONA</td>
+          </tr>
+          @if(gr.Shape.Kirtaviete != null)
+          {
+            <tr><td>Kirtavietė</td>
+              <td>
+                (@gr.Shape.Kirtaviete.X, @gr.Shape.Kirtaviete.Y)
+              </td>
+            </tr>
+          }
+          @if(gr.Shape.GeogTaskas != null)
+          {
+            <tr><td>Geog. taškas</td>
+              <td>
+                (@gr.Shape.GeogTaskas.X, @gr.Shape.GeogTaskas.Y)<br/>
+                @gr.Shape.GeogTaskas.Ilguma, @gr.Shape.GeogTaskas.Platuma
+              </td>
+            </tr>
+          }
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>Location</td>
+      <td>@gr.Location</td>
+    </tr>
+    <tr>
+      <td>Other</td>
+      <td>@gr.Other</td>
+    </tr>
+    <tr>
+      <td>Telkiniai</td>
+      <td>
+        <ul>
+          @foreach(var telkinys in gr.Telkiniai)
+          {
+            <li>
+              <LinkToTelkinys ParamID=@telkinys.ID>
+                @telkinys.Name
+              </LinkToTelkinys>
+            </li>
+          }
+        </ul>
+      </td>
+    </tr>
+  </IfSome>
+</ExpList>

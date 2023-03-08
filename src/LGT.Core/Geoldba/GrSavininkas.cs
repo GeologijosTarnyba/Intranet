@@ -2,7 +2,7 @@
 [Table(name: "GR_SAVININKAI", Schema = "GEOLDBA")]
 public class GrSavininkas
 {
-  public ICollection<Grezinys> Grezinys { get; set; } public int GrezinysCount { get; set; } = 0;
+  public ICollection<Grezinys> Grezinys { get; set; }
   /// <summary>
   /// Gręžinio savininko unikalus numeris, pirminis raktas
   /// </summary>

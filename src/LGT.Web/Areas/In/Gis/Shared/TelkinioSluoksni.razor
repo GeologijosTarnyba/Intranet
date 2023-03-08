@@ -43,12 +43,12 @@
           Istekliai = sl.Istekliai
             .OrderBy(item => item.IST_GALIOJA_NUO)
             .Select(ist => new {
-              ist.Comment,
+              Comment = ist.Comment,
               ist.ID,
-              ist.IST_ISTK_KATEGORIJA,
-              ist.IST_GALIOJA_NUO,
-              ist.IST_GALIOJA_IKI,
-              Kiekis = ist.IST_KIEKIS,
+              IST_ISTK_KATEGORIJA = ist.IST_ISTK_KATEGORIJA,
+              IST_GALIOJA_NUO = (DateTime?)ist.IST_GALIOJA_NUO,
+              IST_GALIOJA_IKI = (DateTime?)ist.IST_GALIOJA_IKI,
+              Kiekis = (decimal?)ist.IST_KIEKIS
             })
           }
         )
@@ -122,13 +122,13 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        @{
-                          var skirtumas =
-                            -(pries1999.Kiekis ?? 0)
-                          ;
-                          likutis += skirtumas;
-                        }
-                        <td>@likutis</td>
+                        <td>
+                          @{
+                            var skirtumas = -(pries1999.Kiekis ?? 0);
+                            likutis += skirtumas;
+                          }
+                          @likutis
+                        </td>
                       </tr>
                     }
                   }
@@ -141,16 +141,13 @@
                       <td>@(met.Nuostolis)</td>
                       <td>@(met.IST_PASIKEITIMAS)</td>
                       <td>@(met.UZ_KONT)</td>
+                      <td>
                       @{
-                        var skirtumas =
-                          - (met.Gavyba ?? 0)
-                          + (met.Nuostolis ?? 0)
-                          + (met.IST_PASIKEITIMAS ?? 0)
-                     
-                        ;
+                        var skirtumas = - (met.Gavyba ?? 0) + (met.Nuostolis ?? 0) + (met.IST_PASIKEITIMAS ?? 0);
                         likutis += skirtumas;
                       }
-                      <td>@likutis</td>
+                        @likutis
+                      </td>
                     </tr>
                   }
                   @foreach (var ketv in naujiKetv)
@@ -163,11 +160,13 @@
                       <td>@(ketv.Nuostolis)</td>
                       <td>@(ketv.IST_PASIKEITIMAS)</td>
                       <td>@(ketv.UZ_KONT)</td>
-                    @{
-                      var skirtumas = (ketv.PB ?? 0) - (ketv.PR ?? 0);
-                      likutis += skirtumas;
-                    }
-                      <td>@likutis</td>
+                      <td>
+                      @{
+                        var skirtumas = (ketv.PB ?? 0) - (ketv.PR ?? 0);
+                        likutis += skirtumas;
+                      }
+                        @likutis
+                      </td>
                     </tr>
                   }
                 </table>

@@ -8,6 +8,7 @@ public enum GISEnum : Int64
   Telkiniai = 1,
   Leidimai = 2,
   Greziniai = 4,
+  Greziniai_tikstatistika = 8,
   AsmensDuomenys = (Int64)1 << 60,
   All = Int64.MaxValue
 }

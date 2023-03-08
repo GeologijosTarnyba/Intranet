@@ -9,11 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Areas\In\Gis\Shared\LinkToTelkinys.razor" />
     <Content Remove="Shared\SwitchCase.razor" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="Areas\In\Gis\Shared\LinkToTelkinys.razor" />
     <None Include="Shared\Inputs\CreateFormatDouble.razor" />
     <None Include="Shared\Inputs\CreateFormatTable.razor" />
     <None Include="Shared\Inputs\Helpers\CreateFormatRow.razor" />
@@ -59,6 +61,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="Areas\In\Gis\Shared\LinkToTelkinys.razor" />
     <_ContentIncludedByDefault Remove="Shared\SwitchCase.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Areas\In\Gis\Shared\LinkToTelkinys.razor" />
   </ItemGroup>
 </Project>
