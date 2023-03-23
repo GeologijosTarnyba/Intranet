@@ -36,14 +36,13 @@
   </p>
   <p style='font-size:13px;font-family:"Times New Roman";'>
     Periodas: 
-    <span class="only-print">
-      nuo @pildymoPradzia?.ToString("yyyy-MM-dd")
-      iki @pildymoPabaiga?.ToString("yyyy-MM-dd")
-    </span>
-    <span class="no-print">
-      nuo <LGT.Web.Shared.Inputs.BindDateTime @bind-value=@pildymoPradzia ParamFormat="yyyy-MM-dd" ParamClass=@string.Empty ParamStyle="width: 70px"/>
-      iki <LGT.Web.Shared.Inputs.BindDateTime @bind-value=@pildymoPabaiga ParamFormat="yyyy-MM-dd" ParamClass=@string.Empty ParamStyle="width: 70px"/>
-    </span>
+    nuo
+    <span class="only-print">@pildymoPradzia?.ToString("yyyy-MM-dd")</span>
+    <span class="no-print"><LGT.Web.Shared.Inputs.BindDateTime @bind-value=@pildymoPradzia ParamFormat="yyyy-MM-dd" ParamClass=@string.Empty ParamStyle="width: 70px"/></span>
+    iki 
+    <span class="only-print">@pildymoPabaiga?.ToString("yyyy-MM-dd")</span>
+    <span class="no-print"><LGT.Web.Shared.Inputs.BindDateTime @bind-value=@pildymoPabaiga ParamFormat="yyyy-MM-dd" ParamClass=@string.Empty ParamStyle="width: 70px" /></span>
+
     <p class="text-center no-print">
       <label>
         <input type="checkbox" @bind-value=@this.ShowOngoing checked=@this.ShowOngoing/>
@@ -71,7 +70,7 @@
       <th colspan="8">Elektroninės informacijos saugos incidentas</th>
     </tr>
     <tr>
-      <th colspan="2" style="width: 200px">Tarnybos informacinio ištekliaus pavadinimas</th>
+      <th colspan="2" style="width: 200px">Informacinio ištekliaus pavadinimas</th>
       <th style="width: 0px;">Požymio kodas</th>
       <th>Įvykio aprašymas</th>
       <th style="width:60px;">Pradžia</th>
