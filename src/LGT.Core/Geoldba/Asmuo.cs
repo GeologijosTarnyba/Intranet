@@ -5,6 +5,7 @@ public class Asmuo
   public ICollection<JungtinesVeiklosSutartis> JungtinesVeiklosSutartys_UzKuriasAtsakingas { get; set; }
   public ICollection<Geoldba.Leidimas> Leidimai { get; set; }
   public ICollection<Inv.InventoriausVieta> InventoriausVietos { get; set; }
+  public ICollection<Inv.Iranga> AtsakingasUzIranga { get; set; }
   [Key]
   [Column(name: "ASM_ID")]
   public int ID { get; set; } // NUMBER(7,0) No

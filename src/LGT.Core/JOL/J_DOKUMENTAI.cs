@@ -2,7 +2,16 @@
 [Table(name: "J_DOKUMENTAI", Schema = "JOL")]
 public class J_DOKUMENTAI
 {
+
+  public ICollection<J_GF_FAILAI> GF_FAILAI { get; set; }
+  public ICollection<J_DOK_FAILAI> DOK_FAILAI { get; set; }
+  public ICollection<J_LEIDINIU_UZSAKYMAI> LEIDIU_UZSAKYMAI { get; set; }
+  public ICollection<J_DOKUMENTU_APRASO_DUOMENYS> AprasoDuomenys { get; set; }
+  public ICollection<J_DOKUMENTU_VIETOS_OBJEKTAI> VietuObjektai { get; set; }
+
+
   public ICollection<Geoldba.TEL_PRI_DOK> TelkiniaiAssignments { get; set; }
+
 
   [Column("D_ID")] public Int64 ID { get; set; }
   //[Column("D_TYPE")] public string D_TYPE { get; set; } 

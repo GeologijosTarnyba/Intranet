@@ -8,3 +8,5 @@ public class Busena
   [Column("BUS_PAV")]
   public string? Name { get; set; } //BUS_PAV->VARCHAR2(25 BYTE)->Yes->->2->
 }
+
+

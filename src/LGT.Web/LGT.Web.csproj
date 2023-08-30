@@ -44,12 +44,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\-\c#\Incidentai\Incidentai\Incidentai.csproj" />
+    <ProjectReference Include="..\CommonBlazorComponents\CommonBlazorComponents.csproj" />
     <ProjectReference Include="..\LGT.Core\LGT.Core.csproj" />
     <ProjectReference Include="..\LGT.Data\LGT.Data.csproj" />
     <ProjectReference Include="..\LGT.Internals\LGT.Internals.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Migrations\DatabaseMigrations\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="wwwroot\files\a\" />
     <Folder Include="wwwroot\files\p\" />

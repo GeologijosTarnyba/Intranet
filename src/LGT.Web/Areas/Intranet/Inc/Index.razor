@@ -1,0 +1,129 @@
+﻿@page "/in/test"
+@layout LayoutA4Landscape
+@inject Incidentai.Data.Database db
+@code {
+  private DateTime? pildymoPradzia { get; set; }
+  private DateTime? pildymoPabaiga { get; set; }
+  public Index()
+  {
+    this.pildymoPradzia = new DateTime(DateTime.Now.Year, 1, 1);
+    var now = DateTime.Now;
+    var year = now.Year;
+    var month = now.Month;
+    pildymoPabaiga = new DateTime(year, month, now.Day, 23, 59, 59);
+  }
+  private int? val { get; set; }
+  private bool ShowTests { get; set; } = false;
+  private bool ShowPratybas { get; set; } = true;
+  private bool ShowLinks { get; set; } = true;
+}
+<div class="docx">
+  <p style='font-size:13px;font-family:"Times New Roman";'>
+    Periodas:
+    nuo
+    <span class="only-print">@pildymoPradzia?.ToString("yyyy-MM-dd")</span>
+    <span class="no-print"><LGT.Web.Shared.Inputs.BindDateTime @bind-value=@pildymoPradzia ParamFormat="yyyy-MM-dd" ParamClass=@string.Empty ParamStyle="width: 70px" /></span>
+    iki
+    <span class="only-print">@pildymoPabaiga?.ToString("yyyy-MM-dd")</span>
+    <span class="no-print"><LGT.Web.Shared.Inputs.BindDateTime @bind-value=@pildymoPabaiga ParamFormat="yyyy-MM-dd" ParamClass=@string.Empty ParamStyle="width: 70px" /></span>
+
+    <span class="no-print">
+      <label class="no-print"><input type="checkbox" @bind-value=@this.ShowPratybas checked=@this.ShowPratybas /> Rodyti pratybas</label>
+    </span>
+    <span class="no-print">
+      <label><input type="checkbox" @bind-value=@this.ShowTests checked=@this.ShowTests />Rodyti testinius</label>
+    </span>
+    <span class="text-center no-print">
+      <button onclick="window.print()">Spausdinti</button>
+    </span>
+  </p>
+  <p style='margin:0;font-size:15px;font-family:"Times New Roman";' class="text-center">
+    <strong>
+      <span style='font-size:13px;font-family:"Times New Roman";'>
+        Lietuvos geologijos tarnybos
+      </span>
+    </strong>
+  </p>
+  <p style='margin:0cm;font-size:15px;font-family:"Arial",sans-serif;margin-bottom:12.0pt;text-align:center;'>
+    <strong style='font-size:13px;font-family:"Times New Roman";'>Elektroninės informacijos saugos incidentų</strong>
+    <strong style='font-size:13px;font-family:"Times New Roman";'>REGISTRAVIMO ŽURNALAS</strong>
+  </p>
+  @{
+    int j = 1;
+  }
+  <CommonBlazorComponents.ExpList ParamSource=@(incQueryable)>
+    <IfNone>
+      <h5 class="text-center">
+        Incidentų atitinkančių nurodytas sąlygas nėra.
+      </h5>
+    </IfNone>
+    <Wrapper Context="rows">
+      <table class="bord w-100 docx-table text-center">
+        <tr>
+          <th rowspan="2" style="width: 36px">Eil. Nr.</th>
+          <th colspan="8">Elektroninės informacijos saugos incidentas</th>
+        </tr>
+        <tr>
+          <th style="width: 0px;">Poveikis</th>
+          <th style="width: 200px">Tarnybos informacinio ištekliaus pavadinimas</th>
+          <th style="width: 0px;">Požymio kodas</th>
+          <th>Įvykio aprašymas</th>
+          <th style="width:60px;">Pradžia</th>
+          <th style="width:60px;">Pabaiga</th>
+          <th style="width: 120px;">Pašalino</th>
+          <th style="width: 160px;">Saugos įgaliotinis<br /> (vardas, pavardė, parašas)</th>
+        </tr>
+        @rows
+      </table>
+      <p style="font-size:10px;font-family:'Times New Roman';" class="p-2">
+        Elektroninės informacijos saugos incidento situacijos požymiai:<br />
+        <CommonBlazorComponents.ExpList ParamSource=@(db.Rizikos)>
+          <SingleFormat Context="rizika">
+            @(rizika.Id). @(rizika.Name);
+          </SingleFormat>
+        </CommonBlazorComponents.ExpList>
+      </p>
+    </Wrapper>
+    <SingleFormat>
+      <tr>
+        <td>@(j++)</td>
+        <td>@context.Poveikis?.Name</td>
+        <td>
+          @foreach(var infIsteklius in context.InformaciniaiIstekliai)
+          {
+            @infIsteklius.Name
+            <br/>
+          }
+        </td>
+        <td>@context.RizikaId</td>
+        <td>@context.Aprasymas</td>
+        <td>@context.DataNuo.LT(true)</td>
+        <td>@context.DataIki.LT(true)</td>
+        <td>
+          @foreach (var kr in context.Kreipiniai)
+          {
+            <span>
+              @kr.Helper.Name
+              (<a>@kr.Name</a>)
+            </span>
+            <br />
+          }
+        </td>
+        <td></td>
+      </tr>
+    </SingleFormat>
+  </CommonBlazorComponents.ExpList>
+
+
+</div>
+@code {
+  private IQueryable<Incidentai.Models.Incidentas> incQueryable => db.Incidentai
+    .Where(item =>
+      (this.ShowTests && item.PoveikisId == -2)
+      || (this.ShowPratybas && item.PoveikisId == -1)
+      || item.PoveikisId >= 0
+    )
+    .Include(item => item.Poveikis)
+    .Include(item => item.InformaciniaiIstekliai)
+    .Include(item => item.Kreipiniai).ThenInclude(item => item.Helper);
+}

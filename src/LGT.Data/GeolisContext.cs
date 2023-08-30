@@ -26,6 +26,8 @@ public class GeolisContext : DbContext
   public DbSet<Core.Geoldba.NER_GAV_KETV> NER_GAV_KETV {  get; set; }
   #region INV
   public DbSet<Core.Inv.DarboVieta> DarboVietos { get; set; }
+  public DbSet<Core.Inv.Iranga> Inventorius { get; set; }
+  public DbSet<Core.Inv.InventoriausVieta> InventoriausVieta { get; set; }
   #endregion
   //public DbSet<Inv.Inv> Invs { get; set; }
 

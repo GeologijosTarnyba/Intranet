@@ -3,12 +3,12 @@
     "LGT.Web": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "in/gis/telk",
+      "launchUrl": "in/test",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:443;http://localhost:80"
+      "applicationUrl": "http://localhost:80"
     }
   }
 }
