@@ -1,0 +1,22 @@
+﻿@code {
+  [Parameter] public string? ParamName { get; set; }
+  [Parameter] public int? ParamID { get; set; }
+  [Parameter] public LinkTypes ParamLinkType { get; set; }
+}
+@code {
+  private string? Href
+  {
+    get
+    {
+      if (this.ParamID != null)
+        return $"/m/{this.ParamID}";
+      return null;
+    }
+  }
+}
+@if (this.Href != null)
+{
+  <LinkComponent ParamHref=@this.Href
+                 ParamName=@this.ParamName
+                 ParamLinkType=@this.ParamLinkType />
+}

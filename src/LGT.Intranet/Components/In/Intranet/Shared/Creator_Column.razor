@@ -1,0 +1,18 @@
+﻿@inherits CreatorClass<LGT.Intranet.Models.Column>
+@code {
+  [Parameter] public int? ParamPageID { get; set; }
+  [Parameter] public int? ParamIndex { get; set; }
+  protected override bool HasRequiredData() => this.ParamPageID != null && this.ParamIndex != null;
+  protected override LGT.Intranet.Models.Column? ConstructCore() => new()
+  {
+    PageId = this.ParamPageID!.Value,
+    Index = this.ParamIndex!.Value,
+  };
+}
+@inject LGT.Intranet.IntranetContext db
+@if(this.HasRequiredData()){
+  <button @onclick=@(async () => await this.Create(db))
+  >
+    @(this.ParamButtonText ?? "Sukurti stulpelį")
+  </button>
+}

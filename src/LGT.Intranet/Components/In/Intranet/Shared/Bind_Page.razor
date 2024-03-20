@@ -1,0 +1,34 @@
+﻿@inherits Bind<LGT.Intranet.Models.Page>
+<EditForm Model=@this.value OnValidSubmit=@CallbackOnValidSubmit>
+  <table>
+    <tr>
+      <td colspan="2">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+      </td>
+    </tr>
+    <tr>
+      <td>Paskelbtas</td>
+      <td><InputCheckbox @bind-Value=@this.value.IsPublic /></td>
+    </tr>
+    <tr>
+      <td>Trumpas pavadinimas: </td>
+      <td><InputText @bind-Value=@this.value.Nam></InputText></td>
+    </tr>
+    <tr>
+      <td>Pilnas pavadinimas: </td>
+      <td><InputText @bind-Value=@this.value.Name></InputText></td>
+    </tr>
+    <tr>
+       <td>Svarbus: </td>
+       <td><InputCheckbox @bind-Value=@this.value.IsImportant></InputCheckbox></td>
+    </tr>
+    <tr>
+      <td>Adresas: </td>
+      <td>
+        <InputText @bind-Value=@this.value.Key placeholder="Dažniausiai nereikalingas" />
+      </td>
+    </tr>
+  </table>
+  <button class="w-100" type="submit">@(this.ParamButtonText ?? "Submit")</button>
+</EditForm>

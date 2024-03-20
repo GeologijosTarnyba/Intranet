@@ -1,0 +1,34 @@
+﻿@code
+{
+  [Parameter] public int ParamTelkID { get; set; }
+}
+@inject Geolis.GeolisContext db
+
+<ExpList ParamIsExpandable=true ParamIsExpanded=false ParamText="Rodyti" ParamSource=@(
+  db.Telkiniai.Where(item => item.ID == ParamTelkID)
+    .SelectMany(telk => 
+      telk.DocumentAssignments!.Select(dokAss => new {
+        ID = dokAss.J_DOKUMENTAIID,
+        dokAss.J_DOKUMENTAI!.FONDO_NR,
+        dokAss.J_DOKUMENTAI.APRIB_DATA,
+         dokAss.J_DOKUMENTAI.LEIDIMO_METAI,
+         dokAss.J_DOKUMENTAI.Name
+      })
+    )
+    .OrderByDescending(item => item.LEIDIMO_METAI)
+)>
+  <Wrapper Context="rows">
+    <table>
+      @rows
+    </table>
+  </Wrapper>
+  <IfSome Context="dok">
+    <tr>
+      <td>@dok.FONDO_NR</td>
+      <td>
+        @dok.Name
+        <b>(@dok.LEIDIMO_METAI)</b>
+      </td>
+    </tr>
+  </IfSome>
+</ExpList>

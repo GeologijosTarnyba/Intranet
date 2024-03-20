@@ -1,0 +1,36 @@
+﻿@attribute [CustomAuthorize(AdminRights.All)]
+@page "/in/admin/users"
+
+
+@inject LGT.Intranet.Authorization.AuthorizationContext db
+<ExpList
+  ParamSource=@(db.Users.Where(item => true)
+    .Select(item => new {
+      ID = item.Id,
+      Name = item.UserName,
+      Disabled = false
+    })
+  )>
+  <Wrapper Context="rows">
+    <div>
+      Visi vartotojai:
+      <table>
+        @rows
+      </table>
+    </div>
+  </Wrapper>
+  <IfSome Context=user>
+    <tr>
+      <td>
+        <a href="/in/admin/users/@user.ID">
+          <NameComponent ParamStrike=@user.Disabled ParamName=@user.Name ParamIsSelected=false />
+        </a>
+      </td>
+    </tr>
+  </IfSome>
+  <IfNone>
+    <div>
+      <h3>Vartotojų nerasta</h3>
+    </div>
+  </IfNone>
+</ExpList>

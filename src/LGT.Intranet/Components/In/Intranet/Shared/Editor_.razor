@@ -1,0 +1,32 @@
+﻿@* @typeparam TKey where TKey: IEquatable<TKey> *@
+@typeparam TCore where TCore: class
+@typeparam TContext where TContext : DbContext
+@inject TContext db
+@code {
+  // [Parameter] public TKey ParamID { get; set; }
+  
+  [Parameter] public System.Linq.Expressions.Expression<Func<TCore, bool>> ParamFilter{ get; set; }
+  [Parameter] public EventCallback<TCore> CallbackOnSave { get; set; }
+}
+@code {
+  protected TCore? self { get; set; }
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    this.self = await this.db
+      .Set<TCore>()
+      .AsNoTracking()
+      .FirstOrDefaultAsync(this.ParamFilter);
+  }
+}
+@code {
+  protected async Task HandleSave()
+  {
+    if (this.self == null)
+      return;
+    this.db.Update(this.self);
+    await this.db.SaveChangesAsync();
+    await this.CallbackOnSave.InvokeAsync(self);
+    db.Entry(this.self).State = EntityState.Detached;
+  }
+}

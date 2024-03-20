@@ -1,0 +1,12 @@
+﻿@inherits Editor_<LGT.Intranet.Models.Message, LGT.Intranet.IntranetContext>
+@if (this.self == null)
+{
+  <span>Žinutė nerasta</span>
+}
+else
+{
+  <Bind_Message @bind-value=@this.self 
+    CallbackOnValidSubmit=@(async () => await this.HandleSave())
+    ParamButtonText="Išsaugoti pakeitimus"
+  />
+}

@@ -1,0 +1,52 @@
+﻿@using LGT.Intranet.Models
+@inherits Create<Group_Article>
+@inject LGT.Intranet.IntranetContext db
+@code {
+  private bool articleSelected => this.model != null && this.model.ArticleId != new Guid();
+}
+@if (this.EditContext != null && this.model != null)
+{
+  <EditForm EditContext="@this.EditContext">
+    <DataAnnotationsValidator />
+    @*<div class="form-group">
+      <label for="name">Name </label>
+      <InputText Id="name" class="form-control" @bind-Value="@model.Name" placeholder="Scope"></InputText>
+      <ValidationMessage For="@(() => model.Name)" />
+    </div>*@
+    <div class="form-group">
+      <label for="index">Index</label>
+      <InputNumber @bind-Value=@this.model.Index />
+      <ValidationMessage For=@(() => model.Index) />
+    </div>
+    <div class="form-group">
+      <label for="Article">Straipsnis</label>
+      <InputSelect id="Article" @bind-Value=@this.model.ArticleId>
+        @if (!articleSelected)
+        {
+          <option></option>
+        }
+        <ExpList
+          ParamSource=@(db.Articles.Where(item => item.Accessibility.HasFlag(Accessibility.IsAccessible))
+          )
+        >
+          <IfSome Context=article>
+            <option value="@article.Id">
+              @article.InternalName
+            </option>
+          </IfSome>
+        </ExpList>
+      </InputSelect>
+      @if (articleSelected)
+      {
+        <a href="/in/intranet/articles/@this.model.ArticleId">redaguoti straipsnį</a>
+      }
+      <ValidationMessage For=@(() => model.Article) />
+    </div>
+    <p>
+      <button type="submit">Patikrinti</button>
+      @if(articleSelected){
+        <CreateButton Model=@EditContext.Model callbackOnCreate=this.OnCreate/>
+      }
+    </p>
+  </EditForm>
+}

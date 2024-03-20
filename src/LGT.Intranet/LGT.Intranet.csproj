@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-LGT.Intranet-2c858ac8-71df-4793-bb13-80f46fd36380</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+		
+    <PackageReference Include="Markdig" Version="0.36.2" />
+		
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.0" />
+    <PackageReference Include="Oracle.EntityFrameworkCore" Version="8.21.121" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LGT.Geolis.Data\LGT.Geolis.Data.csproj" />
+    <ProjectReference Include="..\LGT.Geolis.Models\LGT.Geolis.Models.csproj" />
+    <ProjectReference Include="..\LGT.Incidentai.Models\LGT.Incidentai.Models.csproj" />
+    <ProjectReference Include="..\LGT.Intranet.Authorization.Data\LGT.Intranet.Authorization.Data.csproj" />
+    <ProjectReference Include="..\LGT.Intranet.Authorization.Models\LGT.Intranet.Authorization.Models.csproj" />
+    <ProjectReference Include="..\LGT.Intranet.Authorization\LGT.Intranet.Authorization.csproj" />
+    <ProjectReference Include="..\LGT.Intranet.Data\LGT.Intranet.Data.csproj" />
+    <ProjectReference Include="..\LGT.Intranet.Internal\LGT.Intranet.Internal.csproj" />
+    <ProjectReference Include="..\LGT.Intranet.Models\LGT.Intranet.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Components\Account\_Imports.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Components\Internal\In\Shared\" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,57 @@
+﻿@rendermode InteractiveServer
+@code {
+  [Parameter] public string? ParamAction{ get; set; }
+  [Parameter] public string? ParamType{ get; set; }
+}
+@if(this.ParamAction != null && this.ParamType != null)
+{
+  @if(isState("Create", "skundas"))
+  {
+    <CreateSkundas />
+  }
+  else if(isState("Create", "incidentas"))
+  {
+    <CreateIncidentas />
+  }
+  else if (isState("Create", "kreipinys"))
+  {
+    <CreateKreipinys/>
+  }
+  else if (isState("Create", "sprendimas"))
+  {
+    <CreateSprendimas />
+  }
+  else if (isState("Create", "asmuo"))
+  {
+    <CreateAsmuo />
+    
+  }
+  else if (isState("Create", "darbuotojas"))
+  {
+    <CreateDarbuotojas />
+  }
+  else if (isState("Create", "darboviete"))
+  {
+    <CreateDarboviete />
+  }
+  else if (isState("Create", "informacinisIsteklius"))
+  {
+    <CreateInformacinisIsteklius />
+  }
+  else if (isState("View", "skundas"))
+  {
+    <ViewSkundai />
+  }
+  else if (isState("View", "darbuotojas"))
+  {
+    <ViewDarbuotojai />
+  }
+  else
+  {
+    <Error>Unsupported state</Error>
+  }
+}
+
+@code {
+  private bool isState(string? action, string? type) => this.ParamAction == action && this.ParamType == type;
+}

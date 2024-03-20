@@ -1,0 +1,36 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using LGT.Intranet.Authorization
+@inherits AuthorizeView
+@typeparam TEnum
+
+@code {
+  [EditorRequired]
+  [Parameter] public TEnum Val { get; set; } = default!;
+
+  private string PolicyName => Val switch 
+  {
+    LGT.Intranet.Authorization.IntranetRights intranetAuthValue => IntranetPolicy.GeneratePolicyNameFor(intranetAuthValue),
+    LGT.Intranet.Authorization.AdminRights adminAuthValue => AdministrationPolicy.GeneratePolicyNameFor(adminAuthValue),
+    LGT.Intranet.Authorization.GISRights gisAuthValue => GISPolicy.GeneratePolicyNameFor(gisAuthValue),
+    _ => string.Empty
+  };
+}
+<AuthorizeView Policy=@PolicyName>
+  <Authorized>
+    @if (this.Authorized != null)
+    {
+      @this.Authorized(context)
+    }
+  </Authorized>
+  <NotAuthorized>
+    @if(this.NotAuthorized != null)
+    {
+      @this.NotAuthorized(context)
+    }
+  </NotAuthorized>
+  <Authorizing>
+    @if(this.Authorizing!=null){
+      @this.Authorizing
+    }
+  </Authorizing>
+</AuthorizeView>

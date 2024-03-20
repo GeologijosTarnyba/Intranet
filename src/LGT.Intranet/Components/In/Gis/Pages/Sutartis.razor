@@ -1,0 +1,130 @@
+﻿@attribute [CustomAuthorize(GISRights.Leidimai)]
+@page "/in/gis/sutartis/{ParamID:int}"
+@inject Geolis.GeolisContext db2
+@code {
+  [Parameter] public int ParamID{ get; set; }
+  private IQueryable<Geolis.Geoldba.Sutartis> self => this.db2.Sutartys.Where(item => item.ID == this.ParamID);
+}
+
+<ExpList
+  ParamSource=@(self.Select(sut => new {
+    Leidimas = new {
+      ID = sut.LeidimasID,
+      Name = sut.Leidimas!.Name
+    },
+    sut.Until,
+    sut.Since
+  }))
+>
+  <IfSome Context="sut">
+    <h3>Sutartis @this.ParamID</h3>
+    <table class="bord">
+      <tr>
+        <td>Leidimas</td>
+        <td>
+          <a href="/in/gis/leidimas/@sut.Leidimas.ID">@sut.Leidimas.Name</a>
+        </td>
+      </tr>
+      <tr>
+        <td>Nuo</td>
+        <td>@sut.Since.LT(false)</td>
+      </tr>
+      <tr>
+        <td>Iki</td>
+        <td>@sut.Until.LT(false)</td>
+      </tr>
+      <tr>
+        <td>Sąlygos</td>
+        <td>
+          <ExpList ParamText="Rodyti" ParamIsExpanded="false" ParamIsExpandable="true"
+            ParamSource=@(self
+              .SelectMany(item => item.Salygos!)
+              .Select(sal => new {
+                sal.Name,
+                Tipas = new {
+                  ID = sal.SalygosTipasID,
+                  Name = sal.SalygosTipas!.Name
+                }
+              })
+            )
+          >
+            <Wrapper Context="rows"><ul>@rows</ul></Wrapper>
+            <IfSome Context="sal">
+              <li>
+                <b>@sal.Tipas.Name</b>
+                @sal.Name
+              </li>
+            </IfSome>
+            <IfNone>
+              <br/>
+              Sąlygų nerasta
+            </IfNone>
+          </ExpList>
+        </td>
+      </tr>
+      <tr>
+        <td>objs</td>
+        <td>
+          <ExpList ParamText="Rodyti" ParamIsExpandable=true ParamIsExpanded=false
+            ParamSource=@(self.SelectMany(item => item.ZGRLGavybosObjektai).Select(obj => new {
+              obj.ID,
+              GavybosSklypas = obj.GavybosSklypasID == null ? null : new {
+                ID = obj.GavybosSklypasID,
+                Name = obj.GavybosSklypasID.ToString()
+              },
+              Telkinys = obj.TelkinysID == null ? null : new {
+                   ID = obj.TelkinysID,
+                   Name = obj.Telkinys!.Name
+              },
+              Grezinys = obj.GrezinysID == null ? null : new {
+                   ID = obj.GrezinysID,
+                   Name = obj.GrezinysID.ToString()
+              },
+              IstekliuRusis = new {
+                ID = obj.IstekliuRusisID,
+                Name = obj.IstekliuRusis.Name
+              },
+            }))
+          >
+            <Wrapper Context="rows"><table class="bord">@rows</table></Wrapper>
+            <IfSome Context="obj">
+              @if(obj.GavybosSklypas != null)
+              {
+                <tr>
+                  <td>Gavybos sklypas</td>
+                  <td>
+                    <a href="/in/gis/gavybossklypas/@obj.GavybosSklypas.ID">@obj.GavybosSklypas.Name</a>
+                  </td>
+                </tr>      
+              }
+              <tr>
+                <td>Išteklių rūšis</td>
+                <td>
+                  <a href="/in/gis/istekliurusis/@obj.IstekliuRusis.ID">@obj.IstekliuRusis.Name</a>
+                </td>
+              </tr>
+              @if(obj.Telkinys != null)
+              {
+                <tr>
+                  <td>Telkinys</td>
+                  <td>
+                    <a href="/in/gis/telkinys/@obj.Telkinys.ID">@obj.Telkinys.Name</a>
+                  </td>
+                </tr>
+              }
+              @if (obj.Grezinys != null)
+              {
+                <tr>
+                  <td>Grezinys</td>
+                  <td>
+                    <a href="/in/gis/grezinys/@obj.Grezinys.ID">@obj.Grezinys.Name</a>
+                  </td>
+                </tr>
+              }
+            </IfSome>
+          </ExpList>
+        </td>
+      </tr>
+    </table>
+  </IfSome>
+</ExpList>

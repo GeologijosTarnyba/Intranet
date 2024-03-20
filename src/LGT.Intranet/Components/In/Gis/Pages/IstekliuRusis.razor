@@ -1,0 +1,32 @@
+﻿@attribute [CustomAuthorize(GISRights.All)]
+@page "/in/gis/istekliurusis/{ParamID}"
+@inject Geolis.GeolisContext db2
+@code {
+  [EditorRequired]
+  [Parameter] public string ParamID { get; set; } = default!;
+  private IQueryable<Geolis.Geoldba.IstekliuRusis> self => this.db2.IštekliųRusys.Where(item => item.ID == this.ParamID);
+}
+<ExpList
+  ParamSource=@(self.Select(ir => new {
+    ir.ID,
+    ir.Kodas,
+    ir.Name
+  }))  
+>
+  <Wrapper Context="rows"><table class="bord">@rows</table></Wrapper>
+  <IfSome Context="ir">
+    <h3>Išteklių rūšis</h3>
+    <tr>
+      <td>ID</td>
+      <td>@ir.ID</td>
+    </tr>
+    <tr>
+      <td>Kodas</td>
+      <td>@ir.Kodas</td>
+    </tr>
+    <tr>
+      <td>Pavadinimas</td>
+      <td>@ir.Name</td>
+    </tr>
+  </IfSome>
+</ExpList>

@@ -1,0 +1,39 @@
+﻿@attribute [CustomAuthorize(GISRights.AsmensDuomenys)]
+@page "/in/gis/fizinisasmuo/{ParamID:int}"
+@rendermode InteractiveServer
+@inject Geolis.GeolisContext db2
+@code {
+  [Parameter] public int ParamID { get; set; }
+  private IQueryable<Geolis.Geoldba.Asmuo> self => this.db2.Asmenys.Where(item => item.ID == this.ParamID);
+}
+
+<ExpList
+  ParamSource=@(self.Select(asm => new {
+    asm.Pavarde,
+    asm.Vardas
+  }))
+>
+  <IfSome Context="asm">
+    <h3>FizinisAsmuo @asm.Vardas @asm.Pavarde</h3>
+    <table class="bord">
+      <tr>
+        <td>Leidimai</td>
+        <td>
+          <ExpList ParamText="Rodyti" ParamIsExpanded=false
+            ParamSource=@(self.SelectMany(item => item.Leidimai!).Select(leid => new {
+              leid.ID,
+              leid.Name
+            }))
+          >
+            <Wrapper Context="rows"><ul>@rows</ul></Wrapper>
+            <IfSome Context="leid">
+              <li>
+                <a href="/in/gis/leidimas/@leid.ID">@leid.Name</a>
+              </li>
+            </IfSome>
+          </ExpList>
+        </td>
+      </tr>
+    </table>
+  </IfSome>
+</ExpList>

@@ -1,0 +1,65 @@
+﻿@attribute [CustomAuthorize(GISRights.AsmensDuomenys)]
+@page "/in/gis/jungtinesveiklossutartis/{ParamID:int}"
+@rendermode InteractiveServer
+@inject Geolis.GeolisContext db2
+@code {
+  [Parameter] public int ParamID{ get; set; }
+  private IQueryable<Geolis.Geoldba.JungtinesVeiklosSutartis> self => this.db2.JungtinesVeiklosSutartys.Where(item => item.ID == this.ParamID);
+}
+<ExpList
+  ParamSource=@(self.Select(jvs => new {
+    jvs.Name,
+    jvs.SudarytaAt, jvs.LocationName,
+    jvs.EffectiveSince,
+    jvs.EffectiveUntil,
+    jvs.Pastabos,
+    Atsakingas = new {
+      J = jvs.AtstovasJuridinisAsmuoID == null ? null : new {
+        ID = jvs.AtstovasJuridinisAsmuoID,
+        Name = jvs.AtstovasJuridinisAsmuo!.Name1
+      },
+      F = jvs.AtstovasAsmuoID == null ? null : new {
+        ID = jvs.AtstovasAsmuoID
+      }
+    }
+  }))
+>
+  <IfSome Context="jvs">
+    <h3>Jungtinės veiklos sutartis @jvs.Name</h3>
+    <table class="bord">
+      <tr>
+        <td>Sudaryta</td>
+        <td>@jvs.SudarytaAt.LT(false) @jvs.LocationName</td>
+      </tr>
+      <tr>
+        <td>Galioja nuo</td>
+        <td>@jvs.EffectiveSince.LT(false)</td>
+      </tr>
+      <tr>
+        <td>Galioja iki</td>
+        <td>@jvs.EffectiveUntil.LT(false)</td>
+      </tr>
+      @if(jvs.Pastabos != null){
+        <tr>
+          <td>Pastabos</td>
+          <td>@jvs.Pastabos</td>
+        </tr>
+      }
+      <tr>
+        <td>Atstovas</td>
+        <td>
+        @if(jvs.Atsakingas.J != null)
+        {
+          <a href="/in/gis/juridinisasmuo/@jvs.Atsakingas.J.ID">@jvs.Atsakingas.J.Name</a>
+        } else if(jvs.Atsakingas.F != null)
+        {
+          <a href="/in/gis/fizinisasmuo/@jvs.Atsakingas.F.ID">fizinis asmuo [@jvs.Atsakingas.F.ID]</a>
+        } else
+        {
+            <span class="bg-danger">klaida</span>
+        }
+        </td>
+      </tr>
+    </table>
+  </IfSome>
+</ExpList>

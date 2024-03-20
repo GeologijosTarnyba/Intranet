@@ -1,0 +1,73 @@
+﻿@code {
+  [Parameter] public RenderFragment<RenderFragment>? ParamTextElement { get; set; }
+  [Parameter] public string? ParamText { get; set; }
+  [Parameter] public bool? ParamIsExpandable { get; set; }
+  [Parameter] public bool? ParamIsExpanded { get; set; }
+  [Parameter] public EventCallback<bool> ParamIsExpandedChanged { get; set; }
+  [EditorRequired]
+  [Parameter] public RenderFragment ChildContent { get; set; } = default!;
+}
+@code {
+  private bool IsExpandable { get; set; } = true;
+  private bool IsExpanded { get; set; } = false;
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    this.IsExpandable = this.ParamIsExpandable ?? this.IsExpandable;
+    this.IsExpanded = this.ParamIsExpanded ?? this.IsExpanded;
+    if (this.IsExpanded)
+    {
+    }
+  }
+}
+
+@if (this.IsExpandable || !this.IsExpanded)
+{
+  @if (this.ParamTextElement == null)
+  {
+    <label>
+      <input type="checkbox" checked=@this.IsExpanded @onchange=@this.ToggleExpand />
+      @(this.ParamText ?? "expand")
+    </label>
+  }
+  else
+  {
+    @if (this.ParamText == null)
+    {
+      @ParamTextElement(
+      @:@{
+        <input type="checkbox" checked=@this.IsExpanded @onchange=@this.ToggleExpand />
+      }
+      )
+    }
+    else
+    {
+      @ParamTextElement(
+        @:@{
+        <label>
+          <input type="checkbox" checked=@this.IsExpanded @onchange=@this.ToggleExpand />
+          @this.ParamText
+        </label>
+        }
+      )
+    }
+  }
+}
+
+@if (this.IsExpanded)
+{
+  @this.ChildContent
+}
+
+
+@code
+{
+  private async Task ToggleExpand()
+  {
+    this.IsExpanded = !this.IsExpanded;
+    if (this.IsExpanded)
+    {
+    }
+    await this.ParamIsExpandedChanged.InvokeAsync(this.IsExpanded);
+  }
+}

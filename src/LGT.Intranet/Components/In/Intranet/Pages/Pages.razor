@@ -1,0 +1,36 @@
+﻿@attribute [CustomAuthorize(IntranetRights.PagesEdit)]
+@page "/in/intranet/pages"
+@rendermode InteractiveServer
+@inject LGT.Intranet.IntranetContext db
+<div class="row">
+  <div class="col">
+    <ExpList
+      ParamSource=@(db.Pages
+        .AsNoTracking()
+        .OrderBy(item => item.Id)
+        .Select((LGT.Intranet.Models.Page item) => new {
+          item.Id,
+          item.Name,
+          item.Key
+        })
+      )
+    >
+      <Wrapper Context="rows">
+        <ol>@rows</ol>
+      </Wrapper>
+      <IfSome Context="item">
+        <li value=@item.Id>
+          <AdminPageLink ParamID=@item.Id ParamName=@item.Name /> @item.Key
+        </li>
+      </IfSome>
+      <IfNone>
+        <div>
+          Puslapių nerasta.
+        </div>
+      </IfNone>
+    </ExpList>
+  </div>
+  <div class="col">
+    <Create_Page ParamButtonText="Sukurti naują puslapį" CallbackOnCreate=@this.StateHasChanged />
+  </div>
+</div>

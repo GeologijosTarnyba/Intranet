@@ -1,0 +1,76 @@
+﻿@attribute [CustomAuthorize(GISRights.Greziniai_tikstatistika)]
+@page "/in/gis/grezinys/legalizavimas"
+@rendermode InteractiveServer
+@code {
+  private DateTime? Since { get; set; }
+  private DateTime? Until { get; set; }
+  public Greziniai_Legalizavimas()
+  {
+    var now = DateTime.Now;
+    this.Since = new DateTime(now.Year, now.Month - 1, 1);
+    this.Until = new DateTime(now.Year, now.Month, 1, 23, 59, 59).AddDays(-1);
+  }
+}
+
+<table class="bord">
+  <tr>
+    <td colspan="2">
+      Laikotarpis
+    </td>
+  </tr>
+  <tr>
+    <td>Nuo</td>
+    <td><BindDateTime @bind-value=@Since ParamFormat="yyyy-MM-dd HH:mm" /></td>
+  </tr>
+  <tr>
+    <td>Iki</td>
+    <td><BindDateTime @bind-value=@Until ParamFormat="yyyy-MM-dd HH:mm" /></td>
+  </tr>
+  <tr>
+    <td>
+      <button @onclick=@Skaiciuoti disabled="@(this.Since == null || this.Until == null)">Skaičiuoti</button>
+    </td>
+  </tr>
+  @if(legalizuotiCount != null && normalCount != null)
+  {
+    <tr>
+      <td>Legalizuoti</td>
+      <td>@legalizuotiCount</td>
+    </tr>
+    <tr>
+      <td>Standartiniai</td>
+      <td>@normalCount</td>
+    </tr>
+    <tr>
+      <td>viso</td>
+      <td>@(normalCount + legalizuotiCount)</td>
+    </tr>
+  }
+</table>
+
+@inject Geolis.GeolisContext db
+@code
+{
+  private int? legalizuotiCount;
+  private int? normalCount;
+
+  private async Task Skaiciuoti()
+  {
+    this.legalizuotiCount = null;
+    normalCount = null;
+    this.StateHasChanged();
+    var x = await db.Greziniai.Where(item =>
+      item.IregistravimoData != null
+      && item.IregistravimoData.Value >= Since
+      && item.IregistravimoData.Value <= Until
+    )
+      .GroupBy(item => item.GR_LEGALIZUOTAS == "T")
+      .Select(item => new {
+        Legalizuotas = item.Key,
+        Count = item.Count()
+      })
+      .ToListAsync();
+    this.legalizuotiCount = x.FirstOrDefault(item => item.Legalizuotas)?.Count ?? 0;
+    this.normalCount = x.FirstOrDefault(item => !item.Legalizuotas)?.Count ?? 0;
+  }
+}

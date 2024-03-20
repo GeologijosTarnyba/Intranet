@@ -1,0 +1,16 @@
+﻿@inherits Editor_<LGT.Intranet.Models.Page, LGT.Intranet.IntranetContext>
+<div>
+  @if(this.self == null){
+    <text>Puslapis nerastas</text>
+  } 
+  else 
+  {
+    <Bind_Page
+      @bind-value=@this.self 
+      CallbackOnValidSubmit=this.HandleSave
+      ParamButtonText="Išsaugoti pakeitimus"
+      
+    >
+    </Bind_Page>
+  }
+</div>

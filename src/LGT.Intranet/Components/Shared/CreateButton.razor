@@ -1,0 +1,21 @@
+﻿@typeparam TCore
+@code {
+  [Parameter] public TCore? Model { get; set; }
+  [Parameter] public RenderFragment? ChildContent { get; set; }
+  [Parameter] public EventCallback callbackOnCreate { get; set; }
+}
+@if(this.Model != null){
+  @ChildContent
+  <button @onclick=@this.doCreate>Sukurti</button>
+}
+@inject LGT.Intranet.IntranetContext db
+@code {
+  protected async Task doCreate()
+  {
+    if (this.Model == null)
+      throw new Exception();
+    this.db.Add(this.Model);
+    await this.db.SaveChangesAsync();
+    await this.callbackOnCreate.InvokeAsync();
+  }
+}

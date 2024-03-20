@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LGT.Geolis.Data\LGT.Geolis.Data.csproj" />
+    <ProjectReference Include="..\LGT.Geolis.Models\LGT.Geolis.Models.csproj" />
+  </ItemGroup>
+
+</Project>

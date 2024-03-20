@@ -1,0 +1,51 @@
+﻿@attribute [Authorize]
+@page "/in/gis/JA/{ParamJarKodas}"
+
+@code {
+  [Parameter] public string ParamJarKodas { get; set; }
+}
+
+@inject Geolis.GeolisContext db
+<ExpList
+  ParamSource=@(db.JuridiniaiAsmenys
+    .Where(item => item.JARKodas == ParamJarKodas)
+    .Select(jasm => new {
+      jasm.ID,
+      Name = jasm.Name1,
+      A = jasm.Leidimai!
+        .SelectMany(leid => leid.Sutartys!)
+        .SelectMany(sut => sut.ZGRLGavybosObjektai!)
+        .Select(obj => new { 
+          ID = obj.TelkinysID,
+          Name = obj.Telkinys!.Name
+        })
+        .Distinct()
+    })
+  )
+>
+  <IfNone>
+    Duomenų apie juridinį asmenį kodu @ParamJarKodas tarnyba neturi.
+  </IfNone>
+  <Wrapper Context="rows">
+    <table class="bord">
+      @rows
+    </table>
+  </Wrapper>
+  <IfSome Context="jasm">
+    <tr>
+      <td><a href="/in/gis/juridinisasmuo/@jasm.ID">@jasm.Name</a></td>
+      <td>
+        <table class="bord">
+          @foreach (var telk in jasm.A)
+          {
+            <tr>
+              <td>
+                <a href="/in/gis/telkinys/@telk.ID">@telk.Name</a>
+              </td>
+            </tr>
+          }
+        </table>
+      </td>
+    </tr>
+  </IfSome>
+</ExpList>

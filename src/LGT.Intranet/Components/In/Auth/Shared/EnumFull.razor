@@ -1,0 +1,28 @@
+﻿@rendermode InteractiveServer
+@code {
+  [EditorRequired]
+  [Parameter] public string ClaimType { get; set; } = default!;
+  [EditorRequired]
+  [Parameter] public string ClaimValue { get; set; } = default!;
+  [Parameter] public EventCallback<string> ClaimValueChanged { get; set; }
+  private Array? values => this.ClaimType switch
+  {
+    GISPolicy.Prefix => Enum.GetValues(typeof(GISRights)),
+    AdministrationPolicy.Prefix => Enum.GetValues(typeof(AdminRights)),
+    IntranetPolicy.Prefix => Enum.GetValues(typeof(IntranetRights)),
+    _ => null
+  };
+}
+
+@if (this.ClaimType == IntranetPolicy.Info.Prefix)
+{
+  <EnumEdit T=@IntranetRights value=@IntranetPolicy.NumberToEnum(this.ClaimValue) valueChanged=@(async item => await this.ClaimValueChanged.InvokeAsync(((Int64)item).ToString())) />
+} else if (this.ClaimType == AdministrationPolicy.Info.Prefix){
+  <EnumEdit T=@AdminRights value=@AdministrationPolicy.NumberToEnum(this.ClaimValue) valueChanged=@(async item => await this.ClaimValueChanged.InvokeAsync(((Int64)item).ToString())) />
+}
+else if (this.ClaimType == GISPolicy.Info.Prefix){
+  <EnumEdit T="@GISRights" value=@GISPolicy.NumberToEnum(this.ClaimValue) valueChanged=@(async item => await this.ClaimValueChanged.InvokeAsync(((Int64)item).ToString())) />
+}
+else {
+  <b>@this.ClaimType=@this.ClaimValue</b>
+}

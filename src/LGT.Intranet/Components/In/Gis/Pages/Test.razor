@@ -1,0 +1,19 @@
+﻿@attribute [CustomAuthorize(AdminRights.All)]
+@page "/in/gis/test"
+@code {
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    //wd = System.IO.Directory.GetCurrentDirectory();
+    webRoot = env.WebRootPath;
+  }
+  private string? webRoot;
+}
+@inject IWebHostEnvironment env
+
+@if(this.webRoot == null){
+  <b>wd is null</b>
+}
+else {
+  <b>@webRoot</b>
+}

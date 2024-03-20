@@ -1,0 +1,19 @@
+﻿@code {
+  [Parameter] public int? id { get; set; }
+  [Parameter] public EventCallback<int?> idChanged { get; set; }
+  [Parameter] public bool ParamIsOptional { get; set; }
+  [Parameter] public bool ParamIsPrefered { get; set; } = false;
+  [Parameter] public string? ParamName { get; set; } = "Kreipinys";
+  [Parameter] public RenderFragment? NameFragment { get; set; }
+  [Parameter] public RenderFragment? ValueFragment { get; set; }
+  [Parameter] public string? ParamAptarnaujantiImoneID { get; set; }
+}
+<InputAny ParamName=@ParamName ParamIsOptional=@ParamIsOptional ParamIsPrefered=@ParamIsPrefered
+          value=@id valueChanged=@idChanged
+          ParamDefaultFunc=@(() => (int?)null)
+          NameFragment=@NameFragment
+>
+  <ValueFragment>
+    <ChooseKreipinys id=@id idChanged=@idChanged ParamAptarnaujantiImoneID=@ParamAptarnaujantiImoneID />
+  </ValueFragment>
+</InputAny>

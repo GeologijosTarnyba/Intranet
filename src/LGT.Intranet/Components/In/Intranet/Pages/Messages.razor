@@ -1,0 +1,52 @@
+﻿@attribute [CustomAuthorize(IntranetRights.MessagesEdit)]
+@page "/in/intranet/messages"
+@rendermode InteractiveServer
+@inject LGT.Intranet.IntranetContext db
+
+@code {
+  private int? EditingID { get; set; }
+  private void Select(int messageID){
+    if(this.EditingID == messageID){
+      this.EditingID = null;
+      return;
+    }
+    this.EditingID = messageID;
+  }
+}
+<div>
+  <div class="row">
+    <div class="col">
+      <ExpList
+        ParamSource=@(db.Messages.Where(item => true)
+          .OrderByDescending(item => item.Id)
+          .AsNoTracking()
+          .Select(item => new {
+            item.Id,
+            Name = item.Header,
+            Strike = !item.IsPublic
+          })
+        )
+        >
+        <Wrapper Context="rows"><ul>@rows</ul></Wrapper>
+        <IfSome Context="message">
+          <li @onclick=@(() => Select(message.Id))>
+            <NameComponent 
+              ParamStrike=@message.Strike 
+              ParamName=@message.Name 
+              ParamIsSelected=@(this.EditingID==message.Id)
+            />
+          </li>
+        </IfSome>
+        <IfNone>
+          Žinučių nerasta
+        </IfNone>
+      </ExpList>
+    </div>
+    <div class="col">
+      <MessageTabs 
+        ParamID=@this.EditingID 
+        callback=this.StateHasChanged 
+      />
+    </div>
+  </div>
+</div>

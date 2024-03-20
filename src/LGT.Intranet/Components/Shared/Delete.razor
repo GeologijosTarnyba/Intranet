@@ -1,0 +1,21 @@
+﻿@typeparam TCore where TCore: class
+@inject LGT.Intranet.IntranetContext db
+@code {
+  [Parameter] public TCore? ParamCore { get; set; }
+  [Parameter] public EventCallback<TCore> ParamOnDeleteCallback { get; set; }
+  [Parameter] public string ParamButtonText { get; set; } = "Ištrinti";
+}
+
+<span class="text-danger">elementas bus ištrintas neprašant patvirinimo</span>
+<br/>
+<button class="button btn-danger" type="button" @onclick=@this.HandleDeleteClick>@ParamButtonText</button>
+
+@code {
+  private async Task HandleDeleteClick(){
+    if (this.ParamCore == null)
+      return;
+    this.db.Remove<TCore>(this.ParamCore);
+    await this.db.SaveChangesAsync();
+    await this.ParamOnDeleteCallback.InvokeAsync(this.ParamCore);
+  }
+}

@@ -1,0 +1,42 @@
+﻿@typeparam TCore where TCore : class
+@typeparam TKey
+@inject NavigationManager NavManager
+@code {
+  [EditorRequired]
+  [Parameter] public DbContext db { get; set; } = default!;
+  [Parameter] public TKey? ParamID { get; set; }
+  [Parameter] public string ParamButtonText { get; set; } = "Ištrinti";
+  [Parameter] public EventCallback<bool> callback { get; set; }
+  [Parameter] public bool ParamShowWarning { get; set; } = true;
+}
+
+@if (this.ParamID != null)
+{
+  @if (ParamShowWarning)
+  {
+    <span class="text-danger">elementas bus ištrintas neprašant patvirinimo</span>
+    <br />
+  }
+  <button class="button btn-danger"
+          type="button"
+          @onclick=@this.HandleDeleteClick>
+    @ParamButtonText
+  </button>
+}
+
+@code {
+  private async Task HandleDeleteClick()
+  {
+    if (this.ParamID == null)
+      return;
+    var core = await db.FindAsync<TCore>(this.ParamID);
+    if (core == null)
+    {
+      await this.callback.InvokeAsync(false);
+      return;
+    }
+    this.db.Remove(core);
+    await this.db.SaveChangesAsync();
+    await this.callback.InvokeAsync(true);
+  }
+}

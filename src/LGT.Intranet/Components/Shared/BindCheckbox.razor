@@ -1,0 +1,41 @@
+﻿@code {
+  [Parameter] public string? ParamStyle { get; set; }
+  [Parameter] public string[]? ParamValues { get; set; }
+  [Parameter] public string? value { get; set; }
+  [Parameter] public EventCallback<string?> valueChanged { get; set; }
+  [Parameter] public RenderFragment<RenderFragment> ItemTemplate { get; set; } = (checkbox) => checkbox;
+  [Parameter] public bool ParamShowCheckbox { get; set; } = true;
+}
+@if (this.ParamValues != null)
+{
+  @foreach (var item in this.ParamValues.Distinct())
+  {
+    @ItemTemplate(
+      @:@{
+          @if(this.ParamShowCheckbox){
+            <input type="checkbox" checked="@(this.value == item)"  
+              @onchange=@(async () => await this.Toggle(item))
+            />
+          }
+        <label @onclick=@(async () => await this.Toggle(item))>
+          @item
+        </label>
+      }
+    )
+  }
+}
+@code {
+  private async Task Toggle(string item)
+  {
+    Console.WriteLine(  item);
+    if (this.value == item)
+    {
+      this.value = null;
+    }
+    else
+    {
+      this.value = item;
+    }
+    await this.valueChanged.InvokeAsync(this.value);
+  }
+}

@@ -1,0 +1,18 @@
+﻿@attribute [CustomAuthorize(GISRights.Greziniai)]
+@page "/in/gis/grezinys/"
+@rendermode InteractiveServer
+@inject Geolis.GeolisContext db
+@code {
+  private string? searchString { get; set; }
+  private bool Search { get; set; }
+  private int? id { get; set; }
+}
+<h3>Gręžiniai</h3>
+<div>
+  <BindInteger @bind-value=@id />
+  @if (id != null)
+  {
+    <a href="/in/gis/grezinys/@id">@id</a>
+  }
+  <a href="/in/gis/grezinys/legalizavimas">legalizavimo statistika</a>
+</div>

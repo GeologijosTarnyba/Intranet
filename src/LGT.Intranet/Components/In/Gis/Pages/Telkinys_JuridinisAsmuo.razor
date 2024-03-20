@@ -1,0 +1,50 @@
+﻿@attribute [CustomAuthorize(GISRights.Telkiniai)]
+@page "/in/gis/telkinys/{telkinysID:int}/{ParamJARKodas}"
+@rendermode InteractiveServer
+@inject Geolis.GeolisContext db
+@code {
+  [EditorRequired]
+  [Parameter] public int telkinysID { get; set; } = default!;
+  [EditorRequired]
+  [Parameter] public string ParamJARKodas { get; set; } = default!;
+}
+
+<table class="bord">
+  <tr>
+    <td>Telkinys (ID)</td>
+    <td>
+      <a href="/in/gis/telkinys/@telkinysID">@telkinysID</a>
+    </td>
+  </tr>
+  <tr><td>Juridinis asmuo (JARKodas)</td>
+    <td>
+      @ParamJARKodas
+      <div>
+        <ExpList ParamText="Visi" ParamIsExpandable=true ParamIsExpanded ="false"
+                 ParamSource=@(db.JuridiniaiAsmenys
+            .Where(item => item.JARKodas == ParamJARKodas)
+            .Select(item => new {
+              item.ID, Name = item.Name1
+            })
+          )
+        >
+          <Wrapper Context="rows"><ul>@rows</ul></Wrapper>
+          <IfSome Context="asm">
+            <li>
+              <a href="/in/gis/juridinisasmuo/@asm.ID">@asm.Name</a>
+            </li>
+          </IfSome>
+        </ExpList>
+      </div>
+    </td>
+  </tr>
+</table>
+<hr/>
+<KETVs 
+  ParamFilter=@(item =>
+    item.GavybosSklypas!.ZGRLGavybosObjektai!.Any(item => item.Sutartis!.Leidimas!.Kam_JuridinisAsmuoID != null && item.Sutartis.Leidimas.Kam_JuridinisAsmuo!.JARKodas == this.ParamJARKodas)
+    &&
+    item.TelkinioSluoksnis!.TelkinysID == this.telkinysID
+  )
+>
+</KETVs>

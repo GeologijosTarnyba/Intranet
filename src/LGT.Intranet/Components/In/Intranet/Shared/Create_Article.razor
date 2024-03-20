@@ -1,0 +1,19 @@
+﻿@inherits CreateClass<LGT.Intranet.Models.Article>
+
+@code {
+  protected override LGT.Intranet.Models.Article? ConstructCore()
+  {
+    return new()
+    {
+    };
+  }
+}
+@inject LGT.Intranet.IntranetContext db
+@if (this.Core != null)
+{
+  <Bind_Article
+    @bind-value=@this.Core
+    ParamButtonText=@this.ParamButtonText
+    CallbackOnValidSubmit=@(async () => await this.HandleValidSubmit(db))
+  />
+}

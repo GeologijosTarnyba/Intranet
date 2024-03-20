@@ -1,0 +1,43 @@
+﻿@using System 
+@using System.IO
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Logging
+@code {
+  [EditorRequired]
+  [Parameter] public string ParamDirectoryToSaveTo { get; set; } = default!;
+  [Parameter] public EventCallback callback { get; set; }
+}
+<InputFile OnChange="@LoadFiles" multiple >asd</InputFile>
+@if (isLoading)
+{
+    <p>Keliama...</p>
+}
+
+@code {
+  private List<IBrowserFile> loadedFiles = new();
+  private long maxFileSize = 1024 * 1024 * 300;
+  private int maxAllowedFiles = 30;
+  private bool isLoading;
+
+  private async Task LoadFiles(InputFileChangeEventArgs e)
+  {
+    isLoading = true;
+    foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+    {
+      try
+      {
+        var trustedFileNameForFileStorage = Path.GetRandomFileName();
+        var path = $"{this.ParamDirectoryToSaveTo}/{file.Name}";
+        await using FileStream fs = new(path, FileMode.Create);
+        await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
+        await callback.InvokeAsync();
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine("File: {Filename} Error: {Error}", file.Name, ex.Message);
+      }
+    }
+    isLoading = false;
+  }
+}

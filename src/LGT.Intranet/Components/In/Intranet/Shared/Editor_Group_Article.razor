@@ -1,0 +1,43 @@
+﻿@inherits Editor_<LGT.Intranet.Models.Group_Article, LGT.Intranet.IntranetContext>
+@inject LGT.Intranet.IntranetContext db
+@if (this.self == null)
+{
+    <h3>Grupė nerasta</h3>
+}
+else
+{
+  <div>
+    <EditForm Model=@this.self>
+      <DataAnnotationsValidator/>
+      <ValidationSummary/>
+      <table>
+        <tr>
+          <td>Index</td>
+          <td><InputNumber @bind-Value=@this.self.Index /></td>
+        </tr>
+        <tr>
+          <td>Straipsnis</td>
+          <td>
+            <InputSelect @bind-Value=@this.self.ArticleId>
+              <ExpList
+                ParamSource=@(db.Articles.Where(item => item.Accessibility.HasFlag(LGT.Intranet.Models.Accessibility.IsAccessible))
+                )
+                >
+                <IfSome Context=article>
+                  <option value="@article.Id">
+                    @article.InternalName
+                  </option>
+                </IfSome>
+              </ExpList>
+            </InputSelect>
+            @if (this.self.ArticleId != new Guid())
+            {
+              <a href="/in/intranet/articles/@this.self.ArticleId">redaguoti straipsnį</a>
+            }
+          </td>
+        </tr>
+      </table>
+      <button class="btn-primary" @onclick=@this.HandleSave>Išsaugoti pakeitimus</button>
+    </EditForm>
+  </div>
+}

@@ -1,0 +1,17 @@
+﻿@attribute [CustomAuthorize(AdminRights.All)]
+@page "/in/admin"
+<h3>Administravimas</h3>
+<FlexAuthorizeView Val=@(AdminRights.EditUsers)>
+  <Authorized>
+    <div>
+      <a href="/in/admin/users">Vartotojai</a>
+    </div>
+  </Authorized>
+</FlexAuthorizeView>
+<FlexAuthorizeView Val=@(AdminRights.Incidentai)>
+  <Authorized>
+    <div>
+      <a href="/in/internals">Incidentai</a>
+    </div>
+  </Authorized>
+</FlexAuthorizeView>

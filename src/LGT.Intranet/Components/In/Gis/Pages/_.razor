@@ -1,0 +1,18 @@
+﻿@attribute [CustomAuthorize(GISRights.All)]
+@page "/in/gis"
+<h3>Geologija</h3>
+<FlexAuthorizeView Val=@GISRights.Telkiniai>
+  <Authorized>
+    <div>
+      <a href="/in/gis/telk">Telkiniai</a>
+    </div>
+  </Authorized>
+</FlexAuthorizeView>
+
+<FlexAuthorizeView Val=@GISRights.Greziniai>
+  <Authorized>
+    <div>
+      <a href="/in/gis/grezinys">Gręžiniai</a>
+    </div>
+  </Authorized>
+</FlexAuthorizeView>

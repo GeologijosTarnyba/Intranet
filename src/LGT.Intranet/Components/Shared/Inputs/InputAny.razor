@@ -1,0 +1,55 @@
+﻿@typeparam T
+@using LGT.Intranet.Components.Shared.Inputs.Helpers
+@code {
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    if (!ParamIsOptional && (this.value == null || this.value.Equals(default(T))))
+    {
+      if(this.ParamDefaultFunc != null)
+      {
+        this.value = ParamDefaultFunc.Invoke();
+      }
+    }
+  }
+}
+@code {
+  [Parameter] public bool ParamIsOptional { get; set; }
+  [Parameter] public bool ParamIsPrefered { get; set; } = false;
+  [Parameter] public T? value { get; set; }
+  [Parameter] public EventCallback<T?> valueChanged { get; set; }
+  [Parameter] public Func<T>? ParamDefaultFunc { get; set; }
+  [Parameter] public string? ParamName { get; set; }
+  [Parameter] public RenderFragment? NameFragment { get; set; }
+  [Parameter] public RenderFragment? ValueFragment { get; set; }
+  private RenderFragment nameFragment
+  {
+    get
+    {
+      if (this.NameFragment != null)
+        return this.NameFragment;
+      return @<Name ParamName=@ParamName></Name>;
+    }
+  }
+}
+@if(this.ValueFragment == null)
+{
+  <Error>ValueFragment not available</Error>
+}
+else
+{
+  @if (this.ParamIsOptional)
+  {
+    <InputOptional ParamIsPrefered=@ParamIsPrefered
+      ParamDefaultFunc=@this.ParamDefaultFunc
+      value=@value valueChanged=@valueChanged 
+      ValueFragment=@ValueFragment
+      NameFragment=@nameFragment
+    >
+    </InputOptional>
+  }
+  else
+  {
+    <CreateFormatRow NameFragment=@nameFragment ValueFragment=@ValueFragment />
+  }
+}

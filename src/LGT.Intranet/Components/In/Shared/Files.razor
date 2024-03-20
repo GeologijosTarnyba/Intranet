@@ -1,0 +1,129 @@
+﻿@rendermode InteractiveServer
+@code {
+  [Parameter] public string? ParamPathAtRoot { get; set; }
+}
+@inject IWebHostEnvironment env
+@code {
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    wwwroot = env.ContentRootPath;
+  }
+  private string? wwwroot;
+  private string? fileDir
+  {
+    get
+    {
+      if (wwwroot == null || ParamPathAtRoot == null)
+        return null;
+      return $"{wwwroot}/{ParamPathAtRoot}";
+    }
+  }
+}
+
+@if (this.fileDir == null)
+{
+  <b>fileDir is NULL</b>
+} else {
+  @if(System.IO.Directory.Exists(fileDir)){
+    var files = System.IO.Directory.GetFiles(this.fileDir);
+    <FlexAuthorizeView Val=@IntranetRights.FilesUpload>
+      <Authorized>
+        <h5>Įkelti failus: </h5>
+        <UploadFilesComponent ParamDirectoryToSaveTo=@this.fileDir callback=this.StateHasChanged />
+      </Authorized>
+    </FlexAuthorizeView>
+    @if (files.Any())
+    {
+      <h5>Egzistuojantys failai: </h5>
+      <FlexAuthorizeView Val=IntranetRights.FilesDelete>
+        <Authorized>
+          <table class="bord w-100">
+            <tr>
+              <th style="width: 0%">failas</th>
+              <th style="width: 0%">veiksmai</th>
+              <th>pilnas kelias</th>
+            </tr>
+            @foreach (var filePath in files)
+            {
+              var fileName = System.IO.Path.GetFileName(filePath);
+              var href = $"/{this.ParamPathAtRoot}/" + Uri.EscapeDataString(fileName);
+              <tr>
+                <td>
+                  <a href=@href download>@fileName</a>
+                </td>
+                <td>
+                  <button @onclick=@(() => this.DeleteFile(filePath))
+                  >Ištrinti</button>
+                </td>
+                <td>
+                  <input class="w-100" type="text" value=@href/>
+                </td>
+              </tr>
+            }
+          </table>
+        </Authorized>
+        <NotAuthorized>
+          <table class="bord w-100">
+            <tr>
+              <th style="width: 0%">failas</th>
+              <th>pilnas kelias</th>
+            </tr>
+            @foreach (var filePath in files)
+            {
+              var fileName = System.IO.Path.GetFileName(filePath);
+              var href = $"/{this.ParamPathAtRoot}/" + Uri.EscapeDataString(fileName);
+              <tr>
+                <td>
+                  <a href=@href download>@fileName</a>
+                </td>
+                <td>
+                  <input class="w-100" type="text" value=@href/>
+                </td>
+              </tr>
+            }
+          </table>
+        </NotAuthorized>
+      </FlexAuthorizeView>
+    }
+    else // files none
+    {
+      <div>
+        <button @onclick=this.DeleteFileDir>
+          Ištrinti direktoriją
+        </button>
+      </div>
+    }
+  }
+  else {
+    <div>
+      <button @onclick=this.CreateFileDir>
+        Sukurti direktoriją failams.
+      </button>
+    </div>
+  }
+}
+
+@code {
+  private void CreateFileDir()
+  {
+    if (!System.IO.Directory.Exists(fileDir))
+    {
+      System.IO.Directory.CreateDirectory(this.fileDir);
+    }
+  }
+  private void DeleteFileDir()
+  {
+    if (System.IO.Directory.Exists(fileDir))
+    {
+      System.IO.Directory.Delete(this.fileDir);
+    }
+  }
+  private void DeleteFile(string filePath)
+  {
+    if (filePath.StartsWith(this.fileDir) && System.IO.File.Exists(filePath))
+    {
+      System.IO.File.Delete(filePath);
+    }
+  }
+}
