@@ -8,7 +8,7 @@ Pagrindinis straipsnis čia: https://learn.microsoft.com/en-us/aspnet/core/host-
 
 ```powershell
 	New-LocalUser -Name IntranetService
-		- G7hk+nDWAoRG
+		- pa$$word
 ```
 
 
