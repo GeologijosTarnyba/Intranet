@@ -22,6 +22,7 @@ Jų migracijų skriptai saugomi atitinkamai
 1. \Intranet\src\LGT.Intranet\Migrations\AuthorizationContextMigrations\
 1. \Intranet\src\LGT.Intranet\Migrations\IntranetContextMigrations\
 1. \Intranet\src\LGT.Intranet\Migrations\InternalContextMigrations\
+
 GeolisContext migracijų neturi, nes jungiamasi prie egzistuojančios db.
 #### Migracijos skriptų sukūrimas
 sugeneruojami naudojant `dotnet eftools` (pakeičiant _migracijos vardas_)
