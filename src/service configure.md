@@ -1,3 +1,7 @@
+
+
+
+
 ### Dotnet aplikacijos sukonfigūravimas kaip windows serviso
 
 Šitaip servisą reikia sukonfigūruoti, kad nereiktų jo leisti per IIS.  
@@ -7,8 +11,8 @@ SQLite db norime naudoti, nes be reikalo užkraunamas geolis2 su intraneto duome
 Pagrindinis straipsnis čia: https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/windows-service?view=aspnetcore-6.0&tabs=visual-studio
 
 ```powershell
-	New-LocalUser -Name IntranetService
-		- pa$$word
+	New-LocalUser -Name IntranetService 
+	- pa$$word
 ```
 
 
