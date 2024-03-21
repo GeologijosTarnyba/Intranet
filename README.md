@@ -1,1 +1,1 @@
-# Intranet
+Lietuvos geologijos tarnybos intraneto sistema

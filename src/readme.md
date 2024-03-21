@@ -5,7 +5,7 @@ Projektas naudoja šias db
 * Web serveryje esančias SQLite duomenų bazes
     1. LGT.Intranet.Authorization.AuthorizationContext iš LGT.Intranet.Authorization.Data
 	    * Naudojama  kaupti authorizacijos duomenims (prisijungimui prie intranet/in)
-		* Autorizacija padaryta bandant atkartot šituos
+		* Autorizacija padaryta bandant atkartot šituos, tik su trimis atskirais _enum_ Admin, Intranet, GIS
 		    * https://www.youtube.com/watch?v=BVJVhceN3N4
 			* https://github.com/jasontaylordev/flexible-aspnetcore-authorization
     1. LGT.Intranet.IntranetContext iš LGT.Intranet.Data
@@ -18,13 +18,17 @@ Projektas naudoja šias db
 
 ### Migracijos
 Migracijoms atlikti reikalingas `dotnet eftools` įrankis.
-Jų migracijų skriptai saugomi atitinkamai 
+
+DB migracijų skriptai saugomi:
 1. \Intranet\src\LGT.Intranet\Migrations\AuthorizationContextMigrations\
 1. \Intranet\src\LGT.Intranet\Migrations\IntranetContextMigrations\
 1. \Intranet\src\LGT.Intranet\Migrations\InternalContextMigrations\
 
+Migracijos naudojamis duomenų bazės sukūrimui / atnaujinimui pakeitus c# kodą.
+
 GeolisContext migracijų neturi, nes jungiamasi prie egzistuojančios db.
-#### Migracijos skriptų sukūrimas
+
+#### Migracijų sukūrimas
 sugeneruojami naudojant `dotnet eftools` (pakeičiant _migracijos vardas_)
 ```cmd
 cd ./src/LGT.Intranet
