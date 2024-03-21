@@ -12,7 +12,7 @@ Projektas naudoja šias db
 * Web serveryje esančias SQLite duomenų bazes
     1. LGT.Intranet.Authorization.AuthorizationContext iš LGT.Intranet.Authorization.Data
 	    * Naudojama  kaupti authorizacijos duomenims (prisijungimui prie intranet/in)
-		* Autorizacija padaryta semiantis įkvėpimo iš šitų (tik su trimis atskirais _enum_ Admin, Intranet, GIS vietoj vieno)
+		* Autorizacija padaryta semiantis įkvėpimo iš (tik su trimis atskirais _enum_ Admin, Intranet, GIS vietoj vieno)
 		    * https://www.youtube.com/watch?v=BVJVhceN3N4
 			* https://github.com/jasontaylordev/flexible-aspnetcore-authorization
     1. LGT.Intranet.IntranetContext iš LGT.Intranet.Data
