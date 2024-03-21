@@ -1,3 +1,11 @@
+Projektas turi du paleidžiamus projektus
+
+1. LGT.Intranet
+    * Intranet puslapis
+1. Play
+    * CLI naudojamas failų generavimui (ateityje gal bus pervadintas, kol kas neaišku į ką būtų tinkama)
+
+
 ## Duomenų bazės
 Visos DB prieigos vyksta per Entity Framework Core (toliau EFCore) ORM.
 
@@ -39,7 +47,7 @@ cd ./../..
 ```
 #### Migracijos skriptų sudiegimas
 Migracijos sudiegiamos naudojant
-```
+```cmd
 cd ./src/LGT.Intranet
 dotnet ef database update --context LGT.Intranet.Authorization.AuthorizationContext
 dotnet ef database update --context LGT.Intranet.IntranetContext
