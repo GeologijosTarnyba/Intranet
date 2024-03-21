@@ -38,18 +38,18 @@ GeolisContext migracijų neturi, nes jungiamasi prie egzistuojančios db.
 #### Migracijų sukūrimas
 sugeneruojami naudojant `dotnet eftools` (pakeičiant _migracijos vardas_)
 ```cmd
-cd ./src/LGT.Intranet
+cd ./LGT.Intranet
 dotnet ef migrations add "migracijos vardas" --context LGT.Intranet.Authorization.AuthorizationContext
 dotnet ef migrations add "migracijos vardas" --context LGT.Intranet.IntranetContext
 dotnet ef migrations add "migracijos vardas" --context LGT.Intranet.Internal.InternalContext
-cd ./../..
+cd ./..
 ```
 #### Migracijos skriptų sudiegimas
 Migracijos sudiegiamos naudojant
 ```cmd
-cd ./src/LGT.Intranet
+cd ./LGT.Intranet
 dotnet ef database update --context LGT.Intranet.Authorization.AuthorizationContext
 dotnet ef database update --context LGT.Intranet.IntranetContext
 dotnet ef database update --context LGT.Intranet.Internal.InternalContext
-cd ./../..
+cd ./..
 ```
