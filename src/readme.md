@@ -8,7 +8,7 @@ Du paleidžiami projektai
 ## Duomenų bazės
 Visos DB prieigos vyksta per Entity Framework Core (toliau EFCore) ORM.
 
-Projektas naudoja šias db
+Projektas naudoja
 * Web serveryje esančias SQLite duomenų bazes
     1. LGT.Intranet.Authorization.AuthorizationContext iš LGT.Intranet.Authorization.Data
 	    * Naudojama  kaupti authorizacijos duomenims (prisijungimui prie intranet/in)
@@ -24,6 +24,7 @@ Projektas naudoja šias db
 	    * Naudojama prisijungti prie geolis2 db
 
 ### Migracijos
+Migracijos naudojamis duomenų bazės sukūrimui / atnaujinimui pakeitus c# kodą.  
 Migracijoms atlikti reikalingas `dotnet eftools` įrankis.
 
 DB migracijų skriptai saugomi:
@@ -31,12 +32,11 @@ DB migracijų skriptai saugomi:
 1. \Intranet\src\LGT.Intranet\Migrations\IntranetContextMigrations\
 1. \Intranet\src\LGT.Intranet\Migrations\InternalContextMigrations\
 
-Migracijos naudojamis duomenų bazės sukūrimui / atnaujinimui pakeitus c# kodą.
 
 GeolisContext migracijų neturi, nes jungiamasi prie egzistuojančios db.
 
 #### Migracijų sukūrimas
-sugeneruojami naudojant `dotnet eftools` (pakeičiant _migracijos vardas_)
+Migracijų failai sugeneruojami naudojant `dotnet eftools` (pakeičiant _migracijos vardas_)
 ```cmd
 cd ./LGT.Intranet
 dotnet ef migrations add "migracijos vardas" --context LGT.Intranet.Authorization.AuthorizationContext
