@@ -82,4 +82,14 @@ public class GeolisContext(DbContextOptions<GeolisContext> options): DbContext(o
     mb.Entity<Geolis.Geoldba.NER_GAV_1999>().HasKey(item => new { item.TelkinysID, item.TelkinioSluoksnisID });
     mb.Entity<Geolis.Geoldba.TEL_PRI_DOK>().HasKey(item => new { item.TelkinysID, item.J_DOKUMENTAIID });
   }
+
+  public override int SaveChanges() 
+    => throw new Exception("GeolisContext saugoti neturėtų");
+  public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
+    => throw new Exception("GeolisContext saugoti neturėtų");
+  public override int SaveChanges(bool acceptAllChangesOnSuccess) 
+    => throw new Exception("GeolisContext saugoti neturėtų");
+  public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken)) 
+    => throw new Exception("GeolisContext saugoti neturėtų");
+
 }
