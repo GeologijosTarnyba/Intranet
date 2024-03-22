@@ -130,17 +130,16 @@
                         <td rowspan="@(obj_jurAsmGR.Count())">
                           @if (first.Leidimas.Kam.JuridinisAsmuo != null)
                           {
-                                @if(first.Leidimas.Kam.JuridinisAsmuo.JARKodas != null)
-                                {
-                                  
-                                <a href="/in/gis/telkinys/@ParamID/@first.Leidimas.Kam.JuridinisAsmuo.JARKodas">
-                              @obj_jurAsmGR.First().Leidimas.Kam.JuridinisAsmuo?.Name
-                                  </a>
-                                } else
-                                {
-                                  <span>@obj_jurAsmGR.First().Leidimas.Kam.JuridinisAsmuo?.Name</span>
-                                }
-                              }
+                            @if(first.Leidimas.Kam.JuridinisAsmuo.JARKodas != null)
+                            {
+                              <a href="/in/gis/telkinys/@ParamID/@first.Leidimas.Kam.JuridinisAsmuo.JARKodas">
+                                @obj_jurAsmGR.First().Leidimas.Kam.JuridinisAsmuo?.Name
+                              </a>
+                            } else
+                            {
+                              <span>@obj_jurAsmGR.First().Leidimas.Kam.JuridinisAsmuo?.Name</span>
+                            }
+                          }
                           else
                           {
                             <span class="bg-danger">?</span>
