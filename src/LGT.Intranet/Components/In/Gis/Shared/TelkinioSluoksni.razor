@@ -18,26 +18,10 @@
           Ketvs = sl.NER_GAV_KETVs!
           .OrderBy(item => item.GAVK_METAI).ThenBy(item=> item.GAVK_KETV)
           .Select(ketv => new {
-            Metai = ketv.GAVK_METAI, Ketv = ketv.GAVK_KETV,
-            IR = (string?)ketv.IstekliuRusisID,
             Deadline = new DateTime(ketv.GAVK_METAI, 3*ketv.GAVK_KETV, 1).AddMonths(1).AddSeconds(-1),
-
-            Gavyba = ketv.GAVK_KIEKIS,
-            Nuostolis = ketv.GAVK_NUOSTOLIS,
-            UZ_KONT = ketv.GAVK_UZ_KONT,
-            IST_PASIKEITIMAS = ketv.GAVK_IST_PASIKEITIMAS,
-            PR = ketv.GAVK_LIKUTIS_PR,
-            PB = ketv.GAVK_LIKUTIS_PB
           }),
           Metines = sl.NER_ISK_GAVs!.Select(met => new {
-            Metai = met.Metai,
-            IR = (string?)met.IstekliuRusisID,
             Deadline = new DateTime(met.Metai, 12, 31),
-
-            Gavyba = met.GAV_KIEKIS,
-            Nuostolis = met.GAV_NUOSTOLIS,
-            UZ_KONT = met.GAV_UZ_KONT,
-            IST_PASIKEITIMAS = met.GAV_NUOST_2015
           }),
           Istekliai = sl.Istekliai!
             .OrderBy(item => item.IST_GALIOJA_NUO)
@@ -72,11 +56,8 @@
         var first = sl.Istekliai.First();
         @foreach (var ist in sl.Istekliai)
         {
-          var ketvs = sl.Ketvs.Where(ketv => ketv.Deadline > ist.IST_GALIOJA_NUO && (ist.IST_GALIOJA_IKI == null || ketv.Deadline < ist.IST_GALIOJA_IKI.Value)).OrderBy(item => item.Metai).ThenBy(item => item.Ketv);
-          var mets = sl.Metines.Where(met => met.Deadline > ist.IST_GALIOJA_NUO && (ist.IST_GALIOJA_IKI == null || met.Deadline < ist.IST_GALIOJA_IKI.Value)).OrderBy(item => item.Metai);
-          var naujiKetv = ketvs
-            .Where(ketv => !mets.Any(item => item.Metai == ketv.Metai)) // Ketvirčiai nesutraukti į metines statistikas
-          ; 
+          var ketvs = sl.Ketvs.Where(ketv => ketv.Deadline > ist.IST_GALIOJA_NUO && (ist.IST_GALIOJA_IKI == null || ketv.Deadline < ist.IST_GALIOJA_IKI.Value));
+          var mets = sl.Metines.Where(met => met.Deadline > ist.IST_GALIOJA_NUO && (ist.IST_GALIOJA_IKI == null || met.Deadline < ist.IST_GALIOJA_IKI.Value));
           <tr>
             @if(ist == first)
             {
@@ -90,86 +71,19 @@
             <td>@ist.IST_GALIOJA_NUO.LT(false)</td>
             <td>@ist.IST_GALIOJA_IKI.LT(false)</td>
             <td>@ist.Kiekis</td>
-            @if(!mets.Any() && !ketvs.Any())
-            {
-              <td colspan="1"></td>
-            } else
+            @if (sl.KiekiaiPries1999.Any() || ketvs.Any() || mets.Any())
             {
               <td>
-                <table class="bord w-100">
-                  <tr>
-                    <td>Q</td>
-                    <td>Metai</td>
-                    <td>start</td>
-                    <td>Gavyba</td>
-                    <td>Nuostlis</td>
-                    <td>Pasikeitimas</td>
-                    <td>UzKont</td>
-                    <td>end</td>
-                  </tr>
-                  @{
-                    var likutis = ist.Kiekis;
-                  }
-                  @if(sl.KiekiaiPries1999.Any()){
-                    @foreach (var pries1999 in sl.KiekiaiPries1999)
-                    {
-                            
-                      <tr>
-                        <td colspan="2">Prieš 1999</td>
-                        <td>@likutis</td>
-                        <td>@pries1999.Kiekis</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                          @{
-                            var skirtumas = -(pries1999.Kiekis ?? 0);
-                            likutis += skirtumas;
-                          }
-                          @likutis
-                        </td>
-                      </tr>
-                    }
-                  }
-                  @foreach(var met in mets){
-                    <tr>
-                      <td>-</td>
-                      <td>@(met.Metai)</td>
-                      <td>@likutis</td>
-                      <td>@(met.Gavyba)</td>
-                      <td>@(met.Nuostolis)</td>
-                      <td>@(met.IST_PASIKEITIMAS)</td>
-                      <td>@(met.UZ_KONT)</td>
-                      <td>
-                      @{
-                        var skirtumas = - (met.Gavyba ?? 0) + (met.Nuostolis ?? 0) + (met.IST_PASIKEITIMAS ?? 0);
-                        likutis += skirtumas;
-                      }
-                        @likutis
-                      </td>
-                    </tr>
-                  }
-                  @foreach (var ketv in naujiKetv)
-                  {
-                    <tr>
-                      <td>@(ketv.Ketv)</td>
-                      <td>@(ketv.Metai)</td>
-                      <td>@likutis</td>
-                      <td>@(ketv.Gavyba)</td>
-                      <td>@(ketv.Nuostolis)</td>
-                      <td>@(ketv.IST_PASIKEITIMAS)</td>
-                      <td>@(ketv.UZ_KONT)</td>
-                      <td>
-                      @{
-                        var skirtumas = (ketv.PB ?? 0) - (ketv.PR ?? 0);
-                        likutis += skirtumas;
-                      }
-                        @likutis
-                      </td>
-                    </tr>
-                  }
-                </table>
+                <TelkiniuGavybosAtaskaitos
+                  ParamSluoksnioId="@sl.ID"
+                  ParamSince="@ist.IST_GALIOJA_NUO"
+                  ParamUntil="@ist.IST_GALIOJA_IKI"
+                  likutis="@ist.Kiekis"
+                />
               </td>
+            } else
+            {
+              <td colspan="1"></td>
             }
             <td>@ist.Comment</td>
           </tr>
