@@ -1,20 +1,22 @@
 ﻿@code {
   [Parameter] public int? id { get; set; }
   [Parameter] public EventCallback<int?> idChanged { get; set; }
+
+  [Parameter] public LGT.Incidentai.Models.SkundasType? value { get; set; }
+  [Parameter] public EventCallback<LGT.Incidentai.Models.SkundasType?> valueChanged { get; set; }
 }
 @inject LGT.Intranet.Internal.InternalContext db
-@if(this.id == null)
+@if (this.id == null && this.value == null)
 {
   <ExpList ParamSource=@(
     db.Set<SkundasType>()
-      .Select(item => new {item.ID, item.Name })
   )>
     <Wrapper Context="rows">
       <ul>@rows</ul>
     </Wrapper>
     <IfSome Context="t">
       <li>
-        <ActionButton onclick=@(async () => await Choose(t.ID, t.Name))>
+        <ActionButton onclick=@(async () => await Choose(t))>
           @t.Name
         </ActionButton>
       </li>
@@ -30,15 +32,17 @@ else
 }
 
 @code {
-  private string? name{ get; set; }
+  private string? name { get; set; }
   private async Task Unchoose()
   {
     await this.idChanged.InvokeAsync(null);
+    await this.valueChanged.InvokeAsync(null);
     this.name = null;
   }
-  private async Task Choose(int id, string name)
+  private async Task Choose(LGT.Incidentai.Models.SkundasType val)
   {
-    await this.idChanged.InvokeAsync(id);
-    this.name = name;
+    await this.idChanged.InvokeAsync(val.ID);
+    await this.valueChanged.InvokeAsync(val);
+    this.name = val.Name;
   }
 }

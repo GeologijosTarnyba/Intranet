@@ -1,6 +1,10 @@
 ﻿@code {
   [Parameter] public int? id { get; set; }
   [Parameter] public EventCallback<int?> idChanged { get; set; }
+
+  [Parameter] public LGT.Incidentai.Models.Incidentas? value { get; set; }
+  [Parameter] public EventCallback<LGT.Incidentai.Models.Incidentas?> valueChanged { get; set; }
+
   [Parameter] public bool ParamIsOptional { get; set; }
   [Parameter] public bool ParamIsPrefered { get; set; } = false;
   [Parameter] public string? ParamName { get; set; } = "Incidentas";
@@ -10,9 +14,9 @@
 <InputAny ParamName=@ParamName ParamIsOptional=@ParamIsOptional ParamIsPrefered=@ParamIsPrefered
           value=@id valueChanged=@idChanged
           ParamDefaultFunc=@(() => (int?)null)
-          NameFragment=@NameFragment
->
+          NameFragment=@NameFragment>
   <ValueFragment>
-    <ChooseIncidentas id=@id idChanged=@idChanged />
+    <ChooseIncidentas id=@id idChanged=@idChanged
+                      value=@value valueChanged=@valueChanged />
   </ValueFragment>
 </InputAny>

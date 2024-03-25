@@ -18,10 +18,10 @@
 {
   <CreateFormatTable Model=@this.model OnValidSubmit=@this.DoCreate>
     <InputAptarnaujantiImone @bind-id=@ImoneID />
-    @if(ImoneID != null)
+    @if(this.ImoneID != null)
     {
-      <InputKreipinys @bind-id=@this.model.KreipinysID ParamAptarnaujantiImoneID=@ImoneID />
-      <InputDarbuotojas @bind-id=@this.model.DarbuotojasID DarbovieteID=@ImoneID />
+      <InputKreipinys @bind-id=@this.model.KreipinysID @bind-value=@this.model.Kreipinys  ParamAptarnaujantiImoneID=@ImoneID />
+      <InputDarbuotojas @bind-id=@this.model.DarbuotojasID @bind-value=@this.model.Darbuotojas DarbovieteID=@ImoneID />
     }
     <InputMarkdown ParamName="Sprendimas" @bind-value=@model.SolutionMarkdown />
     <InputDateTime ParamName="Nuo" @bind-value=@model.Since ParamIsOptional=true />

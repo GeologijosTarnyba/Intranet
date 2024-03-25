@@ -1,7 +1,7 @@
 ﻿@rendermode InteractiveServer
 @code {
-  [Parameter] public string? ParamAction{ get; set; }
-  [Parameter] public string? ParamType{ get; set; }
+  [Parameter] public string? ParamAction { get; set; }
+  [Parameter] public string? ParamType { get; set; }
 }
 @if(this.ParamAction != null && this.ParamType != null)
 {
@@ -37,6 +37,10 @@
   else if (isState("Create", "informacinisIsteklius"))
   {
     <CreateInformacinisIsteklius />
+  }
+  else if (isState("View", "incidentas"))
+  {
+    <LGT.Intranet.Components.Internal.Out.Incidentai />
   }
   else if (isState("View", "skundas"))
   {

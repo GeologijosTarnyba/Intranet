@@ -24,7 +24,7 @@
         </InputAny>
         <InputAny ParamName="Požymis" @bind-value=@this.model.PozymisID ParamIsOptional="true" ParamIsPrefered="true" ParamDefaultFunc=@(() => null)>
           <ValueFragment>
-            <ChooseIncidentoPozymis @bind-id=@this.model.PozymisID />
+            <ChooseIncidentoPozymis @bind-id=@this.model.PozymisID @bind-value=@this.model.Pozymis />
           </ValueFragment>
         </InputAny>
         <InputMarkdown ParamName="Aprašymas" ParamIsOptional="false" @bind-value=@this.model.Desc />

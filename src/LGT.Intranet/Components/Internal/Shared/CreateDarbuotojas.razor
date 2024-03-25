@@ -15,7 +15,7 @@
   <CreateFormatTable Model=@this.model OnValidSubmit=@this.DoCreate>
     <InputDarboviete @bind-value=@this.model.Darboviete />
     <InputString @bind-value=@model.Name ParamName="Pareigybė" />
-    <InputAsmuo @bind-id=@model.AsmuoID ParamIsOptional="true" ParamIsPrefered="true" />
+    <InputAsmuo @bind-id=@model.AsmuoID @bind-value=@this.model.Asmuo ParamIsOptional="true" ParamIsPrefered="true" />
     <InputString @bind-value=@model.Email ParamName="Email" ParamIsOptional="true" ParamIsPrefered="true" />
     <InputString @bind-value=@model.Tel1 ParamName="Tel1" ParamIsOptional="true" />
     <InputString @bind-value=@model.Tel2 ParamName="Tel2" ParamIsOptional="true" />

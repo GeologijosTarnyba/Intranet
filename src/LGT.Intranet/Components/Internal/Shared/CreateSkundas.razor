@@ -22,7 +22,7 @@
           ParamDefaultFunc=@(() => null)
         >
           <ValueFragment>
-            <ChooseAsmuo @bind-id=@this.model.AsmuoID />
+            <ChooseAsmuo @bind-id=@this.model.AsmuoID @bind-value=@this.model.Asmuo />
           </ValueFragment>
         </InputAny>
         <InputAny ParamName="Darbuotojas" ParamIsOptional="true" ParamIsPrefered="false"
@@ -30,7 +30,7 @@
           ParamDefaultFunc=@(() => null)
         >
           <ValueFragment>
-            <ChooseDarbuotojas @bind-id=@this.model.DarbuotojasID />
+            <ChooseDarbuotojas @bind-id=@this.model.DarbuotojasID @bind-value=@this.model.Darbuotojas />
           </ValueFragment>
         </InputAny>
       </Authorized>
@@ -44,7 +44,7 @@
       ParamDefaultFunc=@(() => null)
     >
       <ValueFragment>
-        <ChooseSkundasType @bind-id=@this.model.TypeID />
+        <ChooseSkundasType @bind-id=@this.model.TypeID @bind-value=@this.model.Type  />
       </ValueFragment>
     </InputAny>
     <InputDateTime ParamName="Prasidėjo" ParamIsOptional="true" ParamIsPrefered="true"

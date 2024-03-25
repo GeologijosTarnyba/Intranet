@@ -1,20 +1,22 @@
 ﻿@code {
   [Parameter] public int? id { get; set; }
   [Parameter] public EventCallback<int?> idChanged { get; set; }
+
+  [Parameter] public LGT.Incidentai.Models.IncidentoPozymis? value { get; set; }
+  [Parameter] public EventCallback<LGT.Incidentai.Models.IncidentoPozymis?> valueChanged { get; set; }
 }
 @inject LGT.Intranet.Internal.InternalContext db
-@if (this.id == null)
+@if (this.id == null && this.value == null)
 {
   <ExpList ParamSource=@(
     db.Set<IncidentoPozymis>()
-      .Select(item => new {item.ID, Name = item.Name })
   )>
     <Wrapper Context="rows">
       <ul>@rows</ul>
     </Wrapper>
     <IfSome Context="poz">
       <li>
-        <ActionButton onclick=@(async () => await Choose(poz.ID, poz.Name))>
+        <ActionButton onclick=@(async () => await Choose(poz))>
           @poz.Name
         </ActionButton>
       </li>
@@ -34,11 +36,13 @@ else
   private async Task Unchoose()
   {
     await this.idChanged.InvokeAsync(null);
+    await this.valueChanged.InvokeAsync(null);
     this.name = null;
   }
-  private async Task Choose(int id, string name)
+  private async Task Choose(LGT.Incidentai.Models.IncidentoPozymis val)
   {
-    await this.idChanged.InvokeAsync(id);
+    await this.idChanged.InvokeAsync(val.ID);
+    await this.valueChanged.InvokeAsync(val);
     this.name = name;
   }
 }

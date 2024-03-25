@@ -1,6 +1,10 @@
 ﻿@code {
   [Parameter] public int? id { get; set; }
   [Parameter] public EventCallback<int?> idChanged { get; set; }
+
+  [Parameter] public LGT.Incidentai.Models.Kreipinys? value { get; set; }
+  [Parameter] public EventCallback<LGT.Incidentai.Models.Kreipinys?> valueChanged { get; set; }
+
   [Parameter] public string? ParamAptarnaujantiImoneID { get; set; }
   override protected async Task OnParametersSetAsync()
   {
@@ -22,7 +26,7 @@
     })
   />
 }
-@if (this.id == null)
+@if (this.id == null && this.value == null)
 {
   @if (chosenAptarnaujantiImoneID != null)
   {
@@ -30,18 +34,14 @@
       db.Set<Kreipinys>()
         .Where(item => item.AptarnaujantiImoneID == chosenAptarnaujantiImoneID)
         .OrderByDescending(item => item.Since).ThenByDescending(item => item.CreatedAt)
-        .Select(td => new {
-          td.ID,
-          Name = td.UName
-        })
       )>
       <Wrapper Context="rows">
         <ul>@rows</ul>
       </Wrapper>
       <IfSome Context="kreipinys">
         <li>
-          <ActionButton onclick=@(async () => await Choose(kreipinys.ID, kreipinys.Name))>
-            <Name ParamName=@kreipinys.Name />
+          <ActionButton onclick=@(async () => await Choose(kreipinys))>
+            <Name ParamName=@kreipinys.UName />
           </ActionButton>
         </li>
       </IfSome>
@@ -61,16 +61,21 @@ else
 @code {
   private string? chosenName;
   private string? chosenAptarnaujantiImoneID;
-  private async Task Choose(int id, string? name)
+  private async Task Choose(LGT.Incidentai.Models.Kreipinys val)
   {
     await this.idChanged.InvokeAsync(id);
-    this.chosenName = name ?? $"kreipinys ID={id}";
+    await this.valueChanged.InvokeAsync(val);
+    this.chosenName = val.UName ?? $"kreipinys ID={id}";
   }
   private async Task Unchoose()
   {
     if (id != null)
     {
       await this.idChanged.InvokeAsync(null);
+    }
+    if(value != null)
+    {
+      await this.valueChanged.InvokeAsync(null);
     }
     this.chosenName = null;
   }

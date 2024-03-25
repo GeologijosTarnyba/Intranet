@@ -1,6 +1,10 @@
 ﻿@code {
   [Parameter] public int? id { get; set; }
   [Parameter] public EventCallback<int?> idChanged { get; set; }
+
+  [Parameter] public LGT.Kontaktai.Models.Darbuotojas? value { get; set; }
+  [Parameter] public EventCallback<LGT.Kontaktai.Models.Darbuotojas?> valueChanged { get; set; }
+
   [Parameter] public bool ParamIsOptional { get; set; }
   [Parameter] public bool ParamIsPrefered { get; set; } = false;
   [Parameter] public string? ParamName { get; set; } = "Darbuotojas";
@@ -10,11 +14,12 @@
   [Parameter] public string? DarbovieteID { get; set; }
 }
 <InputAny ParamName=@ParamName ParamIsOptional=@ParamIsOptional ParamIsPrefered=@ParamIsPrefered
-  value=@id valueChanged=@idChanged
-  ParamDefaultFunc=@(() => null)
-  NameFragment=@NameFragment
->
+          value=@id valueChanged=@idChanged
+          ParamDefaultFunc=@(() => null)
+          NameFragment=@NameFragment>
   <ValueFragment>
-    <ChooseDarbuotojas id=@id idChanged=@idChanged DarbovieteID=@DarbovieteID />
+    <ChooseDarbuotojas id=@id idChanged=@idChanged
+                       value=@value valueChanged=@valueChanged
+                       DarbovieteID=@DarbovieteID />
   </ValueFragment>
 </InputAny>

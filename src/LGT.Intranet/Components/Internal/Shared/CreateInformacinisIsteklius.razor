@@ -16,6 +16,6 @@
     <InputDarboviete ParamName="Priklauso" @bind-value=@model.Darboviete />
     <InputString ParamName="ID" @bind-value=@model.ID />
     <InputString ParamName="Name" @bind-value=@model.Name />
-    <InputInformacinisIsteklius ParamName="Dalis sistemos" @bind-id=@model.ParentID ParamIsOptional="true" />
+    <InputInformacinisIsteklius ParamName="Dalis sistemos" @bind-id=@model.ParentID @bind-value=@this.model.Parent ParamIsOptional="true" />
   </CreateFormatTable>
 }

@@ -2,6 +2,9 @@
   [Parameter] public string? id { get; set; }
   [Parameter] public EventCallback<string?> idChanged { get; set; }
 
+  [Parameter] public LGT.Incidentai.Models.AptarnaujantiImone? value { get; set; }
+  [Parameter] public EventCallback<LGT.Incidentai.Models.AptarnaujantiImone?> valueChanged { get; set; }
+
   [Parameter] public bool ParamIsOptional { get; set; }
   [Parameter] public bool ParamIsPrefered { get; set; } = false;
   [Parameter] public string? ParamName { get; set; } = "Aptarnaujanti įmonė";
@@ -9,11 +12,11 @@
   [Parameter] public RenderFragment? ValueFragment { get; set; }
 }
 <InputAny ParamName=@ParamName ParamIsOptional=@ParamIsOptional ParamIsPrefered=@ParamIsPrefered
-  value=@id valueChanged=@idChanged
-  ParamDefaultFunc=@(() => string.Empty)
-  NameFragment=@NameFragment
->
+          value=@id valueChanged=@idChanged
+          ParamDefaultFunc=@(() => string.Empty)
+          NameFragment=@NameFragment>
   <ValueFragment>
-    <ChooseAptarnaujantiImone id=@id idChanged=@idChanged />
+    <ChooseAptarnaujantiImone id=@id idChanged=@idChanged
+                              value=@value valueChanged=@valueChanged />
   </ValueFragment>
 </InputAny>

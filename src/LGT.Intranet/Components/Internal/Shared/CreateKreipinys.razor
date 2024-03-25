@@ -15,8 +15,8 @@
 @if (this.model != null)
 {
   <CreateFormatTable Model=@this.model OnValidSubmit=@this.DoCreate>
-    <InputAptarnaujantiImone @bind-id=@model.AptarnaujantiImoneID />
-    <InputIncidentas @bind-id=@model.IncidentasID ParamIsOptional=true ParamIsPrefered=true />
+    <InputAptarnaujantiImone @bind-id=@model.AptarnaujantiImoneID @bind-value=@this.model.AptarnaujantiImone  />
+    <InputIncidentas @bind-id=@model.IncidentasID @bind-value=@this.model.Incidentas ParamIsOptional=true ParamIsPrefered=true />
     <InputDateTime ParamName="Užregistruotas" @bind-value=@model.Since />
     <InputString ParamName="Kreipinio pavadinimas" @bind-value=@this.model.UName />
     <InputString ParamName="Nuoroda" @bind-value=@this.model.Link ParamIsOptional="true" />

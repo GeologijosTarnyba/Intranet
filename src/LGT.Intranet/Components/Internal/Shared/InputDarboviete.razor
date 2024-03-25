@@ -12,11 +12,11 @@
   [Parameter] public RenderFragment? ValueFragment { get; set; }
 }
 <InputAny ParamName=@ParamName ParamIsOptional=@ParamIsOptional ParamIsPrefered=@ParamIsPrefered
-  value=@id valueChanged=@idChanged
-  ParamDefaultFunc=@(() => string.Empty)
-  NameFragment=@NameFragment
->
+          value=@id valueChanged=@idChanged
+          ParamDefaultFunc=@(() => string.Empty)
+          NameFragment=@NameFragment>
   <ValueFragment>
-    <ChooseDarboviete id=@id idChanged=@idChanged value=@value valueChanged=@valueChanged />
+    <ChooseDarboviete id=@id idChanged=@idChanged
+                      value=@value valueChanged=@valueChanged />
   </ValueFragment>
 </InputAny>

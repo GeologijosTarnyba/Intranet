@@ -1,6 +1,10 @@
 ﻿@code {
   [Parameter] public string? id { get; set; }
   [Parameter] public EventCallback<string?> idChanged { get; set; }
+
+  [Parameter] public LGT.Incidentai.Models.InformacinisIsteklius? value { get; set; }
+  [Parameter] public EventCallback<LGT.Incidentai.Models.InformacinisIsteklius?> valueChanged { get; set; }
+
   [Parameter] public bool ParamIsOptional { get; set; }
   [Parameter] public bool ParamIsPrefered { get; set; } = false;
   [Parameter] public string? ParamName { get; set; } = "Informacinis išteklius";
@@ -11,9 +15,10 @@
 <InputAny ParamName=@ParamName ParamIsOptional=@ParamIsOptional ParamIsPrefered=@ParamIsPrefered
           value=@id valueChanged=@idChanged
           ParamDefaultFunc=@(() => null)
-          NameFragment=@NameFragment
->
+          NameFragment=@NameFragment>
   <ValueFragment>
-    <ChooseInformacinisIsteklius id=@id idChanged=@idChanged ParamDarbovieteID=@ParamDarbovieteID />
+    <ChooseInformacinisIsteklius id=@id idChanged=@idChanged
+                                 value=@value valueChanged=@valueChanged
+                                 ParamDarbovieteID=@ParamDarbovieteID />
   </ValueFragment>
 </InputAny>

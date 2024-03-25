@@ -2,8 +2,7 @@
 public class Kreipinys
 {
   [Required] public AptarnaujantiImone? AptarnaujantiImone { get; set; }
-  [MaxLength(32)] 
-  public string AptarnaujantiImoneID { get; set; } = default!;
+  [MaxLength(32)] public string AptarnaujantiImoneID { get; set; } = default!;
   
   public int ID { get; set; }
   public DateTime? CreatedAt { get; set; }

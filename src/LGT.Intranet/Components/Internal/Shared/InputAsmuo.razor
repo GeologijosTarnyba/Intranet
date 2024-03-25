@@ -1,6 +1,10 @@
 ﻿@code {
   [Parameter] public int? id { get; set; }
   [Parameter] public EventCallback<int?> idChanged { get; set; }
+
+  [Parameter] public LGT.Kontaktai.Models.Asmuo? value { get; set; }
+  [Parameter] public EventCallback<LGT.Kontaktai.Models.Asmuo?> valueChanged { get; set; }
+
   [Parameter] public bool ParamIsOptional { get; set; }
   [Parameter] public bool ParamIsPrefered { get; set; } = false;
   [Parameter] public string? ParamName { get; set; } = "Asmuo";
@@ -8,11 +12,11 @@
   [Parameter] public RenderFragment? ValueFragment { get; set; }
 }
 <InputAny ParamName=@ParamName ParamIsOptional=@ParamIsOptional ParamIsPrefered=@ParamIsPrefered
-  value=@id valueChanged=@idChanged
-  ParamDefaultFunc=@(() => null)
-  NameFragment=@NameFragment
->
+          value=@id valueChanged=@idChanged
+          ParamDefaultFunc=@(() => null)
+          NameFragment=@NameFragment>
   <ValueFragment>
-    <ChooseAsmuo id=@id idChanged=@idChanged />
+    <ChooseAsmuo id=@id idChanged=@idChanged
+                 value=@value valueChanged=@valueChanged />
   </ValueFragment>
 </InputAny>
