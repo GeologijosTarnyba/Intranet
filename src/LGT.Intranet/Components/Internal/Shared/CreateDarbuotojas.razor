@@ -6,15 +6,14 @@
     this.ParamInit = (prev) => new()
     {
       Since = DateTime.Now
-    }
-    ;
+    };
   }
   #endregion
 }
 @if (this.model != null)
 {
   <CreateFormatTable Model=@this.model OnValidSubmit=@this.DoCreate>
-    <InputDarboviete @bind-id=@model.DarbovieteID  />
+    <InputDarboviete @bind-value=@this.model.Darboviete />
     <InputString @bind-value=@model.Name ParamName="Pareigybė" />
     <InputAsmuo @bind-id=@model.AsmuoID ParamIsOptional="true" ParamIsPrefered="true" />
     <InputString @bind-value=@model.Email ParamName="Email" ParamIsOptional="true" ParamIsPrefered="true" />

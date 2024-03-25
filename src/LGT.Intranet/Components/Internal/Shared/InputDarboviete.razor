@@ -2,6 +2,9 @@
   [Parameter] public string? id { get; set; }
   [Parameter] public EventCallback<string?> idChanged { get; set; }
 
+  [Parameter] public LGT.Kontaktai.Models.Darboviete? value { get; set; }
+  [Parameter] public EventCallback<LGT.Kontaktai.Models.Darboviete?> valueChanged { get; set; }
+
   [Parameter] public bool ParamIsOptional { get; set; }
   [Parameter] public bool ParamIsPrefered { get; set; } = false;
   [Parameter] public string? ParamName { get; set; } = "Darbovietė";
@@ -14,6 +17,6 @@
   NameFragment=@NameFragment
 >
   <ValueFragment>
-    <ChooseDarboviete id=@id idChanged=@idChanged />
+    <ChooseDarboviete id=@id idChanged=@idChanged value=@value valueChanged=@valueChanged />
   </ValueFragment>
 </InputAny>

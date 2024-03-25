@@ -13,7 +13,7 @@
 @if (this.model != null)
 {
   <CreateFormatTable Model=@this.model OnValidSubmit=@this.DoCreate>
-    <InputDarboviete ParamName="Priklauso" @bind-id=@model.DarbovieteID />
+    <InputDarboviete ParamName="Priklauso" @bind-value=@model.Darboviete />
     <InputString ParamName="ID" @bind-value=@model.ID />
     <InputString ParamName="Name" @bind-value=@model.Name />
     <InputInformacinisIsteklius ParamName="Dalis sistemos" @bind-id=@model.ParentID ParamIsOptional="true" />

@@ -2,26 +2,26 @@
 @code {
   [Parameter] public string? id { get; set; }
   [Parameter] public EventCallback<string?> idChanged { get; set; }
+
+  [Parameter] public LGT.Kontaktai.Models.Darboviete? value { get; set; }
+  [Parameter] public EventCallback<LGT.Kontaktai.Models.Darboviete?> valueChanged { get; set; }
+
   [Parameter] public System.Linq.Expressions.Expression<Func<Darboviete, bool>> ParamExtraFilter { get; set; } = item => true;
 }
 @inject LGT.Intranet.Internal.InternalContext db
-@if (this.id == null)
+@if (this.id == null && this.value == null)
 {
   <ExpList ParamSource=@(
     this.db.Set<Darboviete>()
       .Where(ParamExtraFilter)
       .OrderByDescending(item => item.OrderWeight)
-      .Select(item => new {
-        item.ID, 
-        Name = item.Name!
-      })
   )>
     <Wrapper Context="rows">
       <ul>@rows</ul>
     </Wrapper>
     <IfSome Context="darboviete">
       <li>
-        <ActionButton onclick=@(async () => await Choose(darboviete.ID, darboviete.Name))>
+        <ActionButton onclick=@(async () => await Choose(darboviete))>
           @darboviete.Name
         </ActionButton>
       </li>
@@ -41,11 +41,13 @@ else
   private async Task Unchoose()
   {
     await this.idChanged.InvokeAsync(null);
+    await this.valueChanged.InvokeAsync(null);
     this.name = null;
   }
-  private async Task Choose(string id, string name)
+  private async Task Choose(LGT.Kontaktai.Models.Darboviete val)
   {
-    await this.idChanged.InvokeAsync(id);
-    this.name = name;
+    await this.idChanged.InvokeAsync(val.ID);
+    await this.valueChanged.InvokeAsync(val);
+    this.name = val.Name;
   }
 }

@@ -1,6 +1,10 @@
 ﻿@code {
   [Parameter] public string? id { get; set; }
   [Parameter] public EventCallback<string?> idChanged { get; set; }
+
+  [Parameter] public LGT.Incidentai.Models.InformacinisIsteklius? value { get; set; }
+  [Parameter] public EventCallback<LGT.Incidentai.Models.InformacinisIsteklius?> valueChanged { get; set; }
+
   override protected async Task OnParametersSetAsync()
   {
     await base.OnParametersSetAsync();
@@ -18,29 +22,25 @@
     idChanged=@(async (val) => {
       chosenDarbovieteID = val;
       await Unchoose();
-    }) 
-      
+    })
+ 
   />
   @* ParamExtraFilter =@(darboviete => darboviete.InformaciniaiIstekliai.Any()) // TODO *@
 }
-@if (this.id == null)
+@if (this.id == null && this.value == null)
 {
   @if (chosenDarbovieteID != null)
   {
     <ExpList ParamSource=@(
       db.Set<InformacinisIsteklius>()
         .Where(item => item.DarbovieteID == chosenDarbovieteID)
-        .Select(td => new {
-          ID = td.ID!,
-          Name = td.Name!
-        })
     )>
       <Wrapper Context="rows">
         <ul>@rows</ul>
       </Wrapper>
       <IfSome Context="td">
         <li>
-          <ActionButton onclick=@(async () => await Choose(td.ID, td.Name))>
+          <ActionButton onclick=@(async () => await Choose(td))>
             <Name ParamName=@td.Name />
           </ActionButton>
         </li>
@@ -61,10 +61,11 @@ else
 @code {
   private string? chosenName;
   private string? chosenDarbovieteID;
-  private async Task Choose(string id, string name)
+  private async Task Choose(LGT.Incidentai.Models.InformacinisIsteklius informacinisIsteklius)
   {
     await this.idChanged.InvokeAsync(id);
-    this.chosenName = name;
+    await this.valueChanged.InvokeAsync(informacinisIsteklius);
+    this.chosenName = informacinisIsteklius.Name;
   }
   private async Task Unchoose()
   {
@@ -72,6 +73,7 @@ else
     {
       await this.idChanged.InvokeAsync(null);
     }
+    await this.valueChanged.InvokeAsync(null);
     this.chosenName = null;
   }
 }

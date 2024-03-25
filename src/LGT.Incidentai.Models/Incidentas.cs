@@ -5,7 +5,6 @@ public class Incidentas
   public DateTime? CreatedAt { get; set; }
   [Display(Name = "Tarnybos informacinio ištekliaus pavadinimas")]
   [Required] public InformacinisIsteklius? InformacinisIsteklius { get; set; }
-  [Required]
   public string? InformacinisIstekliusID { get; set; }
   [Display(Name = "Požymio kodas")]
   public IncidentoPozymis? Pozymis { get; set; }
