@@ -7,20 +7,19 @@
   override protected async Task OnParametersSetAsync()
   {
     await base.OnParametersSetAsync();
-    wwwroot = env.ContentRootPath;
+    contentRootPath = env.ContentRootPath;
   }
-  private string? wwwroot;
+  private string? contentRootPath;
   private string? fileDir
   {
     get
     {
-      if (wwwroot == null || ParamPathAtRoot == null)
+      if (contentRootPath == null || ParamPathAtRoot == null)
         return null;
-      return $"{wwwroot}/{ParamPathAtRoot}";
+      return $"{contentRootPath}/wwwroot/{ParamPathAtRoot}";
     }
   }
 }
-
 @if (this.fileDir == null)
 {
   <b>fileDir is NULL</b>

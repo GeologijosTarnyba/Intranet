@@ -13,12 +13,12 @@ public class Program
 {
   public static void Main(string[] args)
   {
-    string dataFolder = Environment.GetEnvironmentVariable("dataFolder")
+    string intranetContentRoot = Environment.GetEnvironmentVariable("dataFolder")
       ?? throw new Exception("Failed to read dataFolder ENVVAR");
     // https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/windows-service?view=aspnetcore-6.0&tabs=visual-studio
     var options = new WebApplicationOptions {
       Args = args,
-      ContentRootPath = dataFolder
+      ContentRootPath = intranetContentRoot
       //ContentRootPath = Microsoft.Extensions.Hosting.WindowsServices.WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
     };
     var builder = WebApplication.CreateBuilder(options);
