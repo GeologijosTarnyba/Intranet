@@ -1,0 +1,40 @@
+﻿@page "/in/kontaktai/darbuotojas"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject LGT.Kontaktai.KontaktaiContext db
+@using LGT.Kontaktai.Models
+
+<PageTitle>Index</PageTitle>
+
+<h1>Darbuotojai</h1>
+
+<p>
+  <a href="/in/kontaktai/darbuotojas/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="db
+  .Set<Darbuotojas>()
+  .Select(darbuotojas => new {
+    Id = darbuotojas.Id,
+    Darboviete = new { Id = darbuotojas.DarbovieteId },
+    Padalinys = darbuotojas.Padalinys == null ? null : darbuotojas.Padalinys.NameShort,
+    Pavadinimas = darbuotojas.Lytis == Lytys.Moteris ? darbuotojas.Etatas!.Name!.Vardininke : darbuotojas.Etatas!.Name!.Vardininkas,
+    darbuotojas.FullName,
+    Since = darbuotojas.Since,
+    Until = darbuotojas.Until,
+    Email = darbuotojas.Email,
+  })
+">
+  @* <PropertyColumn Property="darbuotojas => darbuotojas.CreatedAt" /> *@
+  <PropertyColumn Property="darbuotojas => darbuotojas.Darboviete.Id" Title="Darboviete" />
+  <PropertyColumn Property="darbuotojas => darbuotojas.Padalinys" Title="Padalinys" />
+  <PropertyColumn Property="darbuotojas => darbuotojas.Pavadinimas" Title="Etatas" />
+  <PropertyColumn Property="darbuotojas => darbuotojas.FullName" Title="Asmuo" />
+  <PropertyColumn Property="darbuotojas => darbuotojas.Since" Format="yyyy-MM-dd" />
+  <PropertyColumn Property="darbuotojas => darbuotojas.Until" Format="yyyy-MM-dd" />
+
+  <TemplateColumn Context="darbuotojas">
+    <a href="@($"/in/kontaktai/darbuotojas/edit?id={darbuotojas.Id}")">Edit</a> |
+    <a href="@($"/in/kontaktai/darbuotojas/details?id={darbuotojas.Id}")">Details</a> |
+    <a href="@($"/in/kontaktai/darbuotojas/delete?id={darbuotojas.Id}")">Delete</a>
+  </TemplateColumn>
+</QuickGrid>

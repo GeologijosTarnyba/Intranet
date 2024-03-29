@@ -11,14 +11,33 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LGT.Intranet.Migrations.InternalContextMigrations
 {
     [DbContext(typeof(InternalContext))]
-    [Migration("20240320110958_Initial commit")]
-    partial class Initialcommit
+    [Migration("20240329094612_1")]
+    partial class _1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
+
+            modelBuilder.Entity("LGT.Incidentai.Models.AptarnaujantiImone", b =>
+                {
+                    b.Property<string>("ID")
+                        .HasMaxLength(32)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("I_AptarnaujantiImone", (string)null);
+                });
 
             modelBuilder.Entity("LGT.Incidentai.Models.AptarnavimoSutartis", b =>
                 {
@@ -143,6 +162,104 @@ namespace LGT.Intranet.Migrations.InternalContextMigrations
                     b.HasIndex("ParentID");
 
                     b.ToTable("I_InformacinisIsteklius", (string)null);
+                });
+
+            modelBuilder.Entity("LGT.Incidentai.Models.Kontaktai.Asmuo", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("K_Asmuo", (string)null);
+                });
+
+            modelBuilder.Entity("LGT.Incidentai.Models.Kontaktai.Darboviete", b =>
+                {
+                    b.Property<string>("ID")
+                        .HasMaxLength(32)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("OrderWeight")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("K_Darboviete", (string)null);
+                });
+
+            modelBuilder.Entity("LGT.Incidentai.Models.Kontaktai.Darbuotojas", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("AsmuoID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DarbovieteID")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Darboviete");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FullName")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Kabinetas")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Pareigybe");
+
+                    b.Property<DateTime?>("Since")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Tel1")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Tel2")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Tel3")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Tel4")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("Until")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("AsmuoID");
+
+                    b.HasIndex("DarbovieteID");
+
+                    b.ToTable("K_Darbuotojas", (string)null);
                 });
 
             modelBuilder.Entity("LGT.Incidentai.Models.Kreipinys", b =>
@@ -302,112 +419,6 @@ namespace LGT.Intranet.Migrations.InternalContextMigrations
                     b.ToTable("I_Sprendimas", (string)null);
                 });
 
-            modelBuilder.Entity("LGT.Kontaktai.Models.Asmuo", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("K_Asmuo", (string)null);
-                });
-
-            modelBuilder.Entity("LGT.Kontaktai.Models.Darboviete", b =>
-                {
-                    b.Property<string>("ID")
-                        .HasMaxLength(32)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("OrderWeight")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("K_Darboviete", (string)null);
-
-                    b.UseTptMappingStrategy();
-                });
-
-            modelBuilder.Entity("LGT.Kontaktai.Models.Darbuotojas", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("AsmuoID")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("Asmuo");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasDefaultValueSql("datetime()");
-
-                    b.Property<string>("DarbovieteID")
-                        .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasColumnName("Darboviete");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT")
-                        .HasColumnName("Pareigybe");
-
-                    b.Property<DateTime?>("Since")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Tel1")
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Tel2")
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Tel3")
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Tel4")
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("Until")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("AsmuoID");
-
-                    b.HasIndex("DarbovieteID");
-
-                    b.ToTable("K_Darbuotojas", (string)null);
-                });
-
-            modelBuilder.Entity("LGT.Incidentai.Models.AptarnaujantiImone", b =>
-                {
-                    b.HasBaseType("LGT.Kontaktai.Models.Darboviete");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
-                    b.ToTable("I_AptarnaujantiImone", (string)null);
-                });
-
             modelBuilder.Entity("LGT.Incidentai.Models.AptarnavimoSutartis", b =>
                 {
                     b.HasOne("LGT.Incidentai.Models.AptarnaujantiImone", "AptarnaujantiImone")
@@ -438,7 +449,7 @@ namespace LGT.Intranet.Migrations.InternalContextMigrations
 
             modelBuilder.Entity("LGT.Incidentai.Models.InformacinisIsteklius", b =>
                 {
-                    b.HasOne("LGT.Kontaktai.Models.Darboviete", "Darboviete")
+                    b.HasOne("LGT.Incidentai.Models.Kontaktai.Darboviete", "Darboviete")
                         .WithMany()
                         .HasForeignKey("DarbovieteID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -451,6 +462,23 @@ namespace LGT.Intranet.Migrations.InternalContextMigrations
                     b.Navigation("Darboviete");
 
                     b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("LGT.Incidentai.Models.Kontaktai.Darbuotojas", b =>
+                {
+                    b.HasOne("LGT.Incidentai.Models.Kontaktai.Asmuo", "Asmuo")
+                        .WithMany()
+                        .HasForeignKey("AsmuoID");
+
+                    b.HasOne("LGT.Incidentai.Models.Kontaktai.Darboviete", "Darboviete")
+                        .WithMany("DarbuotojasAssignments")
+                        .HasForeignKey("DarbovieteID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Asmuo");
+
+                    b.Navigation("Darboviete");
                 });
 
             modelBuilder.Entity("LGT.Incidentai.Models.Kreipinys", b =>
@@ -472,11 +500,11 @@ namespace LGT.Intranet.Migrations.InternalContextMigrations
 
             modelBuilder.Entity("LGT.Incidentai.Models.Skundas", b =>
                 {
-                    b.HasOne("LGT.Kontaktai.Models.Asmuo", "Asmuo")
+                    b.HasOne("LGT.Incidentai.Models.Kontaktai.Asmuo", "Asmuo")
                         .WithMany()
                         .HasForeignKey("AsmuoID");
 
-                    b.HasOne("LGT.Kontaktai.Models.Darbuotojas", "Darbuotojas")
+                    b.HasOne("LGT.Incidentai.Models.Kontaktai.Darbuotojas", "Darbuotojas")
                         .WithMany()
                         .HasForeignKey("DarbuotojasID");
 
@@ -499,7 +527,7 @@ namespace LGT.Intranet.Migrations.InternalContextMigrations
 
             modelBuilder.Entity("LGT.Incidentai.Models.Sprendimas", b =>
                 {
-                    b.HasOne("LGT.Kontaktai.Models.Darbuotojas", "Darbuotojas")
+                    b.HasOne("LGT.Incidentai.Models.Kontaktai.Darbuotojas", "Darbuotojas")
                         .WithMany()
                         .HasForeignKey("DarbuotojasID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -516,30 +544,11 @@ namespace LGT.Intranet.Migrations.InternalContextMigrations
                     b.Navigation("Kreipinys");
                 });
 
-            modelBuilder.Entity("LGT.Kontaktai.Models.Darbuotojas", b =>
-                {
-                    b.HasOne("LGT.Kontaktai.Models.Asmuo", "Asmuo")
-                        .WithMany("DarbovieteAssignments")
-                        .HasForeignKey("AsmuoID");
-
-                    b.HasOne("LGT.Kontaktai.Models.Darboviete", "Darboviete")
-                        .WithMany("DarbuotojasAssignments")
-                        .HasForeignKey("DarbovieteID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Asmuo");
-
-                    b.Navigation("Darboviete");
-                });
-
             modelBuilder.Entity("LGT.Incidentai.Models.AptarnaujantiImone", b =>
                 {
-                    b.HasOne("LGT.Kontaktai.Models.Darboviete", null)
-                        .WithOne()
-                        .HasForeignKey("LGT.Incidentai.Models.AptarnaujantiImone", "ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Krepiniai");
+
+                    b.Navigation("Sutartys");
                 });
 
             modelBuilder.Entity("LGT.Incidentai.Models.Incidentas", b =>
@@ -554,26 +563,14 @@ namespace LGT.Intranet.Migrations.InternalContextMigrations
                     b.Navigation("Children");
                 });
 
-            modelBuilder.Entity("LGT.Incidentai.Models.Kreipinys", b =>
-                {
-                    b.Navigation("Sprendimai");
-                });
-
-            modelBuilder.Entity("LGT.Kontaktai.Models.Asmuo", b =>
-                {
-                    b.Navigation("DarbovieteAssignments");
-                });
-
-            modelBuilder.Entity("LGT.Kontaktai.Models.Darboviete", b =>
+            modelBuilder.Entity("LGT.Incidentai.Models.Kontaktai.Darboviete", b =>
                 {
                     b.Navigation("DarbuotojasAssignments");
                 });
 
-            modelBuilder.Entity("LGT.Incidentai.Models.AptarnaujantiImone", b =>
+            modelBuilder.Entity("LGT.Incidentai.Models.Kreipinys", b =>
                 {
-                    b.Navigation("Krepiniai");
-
-                    b.Navigation("Sutartys");
+                    b.Navigation("Sprendimai");
                 });
 #pragma warning restore 612, 618
         }

@@ -4,21 +4,21 @@
   private bool SomethingChanged = false;
 }
 @inject LGT.Intranet.Authorization.AuthorizationContext db
-<EnumFull 
-  ClaimType=@ParamUserClaim.ClaimType
-  ClaimValue=@this.ParamUserClaim.ClaimValue
-  ClaimValueChanged=@((string newValue) => {
-    this.ParamUserClaim.ClaimValue = newValue;
-    this.SomethingChanged = true;
-  })
-/>
-@if(SomethingChanged){
+<EnumFull ClaimType=@ParamUserClaim.ClaimType
+          ClaimValue=@this.ParamUserClaim.ClaimValue
+          ClaimValueChanged=@((string newValue) => {
+          this.ParamUserClaim.ClaimValue = newValue;
+          this.SomethingChanged = true;
+          }) />
+@if (SomethingChanged)
+{
   <div>
     <button class="w-100" @onclick=@SaveChanges>Išsaugoti</button>
   </div>
 }
 @code {
-  private async Task SaveChanges(){
+  private async Task SaveChanges()
+  {
     var claim = this.db.UserClaims.Find(this.ParamUserClaim.Id);
     if (claim == null)
       return;

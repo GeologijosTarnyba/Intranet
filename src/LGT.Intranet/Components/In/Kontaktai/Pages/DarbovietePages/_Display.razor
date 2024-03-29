@@ -1,0 +1,96 @@
+﻿@using LGT.Kontaktai.Models
+@code {
+  [EditorRequired]
+  [Parameter] public string id { get; set; } = default!;
+  public LGT.Kontaktai.Models.Darboviete? model { get; set; }
+
+  [Parameter] public RenderFragment<LGT.Kontaktai.Models.Darboviete>? ChildContent { get; set; }
+}
+@inject NavigationManager NavigationManager
+@inject LGT.Kontaktai.KontaktaiContext db
+@code {
+
+  protected override async Task OnInitializedAsync()
+  {
+    model = await db.Set<LGT.Kontaktai.Models.Darboviete>()
+      .FirstOrDefaultAsync(m => m.Id == id);
+    if (model is null)
+    {
+      NavigationManager.NavigateTo("notfound");
+    }
+  }
+}
+<div>
+  <h4><_ /></h4>
+  <hr />
+
+  @if (model is null)
+  {
+    <p><em>Loading...</em></p>
+  }
+  else
+  {
+    <dl class="row">
+      <dt class="col-sm-2">Id</dt>
+      <dd class="col-sm-10">
+        <a href="/kontaktai/@model.Id">@model.Id</a>
+      </dd>
+      <dt class="col-sm-2">Pavadinimas</dt>
+      <dd class="col-sm-10">@model.Name</dd>
+      <dt class="col-sm-2">Weight</dt>
+      <dd class="col-sm-10">@model.OrderWeight</dd>
+      
+      <dt class="col-sm-2">Padaliniai</dt>
+      <dd class="col-sm-10">
+        <ExpList ParamSource=@(
+          db.EntityCollection(this.model, item => item.Padaliniai)
+          .OrderByDescending(item => item.Weight).ThenBy(item => item.Name)
+          .Select(pad => new {
+            pad.Id, 
+            pad.Name,
+            Weight = (pad.Weight ?? 0)
+          })
+        )>
+          <Wrapper><ul>@context</ul></Wrapper>
+          <IfSome Context="padalinys">
+            <li value="@padalinys.Weight">
+              <a href="/in/kontaktai/padalinys/details?id=@padalinys.Id">@padalinys.Name</a>
+            </li>
+          </IfSome>
+          <IfNone><div>Darbovietė neturi padalinių</div></IfNone>
+        </ExpList>
+        <a href="/in/kontaktai/padalinys/create?darbovieteId=@this.id">Sukurti padalinį</a>
+      </dd>
+      <dt class="col-sm-2">Etatai</dt>
+      <dd class="col-sm-10">
+        <ExpList 
+          ParamSource=@(
+            db.EntityCollection(this.model, item => item.Etatai)
+              .Where(item => item.Padalinys == null)
+              .OrderByDescending(item => item.Name!.Weight).ThenBy(item => item.Name.Vardininkas)
+              .Select(et => new {
+                et.Id,
+                et.Name!.Vardininkas,
+                et.Name!.Vardininke,
+                et.Name.Weight
+              })
+            )>
+          <Wrapper><ul>@context</ul></Wrapper>
+          <IfSome Context="et">
+            <li value="@et.Weight">
+              <a href="/in/kontaktai/etatas/details?id=@et.Id">
+                @et.Vardininkas / @et.Vardininke
+              </a>
+            </li>
+          </IfSome>
+          <IfNone><div>Darbovietė neturi etatų nepriskirtų padaliniams.</div></IfNone>
+        </ExpList>
+        <a href="/in/kontaktai/etatas/create?darbovieteId=@this.id">Sukurti etatą</a>
+      </dd>
+    </dl>
+    @if(ChildContent != null)
+    {
+      @ChildContent(model)
+    }
+  }
+</div>

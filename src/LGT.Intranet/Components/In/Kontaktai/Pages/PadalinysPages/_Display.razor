@@ -1,0 +1,72 @@
+﻿@code {
+  [Parameter] public Guid id { get; set; }
+  public LGT.Kontaktai.Models.Padalinys? model { get; set; }
+  [Parameter] public RenderFragment<LGT.Kontaktai.Models.Padalinys>? ChildContent { get; set; }
+}
+@inject NavigationManager NavigationManager
+@inject LGT.Kontaktai.KontaktaiContext db
+@code {
+
+  protected override async Task OnInitializedAsync()
+  {
+    model = await db.Set<LGT.Kontaktai.Models.Padalinys>()
+      .Include(item => item.Darboviete)
+      .Include(item => item.Etatai).ThenInclude(item => item!.Name)
+      .Include(item => item.Etatai).ThenInclude(item => item!.Darbuotojai)
+      .FirstOrDefaultAsync(m => m.Id == id);
+
+    if (model is null)
+    {
+      NavigationManager.NavigateTo("notfound");
+    }
+  }
+}
+<div>
+  <h4><_ /></h4>
+  <hr />
+
+  @if (model is null)
+  {
+    <p><em>Loading...</em></p>
+  }
+  else
+  {
+    <dl class="row">
+      <dt class="col-sm-2">Pavadinimas</dt>
+      <dd class="col-sm-10">@model.Name</dd>
+      <dt class="col-sm-2">Trumpas pav</dt>
+      <dd class="col-sm-10">@model.NameShort</dd>
+      <dt class="col-sm-2">Etatai</dt>
+      <dd class="col-sm-10">
+        <ExpList ParamSource=@(db.Set<LGT.Kontaktai.Models.Etatas>()
+                   .Where(item => item.Padalinys!.Id == this.model.Id)
+                   .OrderByDescending(item => item.Name!.Weight).ThenBy(item => item.Name!.Vardininkas)
+                   .Select(et => new {
+                     et.Id,
+                     et.Name!.Weight,
+                     et.Name!.Vardininkas,
+                     et.Name!.Vardininke,
+                     Darbuotojai = et.Darbuotojai.Select(darbuotojas => new {
+                       darbuotojas.FullName
+                     })
+                   }))
+                 >
+          <Wrapper Context="rows">
+            <ol>@rows</ol>
+          </Wrapper>
+          <IfSome Context="et">
+            <li value="@(et.Weight ?? 0)">
+              <a href="/in/kontaktai/etatas/details?id=@et.Id">@et.Vardininkas / @et.Vardininke</a>
+            </li>
+          </IfSome>
+          <IfNone><div>Padalinys etatų neturi.</div></IfNone>
+        </ExpList>
+        <a href="/in/kontaktai/etatas/create?padalinysId=@this.id&darbovieteId=@this.model.DarbovieteId">Pridėti etatą</a>
+      </dd>
+    </dl>
+    @if (ChildContent != null)
+    {
+      @ChildContent(model)
+    }
+  }
+</div>

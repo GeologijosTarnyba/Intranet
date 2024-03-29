@@ -1,0 +1,18 @@
+﻿@code {
+  [EditorRequired]
+  [Parameter] public LGT.Kontaktai.Models.EtatasName model { get; set; } = default!;
+}
+<dl class="row">
+  <dt class="col-sm-2">Id</dt>
+  <dd class="col-sm-10">@model.Id</dd>
+  <dt class="col-sm-2">Weight</dt>
+  <dd class="col-sm-10">@model.Weight</dd>
+  <dt class="col-sm-2">Vardininkas</dt>
+  <dd class="col-sm-10">@model.Vardininkas</dd>
+  <dt class="col-sm-2">Vardininkas (mot)</dt>
+  <dd class="col-sm-10">@model.Vardininke</dd>
+  <dt class="col-sm-2">Kilmininkas</dt>
+  <dd class="col-sm-10">@model.Kilmininkas</dd>
+  <dt class="col-sm-2">Kilmininkas (mot)</dt>
+  <dd class="col-sm-10">@model.Kilmininke</dd>
+</dl>

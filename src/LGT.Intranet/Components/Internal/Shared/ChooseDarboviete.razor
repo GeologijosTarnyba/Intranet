@@ -1,10 +1,9 @@
-﻿@using LGT.Kontaktai.Models
-@code {
+﻿@code {
   [Parameter] public string? id { get; set; }
   [Parameter] public EventCallback<string?> idChanged { get; set; }
 
-  [Parameter] public LGT.Kontaktai.Models.Darboviete? value { get; set; }
-  [Parameter] public EventCallback<LGT.Kontaktai.Models.Darboviete?> valueChanged { get; set; }
+  [Parameter] public LGT.Incidentai.Models.Kontaktai.Darboviete? value { get; set; }
+  [Parameter] public EventCallback<LGT.Incidentai.Models.Kontaktai.Darboviete?> valueChanged { get; set; }
 
   [Parameter] public System.Linq.Expressions.Expression<Func<Darboviete, bool>> ParamExtraFilter { get; set; } = item => true;
 }
@@ -12,7 +11,7 @@
 @if (this.id == null && this.value == null)
 {
   <ExpList ParamSource=@(
-    this.db.Set<Darboviete>()
+         this.db.Set<LGT.Incidentai.Models.Kontaktai.Darboviete>()
       .Where(ParamExtraFilter)
       .OrderByDescending(item => item.OrderWeight)
   )>
@@ -44,7 +43,7 @@ else
     await this.valueChanged.InvokeAsync(null);
     this.name = null;
   }
-  private async Task Choose(LGT.Kontaktai.Models.Darboviete val)
+  private async Task Choose(LGT.Incidentai.Models.Kontaktai.Darboviete val)
   {
     await this.idChanged.InvokeAsync(val.ID);
     await this.valueChanged.InvokeAsync(val);

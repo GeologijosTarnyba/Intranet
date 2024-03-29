@@ -1,0 +1,40 @@
+﻿@code {
+  [EditorRequired]
+  [Parameter] public LGT.Kontaktai.Models.EtatasName model { get; set; } = default!;
+
+  [Parameter] public EventCallback<EditContext> OnValidSubmit { get; set; }
+  [Parameter] public bool IsEdit { get; set; }
+  [Parameter] public bool IsCreate { get; set; }
+}
+<EditForm method="post" Model="model"
+          FormName="create"
+          OnValidSubmit=@OnValidSubmit
+          Enhance>
+  <DataAnnotationsValidator />
+  <ValidationSummary class="text-danger" />
+  <table class="bord">
+    <tr>
+      <td>Id</td>
+      <td colspan="2">
+        <InputText disabled="@(!this.IsCreate)" @bind-Value=@this.model.Id />
+      </td>
+    </tr>
+    <tr>
+      <td>Weight</td>
+      <td colspan="2">
+        <InputNumber @bind-Value=@this.model.Weight />
+      </td>
+    </tr>
+    <tr>
+      <td>Vardininkas</td>
+      <td><InputText @bind-Value=@this.model.Vardininkas /></td>
+      <td><InputText @bind-Value=@this.model.Vardininke /></td>
+    </tr>
+    <tr>
+      <td>Kilmininkas</td>
+      <td><InputText @bind-Value=@this.model.Kilmininkas /></td>
+      <td><InputText @bind-Value=@this.model.Kilmininke /></td>
+    </tr>
+  </table>
+  <button type="submit" class="btn btn-primary">Create</button>
+</EditForm>

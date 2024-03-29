@@ -1,0 +1,45 @@
+﻿@code {
+  [EditorRequired]
+  [Parameter] public LGT.Kontaktai.Models.Padalinys model { get; set; } = default!;
+
+  [Parameter] public EventCallback<EditContext> OnValidSubmit { get; set; }
+  [Parameter] public bool IsEdit { get; set; }
+  [Parameter] public bool IsCreate { get; set; }
+}
+@inject LGT.Kontaktai.KontaktaiContext db
+<EditForm method="post" Model="model"
+          FormName="create"
+          OnValidSubmit=@OnValidSubmit
+          Enhance>
+  <DataAnnotationsValidator />
+  <ValidationSummary class="text-danger" />
+  <table class="bord">
+    <tr>
+      <td>Darbovietė</td>
+      <td>
+        <ChooseT IsRequired=true
+                 @bind-value=@this.model.Darboviete
+                 ParamSource=@(db.Set<LGT.Kontaktai.Models.Darboviete>()) />
+      </td>
+    </tr>
+    <tr>
+      <td>Name</td>
+      <td>
+        <InputText @bind-Value=@this.model.Name />
+      </td>
+    </tr>
+    <tr>
+      <td>Name (short)</td>
+      <td>
+        <InputText @bind-Value=@this.model.NameShort />
+      </td>
+    </tr>
+    <tr>
+      <td>Weight</td>
+      <td>
+        <InputNumber @bind-Value=@this.model.Weight />
+      </td>
+    </tr>
+  </table>
+  <button type="submit" class="btn btn-primary">Save</button>
+</EditForm>

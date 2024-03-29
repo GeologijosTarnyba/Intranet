@@ -1,0 +1,34 @@
+﻿@code {
+  [EditorRequired]
+  [Parameter] public LGT.Kontaktai.Models.Darboviete model { get; set; } = default!;
+
+  [Parameter] public EventCallback<EditContext> OnValidSubmit { get; set; }
+  [Parameter] public bool IsEdit { get; set; }
+  [Parameter] public bool IsCreate { get; set; }
+}
+<EditForm method="post" Model="this.model" OnValidSubmit="OnValidSubmit" FormName="edit" Enhance>
+  <DataAnnotationsValidator />
+  <ValidationSummary />
+  <input type="hidden" name="Darbuotojas.Id" value="@this.model.Id" />
+  <table class="bord">
+    <tr>
+      <td>Id</td>
+      <td>
+        <InputText @bind-Value=@this.model.Id disabled="@(!this.IsCreate)" />
+      </td>
+    </tr>
+    <tr>
+      <td>Pavadinimas</td>
+      <td>
+        <InputText @bind-Value=@this.model.Name />
+      </td>
+    </tr>
+    <tr>
+      <td>Prioritetas</td>
+      <td>
+        <InputNumber @bind-Value=@this.model.OrderWeight />
+      </td>
+    </tr>
+  </table>
+  <button type="submit" class="btn btn-primary">Save</button>
+</EditForm>

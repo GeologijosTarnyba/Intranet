@@ -1,0 +1,109 @@
+﻿@typeparam T where T : class
+@code {
+  [Parameter] public T? value { get; set; }
+  [Parameter] public EventCallback<T?> valueChanged { get; set; }
+
+  [EditorRequired]
+  [Parameter] public IQueryable<T> ParamSource { get; set; } = default!;
+  [Parameter]
+  public Func<T, string> ToStringFunc { get; set; } = item => item!.ToString()!;
+
+  RenderFragment<RenderFragment> Wrapper { get; set; } = rows => @<div>@rows</div>;
+  RenderFragment<RenderFragment> RowFormat { get; set; } = button =>@<text>@button</text>;
+
+  [Parameter] public bool IsRequired { get; set; } = false;
+}
+@code {
+  private bool LeaveNull { get; set; } = false;
+  private bool IsOpen { get; set; } = false;
+}
+
+@if (this.LeaveNull)
+{
+  <span style="color: grey; padding:2px;">Nenurodyta</span>
+}
+else
+{
+  @if (value != null && !this.IsOpen)
+  {
+    <input type="text" value="@ToStringFunc(value)" disabled />
+
+    <button @onclick=@OpenDialog type="button">...</button>
+  }
+  else
+  {
+    <dialog open="@IsOpen">
+      <header>
+      </header>
+      <ExpList ParamSource=@ParamSource Wrapper=@Wrapper>
+        <IfSome Context="item">
+          @RowFormat(
+            @:@{
+              <button type="button"
+                      @onclick=@(async () => await Choose(item))>
+                <NameComponent ParamName=@(ToStringFunc(item)) />
+              </button>
+            }
+          )
+        </IfSome>
+      </ExpList>
+      <footer>
+        <hr />
+        <menu>
+          <button type="button"
+                  @onclick=@CloseDialog>
+            Cancel
+          </button>
+        </menu>
+      </footer>
+    </dialog>
+    @if (!this.IsOpen)
+    {
+      <button @onclick=@OpenDialog type="button">Nurodyti</button>
+      @if(this.previous != null)
+      {
+        <button @onclick=@(() => { this.valueChanged.InvokeAsync(this.previous); }) type="button">Atstatyti buvusią reikšmę</button>
+      }
+    }
+  }
+}
+@if (!IsRequired)
+{
+  <br />
+  <label>
+    <InputCheckbox Value=@LeaveNull
+                   ValueChanged=@(async val => {
+                     this.LeaveNull = val;
+                     if(val){
+                       await UnChoose();
+                     }
+                   })
+                   ValueExpression="@(() => this.LeaveNull)" />
+    Nenurodyti
+  </label>
+}
+@code {
+  private T? previous { get; set; }
+  private void OpenDialog()
+  {
+    this.IsOpen = true;
+  }
+  private void CloseDialog()
+  {
+    this.IsOpen = false;
+  }
+  private async Task UnChoose()
+  {
+    if(this.value != null)
+    {
+      this.previous = this.value;
+      await this.valueChanged.InvokeAsync(null);
+    }
+  }
+  private async Task Choose(T choice)
+  {
+    this.previous = null;
+    this.IsOpen = false;
+    await this.valueChanged.InvokeAsync(choice);
+  }
+}

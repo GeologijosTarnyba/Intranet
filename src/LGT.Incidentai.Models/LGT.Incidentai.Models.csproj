@@ -10,13 +10,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.3" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\LGT.Kontaktai.Models\LGT.Kontaktai.Models.csproj" />
-  </ItemGroup>
 	<ItemGroup>
-		<Using Include="System.ComponentModel.DataAnnotations"/>
-		<Using Include="System.ComponentModel.DataAnnotations.Schema"/>
+		<Using Include="System.ComponentModel.DataAnnotations" />
+		<Using Include="System.ComponentModel.DataAnnotations.Schema" />
 	</ItemGroup>
 
 </Project>

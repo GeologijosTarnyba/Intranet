@@ -1,29 +1,33 @@
 ﻿@code {
   [Parameter] public DateTime? value { get; set; }
   [Parameter] public EventCallback<DateTime?> valueChanged { get; set; }
-  [Parameter] public string? ParamFormat{ get; set; }
+  [Parameter] public string? ParamFormat { get; set; }
   private string format => this.ParamFormat ?? "yyyy-MM-dd hh:mm";
   [Parameter] public string ParamClass { get; set; } = string.Empty;
   [Parameter] public string ParamStyle { get; set; } = string.Empty;
+  private InputText input { get; set; }
 }
-<input 
-  value=@(value?.ToString(this.format) ?? string.Empty)
-  placeholder="@format"
-  @onchange="@(async (ev) => {
-    try {
-      var val =(string?)ev.Value;
-      if(string.IsNullOrEmpty(val)){
-        await valueChanged.InvokeAsync(null);
-      } else {
-        var dt = DateTime.ParseExact(ev?.Value?.ToString() ?? "", this.format, null);
-        await valueChanged.InvokeAsync(dt);
-      }
+<InputText @ref=@input Value=@X placeholder=@format ValueChanged="@HandleNewVal"
+  ValueExpression=@(() => this.X)
+  />
+
+@code {
+  private string? X => value?.ToString(this.format) ?? string.Empty;
+  private async Task HandleNewVal(string? val)
+  {
+    if (DateTime.TryParse(val, out var dt))
+    {
+      Console.WriteLine(dt);
+      await valueChanged.InvokeAsync(dt);
     }
-    catch {
-      //this.value = ParamDefaultFunc.Invoke();
-      //this.StateHasChanged();
+    else
+    {
+      Console.WriteLine($"failed to parse {val}");
+      value = null;
+      await valueChanged.InvokeAsync(null);
+      // this.value = null;
+      // await this.valueChanged.InvokeAsync(null);
+      // this.StateHasChanged();
     }
-  })"
-  class=@ParamClass
-  style=@ParamStyle
-/>
+  }
+}

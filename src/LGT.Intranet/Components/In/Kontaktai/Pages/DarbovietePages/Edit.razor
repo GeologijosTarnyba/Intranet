@@ -1,0 +1,80 @@
+﻿@page "/in/kontaktai/Darbovietes/edit"
+@rendermode InteractiveServer
+@inject LGT.Kontaktai.KontaktaiContext db
+@using LGT.Kontaktai.Models
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h4>Darboviete</h4>
+<hr />
+@if (model is null)
+{
+  <p><em>Loading...</em></p>
+}
+else
+{
+  <div class="row">
+    <div class="col-md-4">
+      <_Bind model=this.model OnValidSubmit="DoUpdate" IsEdit=true IsCreate=false />
+    </div>
+  </div>
+}
+
+<div>
+  <_BackToList />
+</div>
+
+@code {
+  [SupplyParameterFromQuery]
+  public string Id { get; set; }
+
+  [SupplyParameterFromForm]
+  public Darboviete? model { get; set; }
+
+  protected override async Task OnInitializedAsync()
+  {
+    model ??= await db
+    .Set<Darboviete>()
+
+    .FirstOrDefaultAsync(m => m.Id == Id);
+
+    if (model is null)
+    {
+      NavigationManager.NavigateTo("notfound");
+    }
+  }
+
+  // To protect from overposting attacks, enable the specific properties you want to bind to.
+  // For more details, see https://aka.ms/RazorPagesCRUD.
+  public async Task DoUpdate()
+  {
+    db.Attach(model!).State = EntityState.Modified;
+
+    try
+    {
+      await db.SaveChangesAsync();
+    }
+    catch (DbUpdateConcurrencyException)
+    {
+      if (!exists(model!.Id))
+      {
+        NavigationManager.NavigateTo("notfound");
+      }
+      else
+      {
+        throw;
+      }
+    }
+
+    NavigationManager.NavigateTo(_BackToList.Path);
+  }
+
+  bool exists(string id)
+  {
+    return db.Set<Darboviete>().Any(e => e.Id == id);
+  }
+}

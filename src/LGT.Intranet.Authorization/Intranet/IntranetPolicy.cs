@@ -8,6 +8,8 @@ public enum IntranetRights: Int64
   FilesUpload = 4,
   FilesDelete = 8,
   ArticlesEdit = 16,
+  KontaktaiEdit = 32,
+  KontaktaiAdmin = 64,
   All = Int64.MaxValue
 }
 public static class IntranetPolicy

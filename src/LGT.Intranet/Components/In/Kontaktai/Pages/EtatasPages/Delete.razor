@@ -1,0 +1,28 @@
+﻿@page "/in/kontaktai/etatas/delete"
+@inject LGT.Kontaktai.KontaktaiContext db
+@using LGT.Incidentai.Models
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Delete</PageTitle>
+
+<h1>Delete</h1>
+<h3>Are you sure you want to delete this?</h3>
+<_Display id=@this.id Context="model">
+  <EditForm method="post" Model="model" OnValidSubmit="@(async () => await DoDelete(model))" FormName="delete" Enhance>
+    <button type="submit" class="btn btn-danger" disabled="@(model is null)">Delete</button> |
+    <_BackToList />
+  </EditForm>
+</_Display>
+
+@code {
+  [SupplyParameterFromQuery]
+  public Guid id { get; set; }
+
+  public async Task DoDelete(LGT.Kontaktai.Models.Etatas model)
+  {
+    db.Set<LGT.Kontaktai.Models.Etatas>().Remove(model!);
+    await db.SaveChangesAsync();
+    NavigationManager.NavigateTo(_BackToList.Path);
+  }
+}

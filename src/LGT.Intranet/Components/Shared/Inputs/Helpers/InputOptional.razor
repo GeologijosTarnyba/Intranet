@@ -8,17 +8,27 @@
   [Parameter] public Func<T>? ParamDefaultFunc { get; set; }
   [Parameter] public RenderFragment? NameFragment { get; set; }
   [Parameter] public RenderFragment? ValueFragment { get; set; }
+
+
   override protected async Task OnAfterRenderAsync(bool firstRender)
   {
     await base.OnAfterRenderAsync(firstRender);
-    if(firstRender && this.ParamIsPrefered)
+    if (firstRender)
     {
-      await this.SetToggle(true);
+      if (this.value != null)
+      {
+        Console.WriteLine($"value! {value}");
+        this.HasValue = true;
+        this.StateHasChanged();
+      }
+      else if (this.ParamIsPrefered)
+      {
+        await this.SetToggle(true);
+      }
     }
   }
   private bool HasValue { get; set; } = false;
 }
-
 @if (this.NameFragment == null)
 {
   <Error>NameFragment not available</Error>
@@ -27,16 +37,20 @@ else if (this.ValueFragment == null)
 {
   <Error>ValueFragment not available</Error>
 }
-else if (this.ParamDefaultFunc == null) {
+else if (this.ParamDefaultFunc == null)
+{
   <Error>ParamDefaultFunc not available</Error>
 }
 else
 {
   <CreateFormatRow>
     <NameFragment>
-      <label class="@((this.HasValue && (this.value == null || this.value.Equals(default(T)))) ? "text-danger" : null)">
+      <label class="@((NeedsValue) ? "text-danger" : null)">
         @NameFragment
-        <input type="checkbox" checked=@this.HasValue @onchange=@this.Toggle  />
+        <input
+          type="checkbox"
+          checked=@this.HasValue
+          @onchange=@this.Toggle />
       </label>
     </NameFragment>
     <ValueFragment>
@@ -65,4 +79,5 @@ else
       await this.valueChanged.InvokeAsync(default(T));
     }
   }
+  private bool NeedsValue => this.HasValue && (this.value == null || this.value.Equals(default(T)));
 }

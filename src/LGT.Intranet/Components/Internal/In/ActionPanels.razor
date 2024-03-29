@@ -3,19 +3,19 @@
   [Parameter] public string? ParamAction { get; set; }
   [Parameter] public string? ParamType { get; set; }
 }
-@if(this.ParamAction != null && this.ParamType != null)
+@if (this.ParamAction != null && this.ParamType != null)
 {
-  @if(isState("Create", "skundas"))
+  @if (isState("Create", "skundas"))
   {
     <CreateSkundas />
   }
-  else if(isState("Create", "incidentas"))
+  else if (isState("Create", "incidentas"))
   {
     <CreateIncidentas />
   }
   else if (isState("Create", "kreipinys"))
   {
-    <CreateKreipinys/>
+    <CreateKreipinys />
   }
   else if (isState("Create", "sprendimas"))
   {
@@ -24,7 +24,7 @@
   else if (isState("Create", "asmuo"))
   {
     <CreateAsmuo />
-    
+
   }
   else if (isState("Create", "darbuotojas"))
   {

@@ -1,0 +1,73 @@
+﻿@code {
+  [Parameter] public int id { get; set; }
+  public LGT.Kontaktai.Models.Darbuotojas? model { get; set; }
+
+  [Parameter] public RenderFragment<LGT.Kontaktai.Models.Darbuotojas>? ChildContent { get; set; }
+}
+@inject NavigationManager NavigationManager
+@inject LGT.Kontaktai.KontaktaiContext db
+@code {
+
+  protected override async Task OnInitializedAsync()
+  {
+    model = await db.Set<LGT.Kontaktai.Models.Darbuotojas>()
+      .Include(item => item.Darboviete)
+      .Include(item => item.Padalinys)
+      .Include(item => item.Etatas).ThenInclude(item => item!.Name)
+      .FirstOrDefaultAsync(m => m.Id == id);
+
+    if (model is null)
+    {
+      NavigationManager.NavigateTo("notfound");
+    }
+  }
+}
+<div>
+  <h4><_ /></h4>
+  <hr />
+
+  @if (model is null)
+  {
+    <p><em>Loading...</em></p>
+  }
+  else
+  {
+    <dl class="row">
+      <dt class="col-sm-2">CreatedAt</dt><dd class="col-sm-10">@model.CreatedAt</dd>
+      <dt class="col-sm-2">DarbovieteId</dt><dd class="col-sm-10">@model.DarbovieteId</dd>
+      <dt class="col-sm-2">Padalinys</dt><dd class="col-sm-10">
+        @if(this.model.Padalinys != null)
+        {
+          @model.Padalinys!.Name
+        } else
+        {
+          <text>-</text>
+        }
+      </dd>
+      <dt class="col-sm-2">Etatas</dt><dd class="col-sm-10">@model.Etatas!.Name!.Vardininkas</dd>
+    </dl>
+    <dl class="row">
+      <dt class="col-sm-2">Dirba nuo</dt><dd class="col-sm-10">@model.Since</dd>
+      <dt class="col-sm-2">Asmuo</dt><dd class="col-sm-10">@model.FullName</dd>
+      <dt class="col-sm-2">Lytis</dt><dd class="col-sm-10">@model.Lytis</dd>
+      <dt class="col-sm-2">El. paštas</dt>
+      <dd class="col-sm-10">
+        @if(this.model.Email != null)
+        {
+          <a href="mailto:@model.Email">@model.Email</a>
+        }
+      </dd>
+      <dt class="col-sm-2">Dirba iki</dt><dd class="col-sm-10">@model.Until</dd>
+    </dl>
+    <dl class="row">
+      <dt class="col-sm-2">Tel1</dt><dd class="col-sm-10">@model.Tel1</dd>
+      <dt class="col-sm-2">Tel2</dt><dd class="col-sm-10">@model.Tel2</dd>
+      <dt class="col-sm-2">Tel3</dt><dd class="col-sm-10">@model.Tel3</dd>
+      <dt class="col-sm-2">Tel4</dt><dd class="col-sm-10">@model.Tel4</dd>
+    </dl>
+    @if(ChildContent != null)
+    {
+      @ChildContent(model)
+    }
+  }
+</div>

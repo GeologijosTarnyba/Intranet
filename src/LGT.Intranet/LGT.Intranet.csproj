@@ -10,7 +10,7 @@
   <ItemGroup>
 		
     <PackageReference Include="Markdig" Version="0.36.2" />
-		
+		<PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
@@ -18,7 +18,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
     <PackageReference Include="Oracle.EntityFrameworkCore" Version="8.21.121" />
   </ItemGroup>
 
@@ -32,16 +37,23 @@
     <ProjectReference Include="..\LGT.Intranet.Data\LGT.Intranet.Data.csproj" />
     <ProjectReference Include="..\LGT.Intranet.Internal\LGT.Intranet.Internal.csproj" />
     <ProjectReference Include="..\LGT.Intranet.Models\LGT.Intranet.Models.csproj" />
+    <ProjectReference Include="..\LGT.Kontaktai.Data\LGT.Kontaktai.Data.csproj" />
+    <ProjectReference Include="..\LGT.Kontaktai.Models\LGT.Kontaktai.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Update="Components\Account\_Imports.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
+    <Content Update="Components\In\Kontaktai\Pages\EtatasPages\_BackToList.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Components\Internal\Incidentai\Pages\" />
     <Folder Include="Components\Internal\In\Shared\" />
+    <Folder Include="Components\In\Incidentai\" />
   </ItemGroup>
 
 </Project>

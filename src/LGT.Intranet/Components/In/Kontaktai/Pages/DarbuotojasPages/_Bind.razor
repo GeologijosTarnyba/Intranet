@@ -1,0 +1,136 @@
+﻿@code {
+  [EditorRequired]
+  [Parameter] public LGT.Kontaktai.Models.Darbuotojas model { get; set; } = default!;
+
+  [Parameter] public EventCallback<EditContext> OnValidSubmit { get; set; }
+  [Parameter] public bool IsEdit { get; set; }
+  [Parameter] public bool IsCreate { get; set; }
+}
+@inject LGT.Kontaktai.KontaktaiContext db
+<EditForm method="post" Model="this.model" OnValidSubmit="OnValidSubmit" FormName="edit" Enhance>
+  <DataAnnotationsValidator />
+  <ValidationSummary />
+  <input type="hidden" name="Darbuotojas.Id" value="@this.model.Id" />
+  <table class="bord">
+    <tr>
+      <td>Darboviete</td>
+      <td>
+        <ChooseT IsRequired=true
+                 ParamSource=@(db.Set<LGT.Kontaktai.Models.Darboviete>())
+                 @bind-value=@this.model.Darboviete />
+      </td>
+    </tr>
+    <tr>
+      <td>Padalinys</td>
+      <td>
+        @if (this.model.Darboviete != null)
+        {
+          <ChooseT IsRequired=false
+                   ParamSource=@(db.EntityCollection(this.model.Darboviete!, item => item.Padaliniai))
+                   @bind-value=@this.model.Padalinys>
+          </ChooseT>
+        }
+      </td>
+    </tr>
+    <tr>
+      <td>Etatas</td>
+      <td>
+        @if(this.model.Darboviete != null)
+        {
+          
+          @if(this.model.Padalinys == null)
+          {
+            <ChooseT IsRequired=true
+                     ParamSource=@(
+                       db.EntityCollection(this.model.Darboviete!, item => item.Etatai)
+                         .Where(item => item.Padalinys == null)
+                         .Include(item => item.Name)
+                     )
+                     @bind-value=@this.model.Etatas />
+          } else
+          {
+            <ChooseT IsRequired=true
+                     ParamSource=@(
+                       db.EntityCollection(this.model.Padalinys!, item => item.Etatai)
+                         .Include(item => item.Name)
+                     )
+                     @bind-value=@this.model.Etatas />
+          }
+        }
+       
+      </td>
+    </tr>
+    <InputDateTime ParamName="Dirba nuo" ParamIsOptional=true ParamIsPrefered=false
+                   @bind-value=@this.model.Since
+                   ParamDefaultFunc=@(() => DateTime.Today.AddHours(8)) />
+    <tr>
+      <td>Asmuo</td>
+      <td>
+        <InputText id="fullname" @bind-Value=@this.model.FullName class="form-control" />
+        <ValidationMessage For="() => this.model.FullName" class="text-danger" />
+      </td>
+    </tr>
+    <tr>
+      <td>Lytis</td>
+      <td>
+        @if (this.model.Lytis == null)
+        {
+          <button type="button" @onclick=@(() => this.model.Lytis = LGT.Kontaktai.Models.Lytys.Vyras)>Vyras</button>
+          <button type="button" @onclick=@(() => this.model.Lytis = LGT.Kontaktai.Models.Lytys.Moteris)>Moteris</button>
+        }
+        else
+        {
+          @this.model.Lytis <button type="button" @onclick=@(() => this.model.Lytis = null)>Keisti</button>
+        }
+        <ValidationMessage For="() => this.model.FullName" class="text-danger" />
+      </td>
+    </tr>
+    <tr>
+      <td>el.paštas</td>
+      <td>
+        <InputText id="email" @bind-Value="this.model.Email" class="form-control" />
+        <ValidationMessage For="() => this.model.Email" class="text-danger" />
+      </td>
+    </tr>
+    <InputDateTime @bind-value=@this.model.Until ParamName="Dirba iki" ParamIsOptional=true ParamIsPrefered=false ParamDefaultFunc=@(() => null) />
+    <tr>
+      <td>Kabinetas</td>
+      <td>
+        <InputText id="tel1" @bind-Value="this.model.Kabinetas" class="form-control" />
+        <ValidationMessage For="() => this.model.Kabinetas" class="text-danger" />
+      </td>
+    </tr>  
+    <tr>
+      <td>Mobiliojo nr</td>
+      <td>
+        <InputText id="tel1" @bind-Value="this.model.Tel1" class="form-control" />
+        <ValidationMessage For="() => this.model.Tel1" class="text-danger" />
+      </td>
+    </tr>
+    <tr>
+      <td>Miesto nr</td>
+      <td>
+        <InputText id="tel2" @bind-Value="this.model.Tel2" class="form-control" />
+        <ValidationMessage For="() => this.model.Tel2" class="text-danger" />
+      </td>
+    </tr>
+    <tr>
+      <td>Vidinis nr</td>
+      <td>
+        <InputText id="tel3" @bind-Value="this.model.Tel3" class="form-control" />
+        <ValidationMessage For="() => this.model.Tel3" class="text-danger" />
+      </td>
+    </tr>
+    <tr>
+      <td>Asmeninis tel</td>
+      <td>
+        <InputText id="tel4" @bind-Value="this.model.Tel4" class="form-control" />
+        <ValidationMessage For="() => this.model.Tel4" class="text-danger" />
+      </td>
+    </tr>
+
+
+  </table>
+
+  <button type="submit" class="btn btn-primary">Save</button>
+</EditForm>

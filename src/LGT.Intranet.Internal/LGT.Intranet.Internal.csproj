@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LGT.Incidentai.Models\LGT.Incidentai.Models.csproj" />
-    <ProjectReference Include="..\LGT.Kontaktai.Models\LGT.Kontaktai.Models.csproj" />
   </ItemGroup>
 
 </Project>

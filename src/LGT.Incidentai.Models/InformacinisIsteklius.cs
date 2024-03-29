@@ -1,10 +1,7 @@
-﻿using System.Runtime.CompilerServices;
-
-using LGT.Kontaktai.Models;
-
-namespace LGT.Incidentai.Models;
+﻿namespace LGT.Incidentai.Models;
 public class InformacinisIsteklius
 {
+  public override string ToString() => this.Name!;
   [Required]
   [MaxLength(255)]
   [Key]
@@ -20,7 +17,7 @@ public class InformacinisIsteklius
   public string? ParentID { get; set; }
 
   [Required]
-  public Darboviete? Darboviete { get; set; }
+  public Kontaktai.Darboviete? Darboviete { get; set; }
   [Column("Priklauso")]
   [MaxLength(32)]
   public string DarbovieteID { get; set; } = default!;

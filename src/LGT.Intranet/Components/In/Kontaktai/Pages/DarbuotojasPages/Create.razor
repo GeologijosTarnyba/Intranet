@@ -1,0 +1,51 @@
+﻿@page "/in/kontaktai/darbuotojas/create"
+@rendermode InteractiveServer
+@inject LGT.Kontaktai.KontaktaiContext db
+@using LGT.Kontaktai.Models
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+<h1>Create</h1>
+
+<h4>Darbuotojas</h4>
+<hr />
+<div class="row">
+  <div class="col-md-4">
+   <_Bind model=@model IsCreate=true IsEdit=false OnValidSubmit=@DoAdd />
+  </div>
+</div>
+
+<div>
+  <_BackToList />
+</div>
+@code {
+  [SupplyParameterFromQuery] public string? DarbovieteId { get; set; }
+  [SupplyParameterFromQuery] public Guid? PadalinysId { get; set; }
+  [SupplyParameterFromQuery] public Guid? EtatasId { get; set; }
+  [SupplyParameterFromForm]
+  public Darbuotojas model { get; set; } = new();
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    if(DarbovieteId != null)
+    {
+      this.model.Darboviete = await db.Set<Darboviete>().FirstOrDefaultAsync(item => item.Id == DarbovieteId);
+    }
+    if(PadalinysId != null)
+    {
+      this.model.Padalinys = await db.Set<Padalinys>().FirstOrDefaultAsync(item => item.Id == PadalinysId);
+    }
+    if(EtatasId != null)
+    {
+      this.model.Etatas = await db.Set<Etatas>().Include(item => item.Name).FirstOrDefaultAsync(item => item.Id == EtatasId);
+    }
+
+  }
+  // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+  public async Task DoAdd()
+  {
+    db.Set<Darbuotojas>().Add(model);
+    await db.SaveChangesAsync();
+    NavigationManager.NavigateTo(_BackToList.Path);
+  }
+}

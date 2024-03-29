@@ -1,0 +1,38 @@
+﻿@page "/in/kontaktai"
+@rendermode InteractiveServer
+<h3>Kontaktai</h3>
+<div class="row">
+  <div class="col-3">
+    <ul>
+      <li>
+        <a href="/in/kontaktai/darbovietes/create">Sukurti darbovietę</a>
+      </li>
+      <li>
+        <a href="/in/kontaktai/etatasname">Etatų pavadinimai</a>
+      </li>
+    </ul>
+    <hr/>
+    <label>
+      <InputCheckbox @bind-Value=@this.Padaliniai />
+      Padaliniai
+    </label>
+    <label>
+      <InputCheckbox @bind-Value=@this.Etatai />
+      Etatai
+    </label>
+    <label>
+      <InputCheckbox @bind-Value=@this.Darbuotojai />
+      Darbuotojai
+    </label>
+  </div>
+  <div class="col-9">
+
+    <KontaktuMedis Etatai=@this.Etatai Padaliniai=@this.Padaliniai Darbuotojai=@this.Darbuotojai />
+  </div>
+</div>
+
+@code {
+  private bool Etatai { get; set; } = true;
+  private bool Padaliniai { get; set; } = true;
+  private bool Darbuotojai { get; set; } = false;
+}

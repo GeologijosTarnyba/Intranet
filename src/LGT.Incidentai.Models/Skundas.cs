@@ -1,13 +1,11 @@
-﻿using LGT.Kontaktai.Models;
-
-namespace LGT.Incidentai.Models;
+﻿namespace LGT.Incidentai.Models;
 public class Skundas
 {
   public int ID { get; set; }
   public SkundasType? Type { get; set; } [Column("TypeID")] public int? TypeID { get; set; }
 
-  public Darbuotojas? Darbuotojas { get ; set; } public int? DarbuotojasID { get ; set; }
-  public Asmuo? Asmuo { get ; set; } public int? AsmuoID { get; set; }
+  public Kontaktai.Darbuotojas? Darbuotojas { get ; set; } public int? DarbuotojasID { get ; set; }
+  public Kontaktai.Asmuo? Asmuo { get ; set; } public int? AsmuoID { get; set; }
   [MaxLength(255)]
   public string? Asmuo_FreeForm { get; set; }
 

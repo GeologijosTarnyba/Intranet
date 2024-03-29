@@ -1,0 +1,19 @@
+﻿body {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  
+}
+
+.page-container {
+  
+  background-color: white;
+  width: 210mm; /* A4 width */
+  min-height: 297mm;
+  padding: 20px; /* Adjust as needed */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Optional: Add shadow */
+}

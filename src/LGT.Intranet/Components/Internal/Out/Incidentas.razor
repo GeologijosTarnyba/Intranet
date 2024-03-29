@@ -10,43 +10,45 @@
     .Where(inci => inci.ID == this.ParamID)
     .Select(inci => new {
       inci.ID,
-      inci.CreatedAt, inci.Since, inci.Until,
+      inci.CreatedAt,
+      inci.Since,
+      inci.Until,
       Desc = inci.Desc,
       Kreipiniai = inci.Kreipiniai!
-        .Select(kr => new {
-          UName = (string?)kr.UName,
-          Link = (string?)kr.Link,
-          SolutionText = (string?)kr.SolutionText,
-          Darboviete = new {
-            ID = kr.AptarnaujantiImoneID, 
-            Name = (string)kr.AptarnaujantiImone!.Name!
+      .Select(kr => new {
+        UName = (string?)kr.UName,
+        Link = (string?)kr.Link,
+        SolutionText = (string?)kr.SolutionText,
+        Darboviete = new {
+          ID = kr.AptarnaujantiImoneID,
+          Name = (string)kr.AptarnaujantiImone!.Name!
+        },
+        Sprendimai = kr.Sprendimai!
+        .OrderBy(item => item.Since).ThenBy(item => item.CreatedAt)
+        .Select(spr => new {
+          spr.ID,
+          Darbuotojas = new {
+            ID = spr.DarbuotojasID!,
+            Name = spr.Darbuotojas!.Name,
+            Asmuo = spr.Darbuotojas.AsmuoID == null ? null : new {
+              ID = spr.Darbuotojas.AsmuoID,
+              Name = spr.Darbuotojas.Asmuo!.FullName!
+            }
           },
-          Sprendimai = kr.Sprendimai!
-            .OrderBy(item => item.Since).ThenBy(item => item.CreatedAt)
-            .Select(spr => new {
-              spr.ID,
-              Darbuotojas = new { 
-                ID = spr.DarbuotojasID!,
-                Name = spr.Darbuotojas!.Name,
-                Asmuo = spr.Darbuotojas.AsmuoID == null ? null : new {
-                  ID = spr.Darbuotojas.AsmuoID,
-                  Name = spr.Darbuotojas.Asmuo!.FullName!
-                }
-              },
-              Since = spr.Since,
-              Until = spr.Until,
-              SolutionMarkdown = (string?)spr.SolutionMarkdown
-            })
-        })
-      ,
-      Skundai = inci.Skundai!.Select(sk => new {
-        sk.ID, 
+          Since = spr.Since,
+          Until = spr.Until,
+          SolutionMarkdown = (string?)spr.SolutionMarkdown
+         })
+      }),
+      Skundai = inci.Skundai!
+      .Select(sk => new {
+        sk.ID,
         At = sk.At,
         Markdown = (string?)sk.Markdown,
         Pranese = new {
           Pareigybe = sk.DarbuotojasID == null ? null : new {
             Darboviete = new {
-              ID = sk.Darbuotojas!.DarbovieteID, 
+              ID = sk.Darbuotojas!.DarbovieteID,
               Name = sk.Darbuotojas!.Darboviete!.Name
             },
             Asmuo = sk.Darbuotojas.AsmuoID == null ? null : new {
@@ -62,7 +64,7 @@
         }
       })
     })
-)>
+  )>
   <IfSome Context="inci">
     <table class="bord">
       <tr><td>Sukurta</td><td>@inci.CreatedAt.LT(true)</td></tr>
@@ -75,21 +77,28 @@
       <tr>
         <td>Pranešimai</td>
         <td>
-          @if(inci.Skundai.Any()){
+          @if (inci.Skundai.Any())
+          {
             <table>
               @foreach (var skundas in inci.Skundai.OrderByDescending(item => item.At))
               {
                 <tr><td>@skundas.At.LT(true)</td></tr>
                 <tr>
                   <td>
-                    @if(skundas.Pranese.Pareigybe != null){
+                    @if (skundas.Pranese.Pareigybe != null)
+                    {
                       <a href="/darboviete/@skundas.Pranese.Pareigybe.Darboviete.ID">@skundas.Pranese?.Pareigybe.Darboviete.Name</a>
                       <span style="margin: 0px 3px;">@skundas.Pranese?.Pareigybe.Name</span>
-                      @if(skundas.Pranese!.Pareigybe!.Asmuo != null){
+                      @if (skundas.Pranese!.Pareigybe!.Asmuo != null)
+                      {
                         <a href="/asmuo/@skundas.Pranese.Pareigybe.Asmuo.ID">@skundas.Pranese.Pareigybe.Asmuo?.FullName</a>
                       }
-                    } else {
-                      <text></text>@(skundas.Pranese.Asmuo?.FullName)
+                    }
+                    else
+                    {
+                      <text></text>
+
+                      @(skundas.Pranese.Asmuo?.FullName)
                     }
                   </td>
                 </tr>
@@ -102,19 +111,28 @@
       <tr>
         <td>Kreipiniai</td>
         <td>
-          @if(inci.Kreipiniai.Any()){
+          @if (inci.Kreipiniai.Any())
+          {
             <table class="bord">
-              @foreach(var kr in inci.Kreipiniai){
+              @foreach (var kr in inci.Kreipiniai)
+              {
 
-                @if(kr.UName != null || kr.Link != null){
+                @if (kr.UName != null || kr.Link != null)
+                {
                   <tr>
                     <td>
                       <a href="/darboviete/@kr.Darboviete.ID">@kr.Darboviete.Name</a>
-                      @{ string krname = kr.UName ?? "no-name"; }
+                      @{
+                        string krname = kr.UName ?? "no-name";
+                      }
                       @if (kr.Link == null)
                       {
-                        <text></text>@krname
-                      } else {
+                        <text></text>
+
+                        @krname
+                      }
+                      else
+                      {
                         <a style="margin:0 3px" href="@kr.Link">@krname</a>
                       }
                     </td>
@@ -123,9 +141,11 @@
                 <tr>
                   <td>
                     <MarkdownComponent Markdown=@kr.SolutionText />
-                    @if (kr.Sprendimai.Any()){
+                    @if (kr.Sprendimai.Any())
+                    {
                       <ul>
-                        @foreach(var spr in kr.Sprendimai){
+                        @foreach (var spr in kr.Sprendimai)
+                        {
                           <li>
                             @(spr.Darbuotojas.Asmuo?.Name ?? spr.Darbuotojas.Name ?? $"id: {spr.Darbuotojas.ID}"): <MarkdownComponent Markdown=@spr.SolutionMarkdown />
                           </li>

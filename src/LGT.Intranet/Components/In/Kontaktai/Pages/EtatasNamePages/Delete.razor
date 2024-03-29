@@ -1,0 +1,52 @@
+﻿@page "/in/kontaktai/etatasname/delete"
+@attribute [CustomAuthorize(IntranetRights.KontaktaiAdmin)]
+@inject LGT.Kontaktai.KontaktaiContext db
+@using LGT.Incidentai.Models
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Delete</PageTitle>
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+  <h4><_ /></h4>
+  <hr />
+  @if (model is null)
+  {
+    <p><em>Loading...</em></p>
+  }
+  else
+  {
+    <_Display model=@model />
+    <EditForm method="post" Model="model" OnValidSubmit="DoDelete" FormName="delete" Enhance>
+      <button type="submit" class="btn btn-danger" disabled="@(model is null)">Delete</button> |
+      <_BackToList />
+    </EditForm>
+  }
+</div>
+
+@code {
+  LGT.Kontaktai.Models.EtatasName? model;
+
+  [SupplyParameterFromQuery]
+  public string id { get; set; }
+
+  protected override async Task OnInitializedAsync()
+  {
+    model = await db.Set<LGT.Kontaktai.Models.EtatasName>().FirstOrDefaultAsync(m => m.Id == id);
+
+    if (model is null)
+    {
+      NavigationManager.NavigateTo("notfound");
+    }
+  }
+
+  public async Task DoDelete()
+  {
+    db.Set<LGT.Kontaktai.Models.EtatasName>().Remove(model!);
+    await db.SaveChangesAsync();
+    NavigationManager.NavigateTo(_BackToList.Path);
+  }
+}

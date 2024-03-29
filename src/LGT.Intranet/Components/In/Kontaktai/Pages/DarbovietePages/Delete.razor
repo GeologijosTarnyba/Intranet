@@ -1,0 +1,30 @@
+﻿@page "/in/kontaktai/darbovietes/delete"
+@inject LGT.Kontaktai.KontaktaiContext db
+@using LGT.Kontaktai.Models
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Delete</PageTitle>
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<_Display id=@this.Id Context="model">
+  <EditForm method="post" Model="model" OnValidSubmit="@(() => DeleteDarboviete(model))" FormName="delete" Enhance>
+    <button type="submit" class="btn btn-danger" disabled="@(model is null)">Delete</button> |
+    <_BackToList />
+  </EditForm>
+</_Display>
+
+@code {
+  
+
+  [SupplyParameterFromQuery]
+  public string Id { get; set; }
+
+  public async Task DeleteDarboviete(LGT.Kontaktai.Models.Darboviete model)
+  {
+    db.Set<Darboviete>().Remove(model!);
+    await db.SaveChangesAsync();
+    NavigationManager.NavigateTo(_BackToList.Path);
+  }
+}

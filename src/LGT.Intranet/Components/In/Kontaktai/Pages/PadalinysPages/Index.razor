@@ -1,0 +1,27 @@
+﻿@page "/in/kontaktai/padalinys"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject LGT.Kontaktai.KontaktaiContext db
+@using LGT.Incidentai.Models
+
+<PageTitle>Index</PageTitle>
+
+<h1>Padaliniai</h1>
+
+<p>
+  <a href="/in/kontaktai/padalinys/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" 
+  Items=@(db.Set<LGT.Kontaktai.Models.Padalinys>()
+    .OrderByDescending(item => item.Weight ?? 0).ThenBy(item => item.Name)
+  )
+>
+  <PropertyColumn Property="skundastype => skundastype.Weight" />
+  <PropertyColumn Property="skundastype => skundastype.Name" />
+
+  <TemplateColumn Context="skundastype">
+    <a href="@($"/in/kontaktai/padalinys/edit?id={skundastype.Id}")">Edit</a> |
+    <a href="@($"/in/kontaktai/padalinys/details?id={skundastype.Id}")">Details</a> |
+    <a href="@($"/in/kontaktai/padalinys/delete?id={skundastype.Id}")">Delete</a>
+  </TemplateColumn>
+</QuickGrid>

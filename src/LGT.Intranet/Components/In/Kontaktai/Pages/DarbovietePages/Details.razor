@@ -1,0 +1,16 @@
+﻿@page "/in/kontaktai/darbovietes/details"
+@code {
+  [SupplyParameterFromQuery]
+  public string Id { get; set; }
+}
+<PageTitle>Details</PageTitle>
+<h1>Details</h1>
+
+<_Display id=@this.Id Context="darboviete">
+  <div>
+    <a href="@($"/in/kontaktai/darbovietes/edit?id={darboviete!.Id}")">Edit</a> |
+    <a href="@($"/in/kontaktai/darbovietes/delete?id={darboviete!.Id}")">Delete</a> |
+    <_BackToList />
+  </div>
+</_Display>
+

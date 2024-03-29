@@ -1,6 +1,5 @@
 ﻿using LGT.Incidentai.Models;
-using LGT.Kontaktai.Models;
-
+using LGT.Incidentai.Models.Kontaktai;
 using Microsoft.EntityFrameworkCore;
 
 namespace LGT.Intranet.Internal;
@@ -28,13 +27,16 @@ public class InternalContext(DbContextOptions<InternalContext> options): DbConte
     mb.Entity<InformacinisIsteklius>().ToTable($"{incidentai}{nameof(InformacinisIsteklius)}");
     mb.Entity<Skundas>().ToTable($"{incidentai}{nameof(Skundas)}");
     mb.Entity<SkundasType>().ToTable($"{incidentai}{nameof(SkundasType)}");
+    #endregion
     string kontaktai = "K_";
     mb.Entity<Asmuo>().ToTable($"{kontaktai}{nameof(Asmuo)}");
-    mb.Entity<Darboviete>().ToTable($"{kontaktai}{nameof(Darboviete)}");
-    mb.Entity<Darbuotojas>().ToTable($"{kontaktai}{nameof(Darbuotojas)}");
-    #endregion
-
-    mb.Entity<Darbuotojas>().Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DT_NOW).IsRequired();
+    mb.Entity<Darboviete>(darbovietes => {
+      darbovietes.ToTable($"{kontaktai}Darboviete");
+    });
+    mb.Entity<Darbuotojas>(darbuotojai => {
+      darbuotojai.ToTable($"{kontaktai}Darbuotojas");
+    });
+    // CreatedAt
     mb.Entity<Skundas>().Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DT_NOW).IsRequired();
     mb.Entity<Kreipinys>().Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DT_NOW).IsRequired();
     mb.Entity<Sprendimas>().Property(item => item.CreatedAt).HasDefaultValueSql(SQL_DT_NOW).IsRequired();

@@ -1,0 +1,23 @@
+﻿@page "/in/kontaktai/darbovietes"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject LGT.Kontaktai.KontaktaiContext db
+@using LGT.Kontaktai.Models
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+  <a href="/in/kontaktai/darbovietes/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="db.Set<Darboviete>()">
+  <PropertyColumn Property="darboviete => darboviete.Name" />
+  <PropertyColumn Property="darboviete => darboviete.OrderWeight" />
+
+  <TemplateColumn Context="darboviete">
+    <a href="@($"/in/kontaktai/darbovietes/edit?id={darboviete.Id}")">Edit</a> |
+    <a href="@($"/in/kontaktai/darbovietes/details?id={darboviete.Id}")">Details</a> |
+    <a href="@($"/in/kontaktai/darbovietes/delete?id={darboviete.Id}")">Delete</a>
+  </TemplateColumn>
+</QuickGrid>

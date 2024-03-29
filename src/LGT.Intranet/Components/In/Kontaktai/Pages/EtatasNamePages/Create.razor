@@ -1,0 +1,35 @@
+﻿@page "/in/kontaktai/etatasname/create"
+@rendermode InteractiveServer
+@inject LGT.Kontaktai.KontaktaiContext db
+@using LGT.Incidentai.Models
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h4><_ /></h4>
+<hr />
+<div class="row">
+  <div class="col-md-4">
+    <_Bind model=@this.model OnValidSubmit=@this.DoAdd IsEdit=false IsCreate=true />
+  </div>
+</div>
+
+<div>
+  <_BackToList />
+</div>
+
+@code {
+
+  [SupplyParameterFromForm]
+  public LGT.Kontaktai.Models.EtatasName model { get; set; } = new();
+
+  // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+  public async Task DoAdd()
+  {
+    db.Set<LGT.Kontaktai.Models.EtatasName>().Add(model);
+    await db.SaveChangesAsync();
+    NavigationManager.NavigateTo(_BackToList.Path);
+  }
+}

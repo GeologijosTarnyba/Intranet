@@ -1,0 +1,16 @@
+﻿@page "/in/kontaktai/etatas/details"
+<PageTitle>Details</PageTitle>
+<h1>Details</h1>
+
+<_Display id=@this.id Context="model">
+  <div>
+    <a href="@($"/in/kontaktai/etatas/edit?id={model.Id}")">Edit</a> |
+    <a href="@($"/in/kontaktai/etatas/delete?id={model.Id}")">Delete</a> |
+    <_BackToList />
+  </div>
+</_Display>
+
+@code {
+  [SupplyParameterFromQuery]
+  public Guid id { get; set; }
+}

@@ -1,0 +1,57 @@
+﻿@page "/in/kontaktai/etatas"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject LGT.Kontaktai.KontaktaiContext db
+@using LGT.Incidentai.Models
+
+<PageTitle>Index</PageTitle>
+
+<h1>Etatai</h1>
+
+<p>
+  <a href="/in/kontaktai/etatas/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" 
+  Items=@(db.Set<LGT.Kontaktai.Models.Etatas>()
+    .OrderByDescending(item => item.Darboviete!.Name)
+    .ThenByDescending(item => item.Padalinys == null)
+    .ThenByDescending(item => item.Padalinys!.Weight ?? 0)
+    .ThenBy(item => item.Padalinys!.Name)
+    .ThenByDescending(item => item.Name!.Weight ?? 0)
+    .ThenBy(item => item.Name!.Vardininkas)
+    .Select(et => new {
+      et.Id,
+      Darboviete = et.Darboviete!.Id,
+      Padalinys = et.Padalinys!.NameShort,
+      et.Name!.Vardininkas,
+      Darbuotojai = et.Darbuotojai.Where(item => item.Since <= DateTime.Now && item.Until > DateTime.Now).Select(item => new { item.FullName})
+    })
+  )
+>
+  <PropertyColumn Property="item => item.Darboviete" />
+  <PropertyColumn Property="item => item.Padalinys" />
+  <PropertyColumn Property="item => item.Vardininkas" />
+  <TemplateColumn Context="item" Title="Darbuotojas">
+    @if (item.Darbuotojai.Count() > 1)
+    {
+      <ul>
+        @foreach(var darb in item.Darbuotojai)
+        {
+          <li>@darb.FullName</li>
+        }
+      </ul>
+    } else if(item.Darbuotojai.Count() == 1)
+    {
+      @item.Darbuotojai.First().FullName
+    } else
+    {
+      <span>-</span>
+    }
+  </TemplateColumn>
+
+  <TemplateColumn Context="item">
+    <a href="@($"/in/kontaktai/etatas/edit?id={item.Id}")">Edit</a> |
+    <a href="@($"/in/kontaktai/etatas/details?id={item.Id}")">Details</a> |
+    <a href="@($"/in/kontaktai/etatas/delete?id={item.Id}")">Delete</a>
+  </TemplateColumn>
+</QuickGrid>

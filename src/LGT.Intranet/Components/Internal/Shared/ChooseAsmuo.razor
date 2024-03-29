@@ -2,14 +2,14 @@
   [Parameter] public int? id { get; set; }
   [Parameter] public EventCallback<int?> idChanged { get; set; }
 
-  [Parameter] public LGT.Kontaktai.Models.Asmuo? value { get; set; }
-  [Parameter] public EventCallback<LGT.Kontaktai.Models.Asmuo?> valueChanged { get; set; }
+  [Parameter] public LGT.Incidentai.Models.Kontaktai.Asmuo? value { get; set; }
+  [Parameter] public EventCallback<LGT.Incidentai.Models.Kontaktai.Asmuo?> valueChanged { get; set; }
 }
 @inject LGT.Intranet.Internal.InternalContext db
 @if (this.id == null && this.value == null)
 {
   <ExpList ParamSource=@(
-    db.Set<Asmuo>()
+    db.Set<LGT.Incidentai.Models.Kontaktai.Asmuo>()
   )>
     <Wrapper Context="rows">
       <ul>@rows</ul>
@@ -40,7 +40,7 @@ else
     await this.valueChanged.InvokeAsync(null);
     this.name = null;
   }
-  private async Task Choose(LGT.Kontaktai.Models.Asmuo val)
+  private async Task Choose(LGT.Incidentai.Models.Kontaktai.Asmuo val)
   {
     await this.idChanged.InvokeAsync(val.ID);
     await this.valueChanged.InvokeAsync(val);

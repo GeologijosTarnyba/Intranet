@@ -12,7 +12,7 @@ table.input-table {
   text-align: center;
 }
 
-ul {
+ul, ol {
   margin-bottom: 0px;
 }
 

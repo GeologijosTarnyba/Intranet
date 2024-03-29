@@ -6,11 +6,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LGT.Intranet.Migrations.InternalContextMigrations
 {
     /// <inheritdoc />
-    public partial class Initialcommit : Migration
+    public partial class _1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "I_AptarnaujantiImone",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "TEXT", maxLength: 32, nullable: false),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_I_AptarnaujantiImone", x => x.ID);
+                });
+
             migrationBuilder.CreateTable(
                 name: "I_IncidentoPozymis",
                 columns: table => new
@@ -64,19 +77,23 @@ namespace LGT.Intranet.Migrations.InternalContextMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "I_AptarnaujantiImone",
+                name: "I_AptarnavimoSutartis",
                 columns: table => new
                 {
-                    ID = table.Column<string>(type: "TEXT", maxLength: 32, nullable: false),
-                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AptarnaujantiImoneID = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false, defaultValueSql: "datetime()"),
+                    Iki = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    Nuo = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_I_AptarnaujantiImone", x => x.ID);
+                    table.PrimaryKey("PK_I_AptarnavimoSutartis", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_I_AptarnaujantiImone_K_Darboviete_ID",
-                        column: x => x.ID,
-                        principalTable: "K_Darboviete",
+                        name: "FK_I_AptarnavimoSutartis_I_AptarnaujantiImone_AptarnaujantiImoneID",
+                        column: x => x.AptarnaujantiImoneID,
+                        principalTable: "I_AptarnaujantiImone",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -112,13 +129,15 @@ namespace LGT.Intranet.Migrations.InternalContextMigrations
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false, defaultValueSql: "datetime()"),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
                     Darboviete = table.Column<string>(type: "TEXT", nullable: false),
-                    Asmuo = table.Column<int>(type: "INTEGER", nullable: true),
+                    AsmuoID = table.Column<int>(type: "INTEGER", nullable: true),
+                    FullName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     Since = table.Column<DateTime>(type: "TEXT", nullable: true),
                     Until = table.Column<DateTime>(type: "TEXT", nullable: true),
                     Pareigybe = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     Email = table.Column<string>(type: "TEXT", nullable: true),
+                    Kabinetas = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     Tel1 = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     Tel2 = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     Tel3 = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
@@ -128,36 +147,14 @@ namespace LGT.Intranet.Migrations.InternalContextMigrations
                 {
                     table.PrimaryKey("PK_K_Darbuotojas", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_K_Darbuotojas_K_Asmuo_Asmuo",
-                        column: x => x.Asmuo,
+                        name: "FK_K_Darbuotojas_K_Asmuo_AsmuoID",
+                        column: x => x.AsmuoID,
                         principalTable: "K_Asmuo",
                         principalColumn: "ID");
                     table.ForeignKey(
                         name: "FK_K_Darbuotojas_K_Darboviete_Darboviete",
                         column: x => x.Darboviete,
                         principalTable: "K_Darboviete",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "I_AptarnavimoSutartis",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    AptarnaujantiImoneID = table.Column<string>(type: "TEXT", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false, defaultValueSql: "datetime()"),
-                    Iki = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Nuo = table.Column<DateTime>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_I_AptarnavimoSutartis", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_I_AptarnavimoSutartis_I_AptarnaujantiImone_AptarnaujantiImoneID",
-                        column: x => x.AptarnaujantiImoneID,
-                        principalTable: "I_AptarnaujantiImone",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -361,9 +358,9 @@ namespace LGT.Intranet.Migrations.InternalContextMigrations
                 column: "KreipinysID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_K_Darbuotojas_Asmuo",
+                name: "IX_K_Darbuotojas_AsmuoID",
                 table: "K_Darbuotojas",
-                column: "Asmuo");
+                column: "AsmuoID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_K_Darbuotojas_Darboviete",

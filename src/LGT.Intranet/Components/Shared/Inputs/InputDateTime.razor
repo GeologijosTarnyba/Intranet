@@ -3,7 +3,7 @@
   [Parameter] public bool ParamIsPrefered { get; set; } = false;
   [Parameter] public DateTime? value { get; set; }
   [Parameter] public EventCallback<DateTime?> valueChanged { get; set; }
-  [Parameter] public Func<DateTime?> ParamDefaultFunc { get; set; } = () => new DateTime(2023, 01, 01, 20, 00, 00);
+  [Parameter] public Func<DateTime?> ParamDefaultFunc { get; set; }
   [Parameter] public string? ParamName { get; set; }
   [Parameter] public RenderFragment? NameFragment { get; set; }
   public InputDateTime()

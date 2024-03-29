@@ -1,0 +1,155 @@
+﻿@inject LGT.Kontaktai.KontaktaiContext db
+@rendermode InteractiveServer
+@code {
+  private readonly DateTime now = DateTime.Now;
+  [Parameter]
+  public bool Etatai { get; set; }
+  [Parameter]
+  public bool Padaliniai { get; set; }
+  [Parameter]
+  public bool Darbuotojai { get; set; }
+}
+
+<ExpList 
+  ParamSource=@(
+    db.Set<LGT.Kontaktai.Models.Darboviete>()
+      .OrderByDescending(item => item.OrderWeight)
+      .Select(darboviete => new {
+        darboviete.Name,
+        darboviete.Id,
+        Etatai = darboviete.Etatai
+          .Where(item => item.Padalinys == null)
+          .Select(et => new {
+            et.Id,
+            et.Name!.Vardininkas,
+            et.Name!.Vardininke,
+            Name = (
+              et.Darbuotojai.Where(item => (item.Since == null || item.Since <= now) && (item.Until == null || item.Until > now)).Any()
+              &&
+              et.Darbuotojai.Where(item => (item.Since == null || item.Since <= now) && (item.Until == null || item.Until > now)
+            )
+            .OrderBy(item => item.Since)
+            .First().Lytis == LGT.Kontaktai.Models.Lytys.Moteris)
+            ? et.Name!.Vardininke
+            : et.Name!.Vardininkas
+            ,
+            Darbuotojai = et.Darbuotojai
+              .OrderByDescending(item => item.Since)
+              .Select(darbuotojas => new {
+                darbuotojas.Id,
+                darbuotojas.FullName,
+                darbuotojas.Lytis,
+                Galioja = (darbuotojas.Since == null || darbuotojas.Since <= now) && (darbuotojas.Until == null || darbuotojas.Until > now)
+              })
+          }),
+          Padaliniai = darboviete.Padaliniai
+            .OrderByDescending(item => item.Weight).ThenBy(item => item.Name)
+            .Select(pad => new {
+              pad.Id,
+              pad.Name,
+              pad.NameShort,
+              Weight = pad.Weight ?? 0,
+              Etatai = pad.Etatai
+                .OrderByDescending(item => item.Name!.Weight)
+         .ThenBy(item => item.Name!.Vardininkas)
+         .Select(et => new {
+           et.Id,
+           Name = (
+                    et.Darbuotojai.Where(item => (item.Since == null || item.Since <= now) && (item.Until == null || item.Until > now)).Any() 
+                    && 
+                    et.Darbuotojai.Where(item => (item.Since == null || item.Since <= now) && (item.Until == null || item.Until > now)
+                  )
+                  .OrderBy(item => item.Since)
+                  .First().Lytis == LGT.Kontaktai.Models.Lytys.Moteris)
+                  ? et.Name!.Vardininke
+                  : et.Name!.Vardininkas,
+           Darbuotojai = et.Darbuotojai
+            .OrderByDescending(item => item.Since)
+            .Select(darbuotojas => new {
+              darbuotojas.Id,
+              darbuotojas.FullName,
+              darbuotojas.Lytis,
+              Galioja = (darbuotojas.Since == null || darbuotojas.Since <= now) && (darbuotojas.Until == null || darbuotojas.Until > now)
+            })
+          })
+        })
+      })
+    )>
+  <Wrapper Context="rows"><ul>@rows</ul></Wrapper>
+  <IfSome Context="darboviete">
+    <li>
+      <a href=@($"/in/kontaktai/darbovietes/details?id={darboviete.Id}")>@darboviete.Name</a>
+      @if (this.Etatai && darboviete.Etatai.Any())
+      {
+        <ul>
+          @foreach (var et in darboviete.Etatai)
+          {
+            <li>
+              <a href="/in/kontaktai/etatas/details?id=@et.Id">@et.Vardininkas / @et.Vardininke</a>
+              @if (this.Darbuotojai && et.Darbuotojai.Any())
+              {
+                <ul>
+                  @foreach(var darbuotojas in et.Darbuotojai)
+                  {
+                    <li>
+                      @if (darbuotojas.Galioja)
+                      {
+                        <a href=@($"/in/kontaktai/darbuotojas/details?id={darbuotojas.Id}")>@darbuotojas.FullName</a>
+                      }
+                      else
+                      {
+                        <s><a href=@($"/in/kontaktai/darbuotojas/details?id={darbuotojas.Id}")>@darbuotojas.FullName</a></s>
+                      }
+                    </li>
+                  }
+                </ul>
+              }
+            </li>
+          }
+        </ul>
+      }
+      @if (this.Padaliniai && darboviete.Padaliniai.Any())
+      {
+        <ol>
+          @foreach (var padalinys in darboviete.Padaliniai)
+          {
+            <li value="@padalinys.Weight">
+              <a href=@($"/in/kontaktai/padalinys/details?id={padalinys.Id}")>@padalinys.Name</a>
+              @if (this.Etatai && padalinys.Etatai.Any())
+              {
+                <ul>
+                  @foreach (var etatas in padalinys.Etatai)
+                  {
+                    <li>
+                      <a href=@($"/in/kontaktai/etatas/details?id={etatas.Id}")>
+                        @etatas.Name
+                      </a>
+                      @if (this.Darbuotojai && etatas.Darbuotojai.Any())
+                      {
+                        <ul>
+                          @foreach (var darbuotojas in etatas.Darbuotojai)
+                          {
+                            <li>
+                              @if (darbuotojas.Galioja)
+                              {
+                                <a href=@($"/in/kontaktai/darbuotojas/details?id={darbuotojas.Id}")>@darbuotojas.FullName</a>
+                              }
+                              else
+                              {
+                                <s><a href=@($"/in/kontaktai/darbuotojas/details?id={darbuotojas.Id}")>@darbuotojas.FullName</a></s>
+                              }
+                            </li>
+                          }
+                        </ul>
+                      }
+                    </li>
+                  }
+                </ul>
+              }
+            </li>
+          }
+        </ol>
+      }
+    </li>
+  </IfSome>
+</ExpList>

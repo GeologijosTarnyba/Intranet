@@ -1,0 +1,35 @@
+﻿@page "/in/kontaktai/darbovietes/create"
+@rendermode InteractiveServer
+@inject LGT.Kontaktai.KontaktaiContext db
+@using LGT.Kontaktai.Models
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h4>Darboviete</h4>
+<hr />
+<div class="row">
+  <div class="col-md-4">
+    <_Bind model=@model IsCreate=true IsEdit=false OnValidSubmit=@DoAdd />
+  </div>
+</div>
+
+<div>
+  <_BackToList />
+</div>
+
+@code {
+
+  [SupplyParameterFromForm]
+  public Darboviete model { get; set; } = new();
+
+  // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+  public async Task DoAdd()
+  {
+    db.Set<Darboviete>().Add(model);
+    await db.SaveChangesAsync();
+    NavigationManager.NavigateTo(_BackToList.Path);
+  }
+}

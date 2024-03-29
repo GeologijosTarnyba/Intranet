@@ -1,0 +1,107 @@
+﻿@code {
+  [Parameter] public Guid id { get; set; }
+  public LGT.Kontaktai.Models.Etatas? model { get; set; }
+
+  [Parameter] public RenderFragment<LGT.Kontaktai.Models.Etatas>? ChildContent { get; set; }
+}
+@inject NavigationManager NavigationManager
+@inject LGT.Kontaktai.KontaktaiContext db
+@code {
+
+  protected override async Task OnInitializedAsync()
+  {
+    model = await db.Set<LGT.Kontaktai.Models.Etatas>()
+      .Include(item => item.Darboviete)
+      .Include(item => item.Padalinys)
+      .Include(item => item.Name)
+      .FirstOrDefaultAsync(m => m.Id == id);
+
+    if (model is null)
+    {
+      NavigationManager.NavigateTo("notfound");
+    }
+  }
+}
+<div>
+  <h4><_ /></h4>
+  <hr />
+
+  @if (model is null)
+  {
+    <p><em>Loading...</em></p>
+  }
+  else
+  {
+    <dl class="row">
+      <dt class="col-sm-2">Darboviete</dt>
+      <dd class="col-sm-10">@model.Darboviete!.Id</dd>
+      <dt class="col-sm-2">Padalinys</dt>
+      <dd class="col-sm-10">
+        @model.Padalinys
+      </dd>
+      <dt class="col-sm-2">Name</dt>
+      <dd class="col-sm-10">@model.Name!.Vardininkas</dd>
+      <dt class="col-sm-2">Įkurtas</dt><dd class="col-sm-10">@model.Since</dd>
+      <dt class="col-sm-2">Panaikintas</dt><dd class="col-sm-10">@model.Until</dd>
+      <dt class="col-sm-2">Darbuotojai</dt>
+      <dd class="col-sm-10">
+        @{
+          DateTime now = DateTime.Now;
+        }
+        <ExpList ParamIsExpanded=true
+                 ParamSource=@(
+                   db.EntityCollection(this.model, item => item.Darbuotojai)
+                     .OrderBy(item => item.Since)
+                     .Select(item => new {
+                       item.Id,
+                       item.FullName,
+                       Galioja = (item.Since == null || item.Since <= now) && (item.Until == null || item.Until > now),
+                       item.Since,
+                       item.Until
+                     })
+                 )>
+          <IfSome Context="darbuotojas">
+            <li>
+              @if (darbuotojas.Galioja)
+              {
+                <a href="/in/kontaktai/darbuotojas/details?id=@darbuotojas.Id">
+                  @darbuotojas.FullName
+                </a>
+              } else
+              {
+                <s>
+                  <a href="/in/kontaktai/darbuotojas/details?id=@darbuotojas.Id">
+                    @darbuotojas.FullName
+                  </a>
+                </s>
+              }
+              @if(darbuotojas.Since != null || darbuotojas.Until != null)
+              { 
+                <text> 
+                  (
+
+                  @if(darbuotojas.Since != null)
+                  {
+                    <text>nuo @darbuotojas.Since.LT()</text>
+                  }
+                  @if(darbuotojas.Until != null)
+                  {
+                    <text>iki @darbuotojas.Until.LT()</text>
+                  }
+                  
+                  )
+                </text>
+              }
+            </li>
+          </IfSome>
+        </ExpList>
+        <a href="/in/kontaktai/darbuotojas/create?EtatasId=@this.id&PadalinysId=@this.model.Padalinys?.Id&DarbovieteId=@this.model.Darboviete!.Id">Pridėti</a>
+      </dd>
+    </dl>
+
+    @if (ChildContent != null)
+    {
+      @ChildContent(model)
+    }
+  }
+</div>

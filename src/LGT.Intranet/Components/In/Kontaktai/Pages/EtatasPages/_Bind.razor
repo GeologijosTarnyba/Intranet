@@ -1,0 +1,51 @@
+﻿@code {
+  [EditorRequired]
+  [Parameter] public LGT.Kontaktai.Models.Etatas model { get; set; } = default!;
+
+  [Parameter] public EventCallback<EditContext> OnValidSubmit { get; set; }
+  [Parameter] public bool IsEdit { get; set; }
+  [Parameter] public bool IsCreate { get; set; }
+
+
+}
+@inject LGT.Kontaktai.KontaktaiContext db
+<EditForm method="post" Model="model"
+          FormName="create"
+          OnValidSubmit=@OnValidSubmit
+          Enhance>
+  <DataAnnotationsValidator />
+  <ValidationSummary class="text-danger" />
+  <table class="bord">
+
+    <tr>
+      <td>Darbovietė</td>
+      <td>
+        <ChooseT IsRequired=true
+                 ParamSource=@(db.Set<LGT.Kontaktai.Models.Darboviete>())
+                 @bind-value=@this.model.Darboviete />
+      </td>
+    </tr>
+    <tr>
+      <td>Padalinys</td>
+      <td>
+        @if (this.model.Darboviete != null)
+        {
+          <ChooseT IsRequired=false
+                   ParamSource=@(db.EntityCollection(this.model.Darboviete, dv => dv.Padaliniai))
+                   @bind-value=@this.model.Padalinys />
+        }
+      </td>
+    </tr>
+    <tr>
+      <td>Pavadinimas</td>
+      <td>
+        <ChooseT IsRequired=true
+                 ParamSource=@(db.Set<LGT.Kontaktai.Models.EtatasName>())
+                 @bind-value=@this.model.Name />
+      </td>
+    </tr>
+    <InputDateTime @bind-value=@this.model.Since ParamName="Įkurtas" ParamShowHours=false />
+    <InputDateTime @bind-value=@this.model.Until ParamName="Panaikintas" ParamShowHours=false />
+  </table>
+  <button type="submit" class="btn btn-primary">Save</button>
+</EditForm>

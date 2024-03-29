@@ -1,0 +1,39 @@
+﻿.blue {
+  color: #0917b7;
+  font-size: 12pt;
+  font-weight: bold;
+  font-family: Arial;
+  padding-top: 8px;
+  padding-bottom: 0px;
+  text-transform: uppercase;
+}
+th {
+  font-family: Arial;
+  font-size: 8pt;
+  font-weight: bold;
+  text-align: center;
+}
+td {
+  font-family: Arial;
+  font-size: 8pt;
+  padding-right: 4px;
+  padding-left: 4px;
+}
+td.blue {
+  border: none!important;
+
+}
+
+.cap-first::first-letter {
+  text-transform: uppercase
+}
+
+table.bord th,
+table.bord td {
+  border: solid black 1px;
+}
+
+a[href^="mailto:"] {
+  text-decoration: none;
+  color: blue;
+}

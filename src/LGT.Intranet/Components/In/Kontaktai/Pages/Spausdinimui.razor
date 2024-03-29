@@ -1,0 +1,167 @@
+﻿@page "/kontaktai/{id}"
+@layout LayoutA4Portrait
+@attribute [AllowAnonymous]
+@code {
+  [Parameter] public string id { get; set; } = default!;
+  private DateTime now = DateTime.Now;
+}
+@inject LGT.Kontaktai.KontaktaiContext db
+@* <p class="text-center no-print">
+  <button type="button" onclick="window.print()">Spausdinti</button>
+  <FlexAuthorizeView Val="@(IntranetRights.KontaktaiEdit | IntranetRights.KontaktaiAdmin)">
+    <Authorized>
+      <a href="/in/kontaktai/darbovietes/details?id=@this.id">Redaguoti</a>
+    </Authorized>
+  </FlexAuthorizeView>
+</p> *@
+<ExpList ParamSource=@(
+         db.Set<LGT.Kontaktai.Models.Darboviete>()
+         .Where(item => item.Id == this.id)
+         .Select(dv => new {
+         dv.Name,
+         Etatai = dv.Etatai
+         .Where(item => item.Padalinys == null)
+         .OrderByDescending(item => (item.Name!.Weight ?? 0))
+         .ThenBy(item => item.Name!.Vardininkas)
+         .Select(et => new {
+         et.Id,
+         et.Name!.Vardininke,
+         et.Name!.Vardininkas,
+         Darbuotojai = et.Darbuotojai
+         .Where(item => (item.Since == null || item.Since <= now) && (item.Until == null || item.Until > now))
+         .OrderByDescending(item => item.CreatedAt)
+         .Select(darbuotojas => new {
+         darbuotojas.FullName,
+         darbuotojas.Lytis,
+         Kabinetas = darbuotojas.Kabinetas,
+         MobNr = darbuotojas.Tel1,
+         DarboNr = darbuotojas.Tel2,
+         VietinisNr = darbuotojas.Tel3,
+         darbuotojas.Email
+         })
+         }),
+         Padaliniai = dv.Padaliniai
+         .Where(item => item.Etatai.Any())
+         .OrderByDescending(item => item.Weight)
+         .Select(pad => new {
+         pad.Name,
+         Etatas = pad.Etatai
+         .OrderByDescending(et => et.Name!.Weight)
+         .ThenBy(et => et.Name!.Vardininkas)
+         .Select(et => new {
+         et.Id,
+         et.Name!.Vardininke,
+         et.Name!.Vardininkas,
+         Darbuotojai = et.Darbuotojai
+         .Where(item => (item.Since == null || item.Since <= now) && (item.Until == null || item.Until > now))
+         .OrderByDescending(item => item.CreatedAt)
+         .Select(darbuotojas => new {
+         darbuotojas.FullName,
+         darbuotojas.Lytis,
+         Kabinetas = darbuotojas.Kabinetas,
+         MobNr = darbuotojas.Tel1,
+         DarboNr = darbuotojas.Tel2,
+         VietinisNr = darbuotojas.Tel3,
+         darbuotojas.Email
+         })
+         })
+         })
+         })
+         )>
+  <IfSome Context="lgt">
+    <h3 class="mx-4 mt-5 blue text-center">@lgt.Name TELEFONŲ SĄRAŠAS</h3>
+    <table class="bord mx-4" style="width:93%; padding-left: 220px; margin-right: 20px;">
+      <tr>
+        <th class="text-center">Pareigos</th>
+        <th class="text-center">Vardas, pavardė</th>
+        <th class="text-center">Kabineto nr.</th>
+        <th class="text-center">Vietinis tel.</th>
+        <th class="text-center">Darbo tel.</th>
+        <th class="text-center">Mobilus tel.</th>
+        <th class="text-center email">El. p. adresas</th>
+      </tr>
+      @if (!lgt.Padaliniai.Any())
+      {
+        @foreach (var et in lgt.Etatai)
+        {
+          @foreach (var darbuotojas in et.Darbuotojai)
+          {
+            <tr>
+              <td class="cap-first">
+                @(darbuotojas.Lytis == LGT.Kontaktai.Models.Lytys.Moteris ? et.Vardininke : et.Vardininkas)
+              </td>
+              <td>
+                @darbuotojas.FullName
+              </td>
+              <td class="text-center">@darbuotojas.Kabinetas</td>
+              <td class="text-center">@darbuotojas.VietinisNr</td>
+              <td class="text-center">@darbuotojas.DarboNr</td>
+              <td class="text-center">@darbuotojas.MobNr</td>
+              <td>
+                @if (darbuotojas.Email != null)
+                {
+                  <a href="mailto:@darbuotojas.Email.ToLower()">@darbuotojas.Email.ToLower()</a>
+                }
+              </td>
+            </tr>
+          }
+        }
+      }
+      @foreach (var padalinys in lgt.Padaliniai)
+      {
+        <tr><td colspan="7" class="px-2 blue">@padalinys.Name!.ToUpper()</td></tr>
+        @if (padalinys == lgt.Padaliniai.First())
+        {
+          @foreach (var et in lgt.Etatai)
+          {
+            @foreach (var darbuotojas in et.Darbuotojai)
+            {
+              <tr>
+                <td class="cap-first">
+                  @(darbuotojas.Lytis == LGT.Kontaktai.Models.Lytys.Moteris ? et.Vardininke : et.Vardininkas)
+                </td>
+                <td>
+                  @darbuotojas.FullName
+                </td>
+                <td class="text-center">@darbuotojas.Kabinetas</td>
+                <td class="text-center">@darbuotojas.VietinisNr</td>
+                <td class="text-center">@darbuotojas.DarboNr</td>
+                <td class="text-center">@darbuotojas.MobNr</td>
+                <td>
+                  @if (darbuotojas.Email != null)
+                  {
+                    <a href="mailto:@darbuotojas.Email.ToLower()">@darbuotojas.Email.ToLower()</a>
+                  }
+                </td>
+              </tr>
+            }
+          }
+        }
+        @foreach (var et in padalinys.Etatas)
+        {
+          @foreach (var darbuotojas in et.Darbuotojai)
+          {
+            <tr>
+              <td class="cap-first">
+                @(darbuotojas.Lytis == LGT.Kontaktai.Models.Lytys.Moteris ? et.Vardininke : et.Vardininkas)
+              </td>
+              <td>
+                @darbuotojas.FullName
+              </td>
+              <td class="text-center">@darbuotojas.Kabinetas</td>
+              <td class="text-center">@darbuotojas.VietinisNr</td>
+              <td class="text-center">@darbuotojas.DarboNr</td>
+              <td class="text-center">@darbuotojas.MobNr</td>
+              <td>
+                @if (darbuotojas.Email != null)
+                {
+                  <a href="mailto:@darbuotojas.Email.ToLower()">@darbuotojas.Email.ToLower()</a>
+                }
+              </td>
+            </tr>
+          }
+        }
+      }
+    </table>
+  </IfSome>
+</ExpList>

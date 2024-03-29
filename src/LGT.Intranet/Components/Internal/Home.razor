@@ -1,0 +1,32 @@
+﻿@page "/gen"
+
+<div class="row">
+  <div class="col-4">
+    <table class="bord">
+      <tr><td colspan="2">Incidentai</td></tr>
+      @Row(null, "informacinisisteklius")
+      @Row(null, "skundas")
+      @Row(null, "kreipinys")
+      @Row("Aptarnaujančios įmonės", "aptarnaujantiimones")
+      @Row(null, "aptarnavimoSutartis")
+      @Row("Incidentai", "incidentas")
+      @Row(null, "sprendimas")
+      <tr><td colspan="2">Klasifikatoriai</td></tr>
+      @Row(null, "skundastypes")
+    </table>
+  </div>
+  <div class="col-8">
+    <h4>Kontaktų medis</h4>
+    
+  </div>
+</div>
+
+@code {
+  private RenderFragment Row(string? name, string identifier, int cols = 0)
+  {
+    return@<tr>
+      <td>@(name ?? identifier)</td>
+      <td><a href="/gen/@identifier">List</a></td>
+    </tr>;
+  }
+}
