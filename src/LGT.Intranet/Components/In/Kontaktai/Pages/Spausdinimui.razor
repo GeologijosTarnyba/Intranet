@@ -88,19 +88,19 @@
           {
             <tr>
               <td class="cap-first">
-                @(darbuotojas.Lytis == LGT.Kontaktai.Models.Lytys.Moteris ? et.Vardininke : et.Vardininkas)
+                @((darbuotojas.Lytis == LGT.Kontaktai.Models.Lytys.Moteris ? et.Vardininke : et.Vardininkas).NonBreaking())
               </td>
               <td>
-                @darbuotojas.FullName
+                @darbuotojas.FullName.NonBreaking()
               </td>
               <td class="text-center">@darbuotojas.Kabinetas</td>
               <td class="text-center">@darbuotojas.VietinisNr</td>
-              <td class="text-center">@darbuotojas.DarboNr</td>
-              <td class="text-center">@darbuotojas.MobNr</td>
+              <td class="text-center">@darbuotojas.DarboNr.NonBreaking()</td>
+              <td class="text-center">@darbuotojas.MobNr.NonBreaking()</td>
               <td>
                 @if (darbuotojas.Email != null)
                 {
-                  <a href="mailto:@darbuotojas.Email.ToLower()">@darbuotojas.Email.ToLower()</a>
+                  <a href="mailto:@darbuotojas.Email.ToLower()">@darbuotojas.Email.ToLower().NonBreaking()</a>
                 }
               </td>
             </tr>
@@ -118,19 +118,19 @@
             {
               <tr>
                 <td class="cap-first">
-                  @(darbuotojas.Lytis == LGT.Kontaktai.Models.Lytys.Moteris ? et.Vardininke : et.Vardininkas)
+                  @((darbuotojas.Lytis == LGT.Kontaktai.Models.Lytys.Moteris ? et.Vardininke : et.Vardininkas).NonBreaking())
                 </td>
                 <td>
-                  @darbuotojas.FullName
+                  @darbuotojas.FullName.NonBreaking()
                 </td>
                 <td class="text-center">@darbuotojas.Kabinetas</td>
                 <td class="text-center">@darbuotojas.VietinisNr</td>
-                <td class="text-center">@darbuotojas.DarboNr</td>
-                <td class="text-center">@darbuotojas.MobNr</td>
+                <td class="text-center">@darbuotojas.DarboNr.NonBreaking()</td>
+                <td class="text-center">@darbuotojas.MobNr.NonBreaking()</td>
                 <td>
                   @if (darbuotojas.Email != null)
                   {
-                    <a href="mailto:@darbuotojas.Email.ToLower()">@darbuotojas.Email.ToLower()</a>
+                    <a href="mailto:@darbuotojas.Email.ToLower()">@darbuotojas.Email.ToLower().NonBreaking()</a>
                   }
                 </td>
               </tr>
@@ -143,19 +143,19 @@
           {
             <tr>
               <td class="cap-first">
-                @(darbuotojas.Lytis == LGT.Kontaktai.Models.Lytys.Moteris ? et.Vardininke : et.Vardininkas)
+                @((darbuotojas.Lytis == LGT.Kontaktai.Models.Lytys.Moteris ? et.Vardininke : et.Vardininkas).NonBreaking())
               </td>
               <td>
-                @darbuotojas.FullName
+                @darbuotojas.FullName.NonBreaking()
               </td>
               <td class="text-center">@darbuotojas.Kabinetas</td>
               <td class="text-center">@darbuotojas.VietinisNr</td>
-              <td class="text-center">@darbuotojas.DarboNr</td>
-              <td class="text-center">@darbuotojas.MobNr</td>
+              <td class="text-center">@darbuotojas.DarboNr.NonBreaking()</td>
+              <td class="text-center">@(darbuotojas.MobNr.NonBreaking())</td>
               <td>
                 @if (darbuotojas.Email != null)
                 {
-                  <a href="mailto:@darbuotojas.Email.ToLower()">@darbuotojas.Email.ToLower()</a>
+                  <a href="mailto:@darbuotojas.Email.ToLower()">@darbuotojas.Email.ToLower().NonBreaking()</a>
                 }
               </td>
             </tr>
@@ -165,3 +165,8 @@
     </table>
   </IfSome>
 </ExpList>
+
+
+@code {
+  
+}

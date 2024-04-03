@@ -1,5 +1,12 @@
 public static class ExtensionMethods
 {
+  public static Microsoft.AspNetCore.Components.MarkupString? NonBreaking(this string? str)
+  {
+    // TODO: check input for html
+    if (str == null)
+      return null;
+    return (Microsoft.AspNetCore.Components.MarkupString)str.Replace(" ", "&nbsp;");
+  }
   public static string LT(this DateTime t, bool ShowTime = false)
   {
     var format = (ShowTime) switch {
