@@ -25,11 +25,11 @@
         </div>
       </Authorized>
     </FlexAuthorizeView>
-    <FlexAuthorizeView Val=@AdminRights.Incidentai>
+    <FlexAuthorizeView Val=@GISRights.All>
       <Authorized>
         <div class="nav-item px-3">
-          <NavLink class="nav-link" href="gen">
-            <span class="oi oi-eye" aria-hidden="true"></span> GEN
+          <NavLink class="nav-link" href="in/gis/">
+            <span class="oi oi-globe" aria-hidden="true"></span> Geologija
           </NavLink>
         </div>
       </Authorized>
@@ -43,11 +43,11 @@
         </div>
       </Authorized>
     </FlexAuthorizeView>
-    <FlexAuthorizeView Val=@GISRights.All>
+    <FlexAuthorizeView Val=@(IntranetRights.KontaktaiEdit | IntranetRights.KontaktaiAdmin)>
       <Authorized>
         <div class="nav-item px-3">
-          <NavLink class="nav-link" href="in/gis/">
-            <span class="oi oi-globe" aria-hidden="true"></span> Geologija
+          <NavLink class="nav-link" href="in/kontaktai/">
+            <span class="oi oi-list-rich" aria-hidden="true"></span> Kontaktai
           </NavLink>
         </div>
       </Authorized>
