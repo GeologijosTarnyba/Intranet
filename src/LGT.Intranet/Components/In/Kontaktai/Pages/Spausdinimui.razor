@@ -14,60 +14,65 @@
     </Authorized>
   </FlexAuthorizeView>
 </p> *@
-<ExpList ParamSource=@(
-         db.Set<LGT.Kontaktai.Models.Darboviete>()
-         .Where(item => item.Id == this.id)
-         .Select(dv => new {
-         dv.Name,
-         Etatai = dv.Etatai
-         .Where(item => item.Padalinys == null)
-         .OrderByDescending(item => (item.Name!.Weight ?? 0))
-         .ThenBy(item => item.Name!.Vardininkas)
-         .Select(et => new {
-         et.Id,
-         et.Name!.Vardininke,
-         et.Name!.Vardininkas,
-         Darbuotojai = et.Darbuotojai
-         .Where(item => (item.Since == null || item.Since <= now) && (item.Until == null || item.Until > now))
-         .OrderByDescending(item => item.CreatedAt)
-         .Select(darbuotojas => new {
-         darbuotojas.FullName,
-         darbuotojas.Lytis,
-         Kabinetas = darbuotojas.Kabinetas,
-         MobNr = darbuotojas.Tel1,
-         DarboNr = darbuotojas.Tel2,
-         VietinisNr = darbuotojas.Tel3,
-         darbuotojas.Email
-         })
-         }),
-         Padaliniai = dv.Padaliniai
-         .Where(item => item.Etatai.Any())
-         .OrderByDescending(item => item.Weight)
-         .Select(pad => new {
-         pad.Name,
-         Etatas = pad.Etatai
-         .OrderByDescending(et => et.Name!.Weight)
-         .ThenBy(et => et.Name!.Vardininkas)
-         .Select(et => new {
-         et.Id,
-         et.Name!.Vardininke,
-         et.Name!.Vardininkas,
-         Darbuotojai = et.Darbuotojai
-         .Where(item => (item.Since == null || item.Since <= now) && (item.Until == null || item.Until > now))
-         .OrderByDescending(item => item.CreatedAt)
-         .Select(darbuotojas => new {
-         darbuotojas.FullName,
-         darbuotojas.Lytis,
-         Kabinetas = darbuotojas.Kabinetas,
-         MobNr = darbuotojas.Tel1,
-         DarboNr = darbuotojas.Tel2,
-         VietinisNr = darbuotojas.Tel3,
-         darbuotojas.Email
-         })
-         })
-         })
-         })
-         )>
+<ExpList 
+  ParamSource=@(
+    db.Set<LGT.Kontaktai.Models.Darboviete>()
+      .Where(item => item.Id == this.id)
+      .Select(dv => new {
+        dv.Name,
+        Etatai = dv.Etatai
+          .Where(item => item.Padalinys == null)
+          .Where(item => item.Darbuotojai.Where(item => (item.Since == null || item.Since <= now) && (item.Until == null || item.Until > now)).Any())
+          .Select(et => new {
+            et.Name!.Weight,
+            et.Id,
+            et.Name!.Vardininke,
+            et.Name!.Vardininkas,
+            Darbuotojai = et.Darbuotojai
+             .Where(item => (item.Since == null || item.Since <= now) && (item.Until == null || item.Until > now))
+             .OrderByDescending(item => item.CreatedAt)
+             .Select(darbuotojas => new {
+               darbuotojas.FullName,
+               darbuotojas.Lytis,
+               Kabinetas = darbuotojas.Kabinetas,
+               MobNr = darbuotojas.Tel1,
+               DarboNr = darbuotojas.Tel2,
+               VietinisNr = darbuotojas.Tel3,
+               darbuotojas.Email
+             })
+          }),
+          Padaliniai = dv.Padaliniai
+            .Where(item => item.Etatai.Any())
+            .OrderByDescending(item => item.Weight)
+            .ThenBy(item => item.Name)
+            .Select(pad => new {
+              pad.Name,
+              Etatai = pad.Etatai
+                .Where(item => item.Darbuotojai.Where(item => (item.Since == null || item.Since <= now) && (item.Until == null || item.Until > now)).Any())
+                .Select(et => new {
+                  et.Name!.Weight,
+                  et.Id,
+                  et.Name!.Vardininke,
+                  et.Name!.Vardininkas,
+                  Darbuotojai = et.Darbuotojai
+                    .Where(item => (item.Since == null || item.Since <= now) && (item.Until == null || item.Until > now))
+                    .OrderByDescending(item => item.CreatedAt)
+                    .Select(darbuotojas => new {
+                      darbuotojas.FullName,
+                      darbuotojas.Lytis,
+                      Kabinetas = darbuotojas.Kabinetas,
+                      MobNr = darbuotojas.Tel1,
+                      DarboNr = darbuotojas.Tel2,
+                      VietinisNr = darbuotojas.Tel3,
+                      darbuotojas.Email
+                    })
+                })
+                
+                
+            })
+      })
+  )
+>
   <IfSome Context="lgt">
     <h3 class="mx-4 mt-5 blue text-center">@lgt.Name TELEFONŲ SĄRAŠAS</h3>
     <table class="bord mx-4" style="width:93%; padding-left: 220px; margin-right: 20px;">
@@ -80,9 +85,10 @@
         <th class="text-center">Mobilus tel.</th>
         <th class="text-center email">El. p. adresas</th>
       </tr>
-      @if (!lgt.Padaliniai.Any())
+      @* @if (!lgt.Padaliniai.Any())
       {
-        @foreach (var et in lgt.Etatai)
+      } *@
+        @foreach (var et in lgt.Etatai.OrderByDescending(item => item.Weight).ThenBy(et => et.Vardininkas).ThenBy(item => item.Darbuotojai.First().FullName))
         {
           @foreach (var darbuotojas in et.Darbuotojai)
           {
@@ -106,13 +112,12 @@
             </tr>
           }
         }
-      }
       @foreach (var padalinys in lgt.Padaliniai)
       {
         <tr><td colspan="7" class="px-2 blue">@padalinys.Name!.ToUpper()</td></tr>
-        @if (padalinys == lgt.Padaliniai.First())
+        @* @if (padalinys == lgt.Padaliniai.First())
         {
-          @foreach (var et in lgt.Etatai)
+          @foreach (var et in lgt.Etatai.OrderByDescending(item => item.Weight).ThenBy(et => et.Vardininkas).ThenBy(item => item.Darbuotojai.First().FullName))
           {
             @foreach (var darbuotojas in et.Darbuotojai)
             {
@@ -136,8 +141,8 @@
               </tr>
             }
           }
-        }
-        @foreach (var et in padalinys.Etatas)
+        } *@
+        @foreach (var et in padalinys.Etatai.OrderByDescending(item => item.Weight).ThenBy(et => et.Vardininkas).ThenBy(item => item.Darbuotojai.First().FullName))
         {
           @foreach (var darbuotojas in et.Darbuotojai)
           {

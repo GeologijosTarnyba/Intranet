@@ -14,6 +14,8 @@
   background-color: white;
   width: 210mm; /* A4 width */
   min-height: 267mm; /* A4.Height-50mm, jei margin būtų papildomas iš kur*/
-  padding: 20px; /* Adjust as needed */
+  padding-left: 20px; /* Adjust as needed */
+  padding-right: 20px;
+  padding-top: 20px;
   
 }
