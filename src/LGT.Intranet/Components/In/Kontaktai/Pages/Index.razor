@@ -17,9 +17,7 @@
       Padaliniai
     </label>
     <label>
-      <InputCheckbox @bind-Value=@this.Etatai
-                     disabled=@(!this.Padaliniai)
-       />
+      <InputCheckbox @bind-Value=@this.Etatai />
       Etatai
     </label>
     <label>
@@ -29,7 +27,6 @@
     </label>
   </div>
   <div class="col-9">
-
     <KontaktuMedis Etatai=@this.Etatai Padaliniai=@this.Padaliniai Darbuotojai=@this.Darbuotojai />
   </div>
 </div>
