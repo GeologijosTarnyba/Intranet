@@ -51,7 +51,7 @@
         <ExpList ParamIsExpanded=true
                  ParamSource=@(
                    db.EntityCollection(this.model, item => item.Darbuotojai)
-                     .OrderBy(item => item.Since)
+                     .OrderByDescending(item => item.Since)
                      .Select(item => new {
                        item.Id,
                        item.FullName,
@@ -86,6 +86,10 @@
                   }
                   @if(darbuotojas.Until != null)
                   {
+                    @if(darbuotojas.Since != null)
+                    {
+                      <text> </text>
+                    }
                     <text>iki @darbuotojas.Until.LT()</text>
                   }
                   

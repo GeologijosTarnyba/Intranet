@@ -17,11 +17,14 @@
       Padaliniai
     </label>
     <label>
-      <InputCheckbox @bind-Value=@this.Etatai />
+      <InputCheckbox @bind-Value=@this.Etatai
+                     disabled=@(!this.Padaliniai)
+       />
       Etatai
     </label>
     <label>
-      <InputCheckbox @bind-Value=@this.Darbuotojai />
+      <InputCheckbox @bind-Value=@this.Darbuotojai
+                     disabled=@(!this.Etatai) />
       Darbuotojai
     </label>
   </div>
