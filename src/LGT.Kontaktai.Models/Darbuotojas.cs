@@ -25,6 +25,8 @@ public class Darbuotojas
   [MaxLength(255)] public string? Tel3 { get; set; }
   [MaxLength(255)] public string? Tel4 { get; set; }
 
+  public DateTime? DateOfBirth { get; set; }
+
   //public ICollection<Skundas> Skundai { get; set; }
   //public ICollection<Sprendimas> Sprendimai { get; internal set; }
 }

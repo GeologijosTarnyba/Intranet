@@ -1,0 +1,106 @@
+﻿@page "/gimtadieniai/{id}"
+@layout LayoutA4Portrait
+@attribute [AllowAnonymous]
+@code {
+  [Parameter] public string id { get; set; } = default!;
+  private DateTime now = DateTime.Now;
+  private DateTime today = DateTime.Today;
+  private int month = DateTime.Today.Month;
+  private int day = DateTime.Today.Day;
+  private int dayofyear = DateTime.Today.DayOfYear;
+  private int year = DateTime.Today.Year;
+
+  private int delta = DateTime.Today.Month * 1000 + DateTime.Today.Day;
+}
+@inject LGT.Kontaktai.KontaktaiContext db
+<PageTitle>
+  Gimtadieniai
+</PageTitle>
+<ExpList ParamSource=@(
+         db.Set<LGT.Kontaktai.Models.Darboviete>()
+           .Where(item => item.Id == this.id)
+           .Select(dv => new {
+             dv.Name,
+             Darbuotojai = dv.DarbuotojasAssignments!
+               .Where(item => item.Until == null || item.Until > now)
+               .Where(item => item.DateOfBirth != null)
+               .Select(d => new {
+                 DateOfBirth = d.DateOfBirth!.Value!,
+                 d.FullName,
+                 Delta = d.DateOfBirth!.Value.Month*1000 + d.DateOfBirth!.Value.Day - this.delta // Kad nežaist su DayOfYear per keliamuosius metus
+               })
+             })
+         )>
+  <IfSome Context="lgt">
+    <h3 class="blue text-center">@lgt.Name darbuotojų GIMTADIENIAI</h3>
+    
+    <table class="bord mx-4" style="width:93%; padding-left: 220px; margin-right: 20px;">
+      <tr>
+        <th class="text-center">Vardas, pavardė</th>
+        <th class="text-center">Ateinantis gimtadienis</th>
+        <th class="text-center">Bus metų</th>
+      </tr>
+      @foreach (var d in lgt.Darbuotojai
+      .OrderBy(d => d.Delta < 0)
+      .ThenBy(d => d.Delta)
+      .ThenBy(item => item.FullName)
+      )
+      {
+        var kitoMetai = this.year + (d.Delta < 0 ? 1 : 0);
+        <tr>
+          <td>@d.FullName</td>
+          <td>
+            @d.DateOfBirth.ToString($"{kitoMetai}-MM-dd")
+          </td>
+          <td>
+            @if(d.DateOfBirth > now)
+            {
+              <span style="color:grey;">nenurodyta</span>
+            } else
+            {
+              @(kitoMetai - d.DateOfBirth.Year)
+            }
+          </td>
+        </tr>
+      }
+    </table>
+  </IfSome>
+</ExpList>
+<FlexAuthorizeView Val=@(IntranetRights.KontaktaiEdit)>
+  <Authorized>
+        <div class="no-print">
+    <ExpList ParamSource=@(
+      db.Set<LGT.Kontaktai.Models.Darboviete>()
+        .Where(item => item.Id == this.id)
+        .Select(dv => new {
+          dv.Name,
+          Darbuotojai = dv.DarbuotojasAssignments!
+            .Where(item => item.Until == null || item.Until > now)
+            .Where(item => item.DateOfBirth == null)
+            .OrderBy(item => item.FullName)
+            .Select(d => new {
+              d.Id,
+              d.FullName,
+            })
+          })
+      )
+    >
+      <IfSome Context="lgt">
+        <h3 class="blue text-center">Darbuotojai su nenurodytais gimtadieniais</h3>
+        <table class="bord mx-4" style="width:93%; padding-left: 220px; margin-right: 20px;">
+          <tr>
+            <th class="text-center">Vardas, pavardė</th>
+          </tr>
+          @foreach(var d in lgt.Darbuotojai){
+            <tr>
+              <td>
+                <a target="_blank" href="/in/kontaktai/Darbuotojas/edit?id=@d.Id">@d.FullName</a>
+              </td>
+            </tr>
+          }
+        </table>
+      </IfSome>
+    </ExpList>
+    </div>
+  </Authorized>
+</FlexAuthorizeView>

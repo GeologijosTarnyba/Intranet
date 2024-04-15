@@ -65,6 +65,10 @@
       <dt class="col-sm-2">Tel3</dt><dd class="col-sm-10">@model.Tel3</dd>
       <dt class="col-sm-2">Tel4</dt><dd class="col-sm-10">@model.Tel4</dd>
     </dl>
+    <dl class="row">
+      <dt class="col-sm-2">Gimimo data</dt>
+      <dd class="col-sm-10">@model.DateOfBirth?.LT()</dd>
+    </dl>
     @if(ChildContent != null)
     {
       @ChildContent(model)

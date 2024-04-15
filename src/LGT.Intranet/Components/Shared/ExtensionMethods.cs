@@ -7,6 +7,10 @@ public static class ExtensionMethods
       return null;
     return (Microsoft.AspNetCore.Components.MarkupString)str.Replace(" ", "&nbsp;");
   }
+  public static string LT(this DateOnly t)
+  {
+    return t.ToString("yyyy-MM-dd");
+  }
   public static string LT(this DateTime t, bool ShowTime = false)
   {
     var format = (ShowTime) switch {

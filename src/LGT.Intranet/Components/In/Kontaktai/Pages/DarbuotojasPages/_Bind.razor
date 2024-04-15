@@ -82,7 +82,6 @@
         {
           @this.model.Lytis <button type="button" @onclick=@(() => this.model.Lytis = null)>Keisti</button>
         }
-        <ValidationMessage For="() => this.model.FullName" class="text-danger" />
       </td>
     </tr>
     <tr>
@@ -129,8 +128,14 @@
       </td>
     </tr>
 
+    <InputDateTime ParamName="Gimimo data" ParamIsOptional=true ParamIsPrefered=false
+                   @bind-value=@this.model.DateOfBirth ParamShowHours=false
+                   ParamDefaultFunc=@(() =>  new DateTime(2100, 01, 01, 23, 59, 59)) />
 
   </table>
-
+  <div>
+    * <u>gimimo datą</u> nurodžius ateityje amžius nebus rodomas, bus rodomas tik gimtadienis
+  </div>
+    
   <button type="submit" class="btn btn-primary">Save</button>
 </EditForm>
