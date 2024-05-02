@@ -1,5 +1,5 @@
 ﻿namespace LGT.Incidentai.Models;
-public class AptarnaujantiImone
+public class AptarnaujantiImone: IIded<string>
 {
   public override string ToString() => this.Name!;
   [MaxLength(32)]

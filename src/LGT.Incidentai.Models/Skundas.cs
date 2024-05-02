@@ -1,5 +1,5 @@
 ﻿namespace LGT.Incidentai.Models;
-public class Skundas
+public class Skundas: IIded<int>
 {
   public int ID { get; set; }
   public SkundasType? Type { get; set; } [Column("TypeID")] public int? TypeID { get; set; }

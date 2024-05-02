@@ -1,5 +1,5 @@
 ﻿namespace LGT.Incidentai.Models;
-public class IncidentoPozymis
+public class IncidentoPozymis: IIded<int>
 {
   public override string ToString() => this.Name;
   public int ID { get; set; }

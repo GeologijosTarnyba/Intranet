@@ -1,5 +1,5 @@
 ﻿namespace LGT.Incidentai.Models;
-public class Kreipinys
+public class Kreipinys: IIded<int>
 {
   [Required] public AptarnaujantiImone? AptarnaujantiImone { get; set; }
   [MaxLength(32)] public string AptarnaujantiImoneID { get; set; } = default!;

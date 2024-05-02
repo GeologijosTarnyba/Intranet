@@ -1,5 +1,5 @@
 ﻿namespace LGT.Incidentai.Models;
-public class Incidentas
+public class Incidentas: IIded<int>
 {
   public int ID { get; set; }
   public DateTime? CreatedAt { get; set; }

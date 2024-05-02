@@ -1,5 +1,5 @@
 ﻿namespace LGT.Incidentai.Models;
-public class AptarnavimoSutartis
+public class AptarnavimoSutartis: IIded<int>
 {
   public int ID { get ;set; }
   [Required] public AptarnaujantiImone? AptarnaujantiImone { get; set; }

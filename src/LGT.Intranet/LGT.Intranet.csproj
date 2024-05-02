@@ -53,7 +53,6 @@
   <ItemGroup>
     <Folder Include="Components\Internal\Incidentai\Pages\" />
     <Folder Include="Components\Internal\In\Shared\" />
-    <Folder Include="Components\In\Incidentai\" />
   </ItemGroup>
 
 </Project>

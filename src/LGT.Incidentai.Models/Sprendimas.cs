@@ -1,5 +1,5 @@
 ﻿namespace LGT.Incidentai.Models;
-public class Sprendimas
+public class Sprendimas: IIded<int>
 {
   public int ID { get; set; }
   [Required] public Kreipinys? Kreipinys { get; set; }

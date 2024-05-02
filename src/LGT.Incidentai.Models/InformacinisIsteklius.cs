@@ -1,5 +1,5 @@
 ﻿namespace LGT.Incidentai.Models;
-public class InformacinisIsteklius
+public class InformacinisIsteklius: IIded<string?>
 {
   public override string ToString() => this.Name!;
   [Required]
