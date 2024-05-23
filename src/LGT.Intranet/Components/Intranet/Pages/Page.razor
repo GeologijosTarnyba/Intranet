@@ -34,11 +34,11 @@ else
              .OrderBy(item => item.Index).ThenBy(item => item.Since)
              .AsNoTracking()
              .Select(item => new {
-             item.Id,
-             item.Since,
-             item.Until,
-             item.Header,
-             Described = item.ArticleId != null
+               item.Id,
+               item.Since,
+               item.Until,
+               item.Header,
+               Described = item.ArticleId != null
              })
              )>
         <Wrapper Context="rows">
@@ -61,7 +61,7 @@ else
               {
                 @if (message.Since.Date == DateTime.Today)
                 {
-                  <text>nuo @message.Since.ToString("HH:mm")</text>
+                  @* <text>nuo @message.Since.ToString("HH:mm")</text> *@
                 }
                 else
                 {
@@ -72,11 +72,11 @@ else
               {
                 @if (message.Until.Date == DateTime.Today)
                 {
-                  <text>iki @message.Until.ToString("HH:mm")</text>
+                  @* <text>iki @message.Until.ToString("HH:mm")</text> *@
                 }
                 else
                 {
-                  <text>iki @message.Until.ToString("yyyy-MM-dd HH:mm")</text>
+                  @* <text>iki @message.Until.ToString("yyyy-MM-dd HH:mm")</text> *@
                 }
               }
             </span>
