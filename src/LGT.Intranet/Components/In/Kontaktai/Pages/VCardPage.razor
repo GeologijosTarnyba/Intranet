@@ -1,0 +1,50 @@
+﻿@page "/vcard/{id}"
+@layout Components.Intranet.IntranetLayout
+@attribute [AllowAnonymous]
+@code {
+  [Parameter] public string id { get; set; } = default!;
+  private readonly DateTime now = DateTime.Now;
+}
+@inject LGT.Kontaktai.KontaktaiContext db
+@inject IWebHostEnvironment env
+@inject NavigationManager navigationmanager
+
+
+@code {
+  private string? content { get; set; }
+  private bool? success { get; set;  } = false;
+  override protected async Task OnParametersSetAsync()
+  {
+    await base.OnParametersSetAsync();
+    var path = $"{env.ContentRootPath}/wwwroot/temp/{this.id}.txt";
+    if (File.Exists(path))
+    {
+      File.Delete(path);
+    }
+    var content = await VCard.vCardText(this.db, this.id);
+    if ((string.IsNullOrWhiteSpace(content)))
+    {
+      this.success = false;
+    } else
+    {
+      await File.WriteAllTextAsync(path, contents: content, encoding: System.Text.Encoding.UTF8);
+      this.success = true;
+    }
+  }
+}
+
+@if(this.success == true)
+{
+  <div>
+    Naujas failas sėkmingai sugeneruotas - <a href="/temp/@(this.id).txt" download="@(this.id).vcf">Parsisiųsti</a>
+  </div>
+} else if(this.success == null)
+{
+  <Loading />
+} else
+{
+  <div>
+    Sugeneruotas organizacijos id=<b>@this.id</b> kontaktų failas tuščias.<br/>
+    Organizacija arba neturi darbuotojų arba blogai nurodytas organizacijos id.
+  </div>
+}
