@@ -57,6 +57,7 @@ public class Program
     builder.Services.AddDbContext<LGT.Intranet.IntranetContext>(options => options.UseSqlite($"Data Source={dbsFolder}Intranet.db3;Pooling=false;", b => b.MigrationsAssembly($"LGT.Intranet")));
     builder.Services.AddDbContext<LGT.Intranet.Authorization.AuthorizationContext>(options => options.UseSqlite($"Data Source={dbsFolder}Intranet-Auth.db3;Pooling=false;", b => b.MigrationsAssembly($"LGT.Intranet")));
     builder.Services.AddDbContext<LGT.Intranet.Internal.InternalContext>(options => options.UseSqlite($"Data Source={dbsFolder}Internal.db3;Pooling=false;", b => b.MigrationsAssembly($"LGT.Intranet")));
+    builder.Services.AddDbContext<LGT.Internal.DovanuDeklaravimas.Database>(options => options.UseSqlite($"Data Source={dbsFolder}Dovanos.db3;Pooling=false;", b => b.MigrationsAssembly($"LGT.Intranet")));
     builder.Services.AddDbContext<LGT.Kontaktai.KontaktaiContext>(options => options.UseSqlite($"Data Source={dbsFolder}Kontaktai.db3;Pooling=false;", b => b.MigrationsAssembly($"LGT.Intranet")));
     
     string? geolisUser = Environment.GetEnvironmentVariable("geolisUser");

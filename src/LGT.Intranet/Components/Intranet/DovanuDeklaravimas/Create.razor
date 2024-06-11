@@ -1,0 +1,11 @@
+﻿@page "/dovanos/c"
+@rendermode InteractiveServer
+@layout IntranetLayout
+@code {
+
+}
+
+@inject NavigationManager NavigationManager
+<_Create  OnAfterSave=@(() => this.NavigationManager.NavigateTo("dovanos"))>
+
+</_Create>

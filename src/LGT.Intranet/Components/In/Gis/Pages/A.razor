@@ -1,0 +1,69 @@
+﻿@page "/a"
+<h3>MineraliniuIstekliuSuvestineLentele</h3>
+
+@code {
+  int metai = 2023;
+}
+@inject Geolis.GeolisContext db
+<h3>@metai</h3>
+<ExpList
+  ParamSource=@(
+    this.db.NER_GAV_KETV
+      .Where(item => item.GAVK_METAI == metai)
+      .GroupBy(item => item.IstekliuRusisID)
+      .Select(item => new {
+        item.Key,
+        Kiekis = item.Sum(item => item.GAVK_KIEKIS),
+        Kiekis_T = item.Sum(item => item.GAVK_KIEKIS_T),
+        TameTarpe = item.Sum(item => item.GAVK_KIEKIS_TAME_TARPE),
+        TameTarpe_T = item.Sum(item => item.GAVK_KIEKIS_TAME_TARPE_T),
+        Nuostolis = item.Sum(item => item.GAVK_NUOSTOLIS),
+        Nuostolis_T = item.Sum(item => item.GAVK_NUOSTOLIS_T),
+        UžKontūro = item.Sum(item => item.GAVK_UZ_KONT),
+         UžKontūro_T = item.Sum(item => item.GAVK_UZ_KONT_T),
+         GAVK_NUOSTOLIS_TAME_TARPE = item.Sum(item => item.GAVK_NUOSTOLIS_TAME_TARPE ),
+         GAVK_NUOSTOLIS_TAME_TARPE_T = item.Sum(item => item.GAVK_NUOSTOLIS_TAME_TARPE_T),
+      })
+      .OrderByDescending(item => item.Kiekis)
+  )
+>
+  <Wrapper Context="rows">
+    <table class="bord">
+      <tr>
+
+      </tr>
+      <tr>
+        <td>Istr</td>
+        <td>Kiekis</td>
+        <td>Kiekis_T</td>
+        <td>TameTarpe</td>
+        <td>TameTarpe_T</td>
+        <td>Nuostolis</td>
+        <td>Nuostolis_T</td>
+        <td>UžKontūro</td>
+        <td>UžKontūro_T</td>
+        <td>GAVK_NUOSTOLIS_TAME_TARPE</td>
+        <td>GAVK_NUOSTOLIS_TAME_TARPE_T</td>
+        <td></td>
+      </tr>
+      @rows
+    </table>
+  </Wrapper>
+  <IfSome Context="ct">
+    <tr>
+      <td>@(ct.Key ?? "-")</td>
+      <td>@ct.Kiekis</td>
+      <td>@ct.Kiekis_T</td>
+      <td>@ct.TameTarpe</td>
+      <td>@ct.TameTarpe_T</td>
+      <td>@ct.Nuostolis</td>
+      <td>@ct.Nuostolis_T</td>
+      <td>@ct.UžKontūro</td>
+      <td>@ct.UžKontūro_T</td>
+      <td>@ct.GAVK_NUOSTOLIS_TAME_TARPE</td>
+      <td>@ct.GAVK_NUOSTOLIS_TAME_TARPE_T</td>
+      <td></td>
+      <td>@ct</td>
+    </tr>
+  </IfSome>
+</ExpList>

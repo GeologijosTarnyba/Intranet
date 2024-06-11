@@ -1,0 +1,136 @@
+﻿@using LGT.Internal.DovanuDeklaravimas.Models
+@rendermode InteractiveServer
+@code {
+  [EditorRequired]
+  [Parameter] public LGT.Internal.DovanuDeklaravimas.Models.Gift model { get; set; } = default!;
+  [Parameter] public EventCallback<EditContext> OnValidSubmitCallback { get; set; }
+  [Parameter] public RenderFragment ChildContent{get; set; }
+}
+@inject LGT.Internal.DovanuDeklaravimas.Database db
+@inject LGT.Kontaktai.KontaktaiContext kontaktaiDb
+<EditForm method="post" Model="model"
+          FormName="create"
+          OnValidSubmit=@OnValidSubmitCallback
+          Enhance>
+  <DataAnnotationsValidator />
+  <ValidationSummary class="text-danger" />
+
+  <table class="bord">
+    <tr>
+      <td>Įteikimos laikas</td>
+      <td>
+        <BindDateTime value=@this.model.GiftedAt valueChanged=@(val => this.model.GiftedAt = val)
+                      ParamFormat="yyyy-MM-dd HH:mm"
+                      ParamClass="w-100"
+                      ParamStyle="min-width:170px;" />
+      </td>
+    </tr>
+    <tr>
+      <td>Vieta</td>
+      <td>
+        <InputTextArea @bind-Value=@this.model.Location style="width: 100%; min-height:100px;" />
+      </td>
+    </tr>
+    <tr>
+      <td>Davėjas</td>
+      <td>
+        <InputTextArea @bind-Value=@this.model.Gifter style="width: 100%; min-height:100px;" />
+      </td>
+    </tr>
+    <tr>
+      <td>Davimo priežastis</td>
+      <td>
+        <InputTextArea @bind-Value=@this.model.Reason style="width:100%;" />
+      </td>
+    </tr>
+    <tr>
+      <td>Tipas</td>
+      <td>
+        <EnumEditOne T="GiftTypes" @bind-value=@this.model.Type />
+      </td>
+    </tr>
+    <tr>
+      <td>Gavėjas</td>
+      <td>
+        <InputSelect @bind-Value=@this.model.Reciever style="width:100%;">
+          <option></option>
+          <ExpList ParamSource=@(
+                   this.kontaktaiDb.LGTDirbantysDarbuotojai
+                   .OrderBy(item => item.FullName)
+                   .Select(item => new {
+                   item.FullName
+                   })
+                   )>
+
+            <IfSome Context="darbuotojas">
+              <option value=@darbuotojas.FullName>
+                @darbuotojas.FullName
+              </option>
+            </IfSome>
+          </ExpList>
+        </InputSelect>
+      </td>
+    </tr>
+    
+    <tr>
+      <td>Kiekis</td>
+      <td><InputNumber style="width:100%" @bind-Value=@this.model.Amount /></td>
+    </tr>
+    <tr>
+      <td>Pavadinimas</td>
+      <td><InputText style="width:100%" @bind-Value=@this.model.Name /></td>
+    </tr>
+    <tr>
+      <td>Dovanos apibūdinimas</td>
+      <td><InputTextArea style="width:100%" @bind-Value=@this.model.Description /></td>
+    </tr>
+    <tr>
+      <td>Vieneto kaina</td>
+      <td>
+        <InputNumber style="width:100%" @bind-Value=@this.model.Price />
+      </td>
+    </tr>
+    <tr>
+      <td>Kainos nustatymo metodas</td>
+      <td>
+        <EnumEditOne T="VertesNustatymoBudai" @bind-value=@this.model.PriceApproximationMethod />
+      </td>
+    </tr>
+
+    @foreach(var status in this.model.Statuses)
+    {
+      <tr>
+        <td>Statusas
+        </td>
+        <td>
+          <InputText style="" @bind-Value=@status.Status placeholder="Įveskite statusą" />
+          <button type="button" @onclick=@(() => {
+            if(this.statusPresets.Length > this.presetIndex){
+              status.Status = this.statusPresets[this.presetIndex++];
+            } else {
+              this.presetIndex = 0;
+              status.Status = string.Empty;
+            }
+          })>&raquo;</button>
+        </td>
+      </tr>
+    }
+    <tr>
+      <td>Komentaras</td>
+      <td>
+        <InputTextArea @bind-Value=@this.model.Comment style="width:100%;" />
+      </td>
+    </tr>
+  </table>
+    <button type="submit">@ChildContent</button>
+</EditForm>
+
+@code {
+  private int presetIndex = 0;
+  string[] statusPresets = [
+    "priimta ir saugoma",
+    "sunaikinta",
+    "grąžinta teikėjui",
+    "perduota teisėsaugos institucijoms",
+  ];
+}

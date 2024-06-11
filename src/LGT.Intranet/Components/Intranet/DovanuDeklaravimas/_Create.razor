@@ -1,0 +1,28 @@
+﻿@inject LGT.Internal.DovanuDeklaravimas.Database db
+@code {
+  protected LGT.Internal.DovanuDeklaravimas.Models.Gift model = new() {
+    GiftedAt = DateTime.Now,
+    Statuses = [
+      new (){Status = string.Empty}
+    ],
+    Amount = 1
+  };
+  [Parameter]
+  public EventCallback<LGT.Internal.DovanuDeklaravimas.Models.Gift> OnBeforeSave { get; set; }
+  [Parameter]
+  public EventCallback<LGT.Internal.DovanuDeklaravimas.Models.Gift> OnAfterSave { get; set; }
+  protected async Task DoCreate(LGT.Internal.DovanuDeklaravimas.Models.Gift model)
+  {
+    this.model = model;
+    await this.OnBeforeSave.InvokeAsync(this.model);
+    this.db.Set<LGT.Internal.DovanuDeklaravimas.Models.Gift>().Add(model);
+    await this.db.SaveChangesAsync();
+    await this.OnAfterSave.InvokeAsync(this.model);
+  }
+  [Parameter]
+  public RenderFragment ChildContent { get; set; } = builder => builder.AddContent(0, "Create");
+}
+
+<_Bind model=@this.model OnValidSubmitCallback=@(async (model) => await this.DoCreate(this.model))>
+  @ChildContent
+</_Bind>

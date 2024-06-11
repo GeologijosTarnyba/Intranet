@@ -1,0 +1,29 @@
+﻿@typeparam T where T : struct, System.Enum
+@code {
+  [Parameter] public T? value { get; set; }
+  [Parameter] public EventCallback<T?> valueChanged { get; set; }
+
+  [Parameter]
+  public RenderFragment<RenderFragment> Wrapper { get; set; } = content =>@<table class="w-100">@content</table>;
+  [Parameter]
+  public RenderFragment<RenderFragment> ItemWrapper { get; set; } = content =>@<tr><td>@content</td></tr>;
+}
+@ItemWrapper(
+  @:@{
+    @foreach (var item in Enum.GetValues<T>())
+    {
+    @WrapItem(RenderItem(item))
+    }
+  }
+  )
+@code {
+  private RenderFragment WrapItem(RenderFragment content) => @ItemWrapper(content);
+  private RenderFragment RenderItem(T item)
+  {
+    return
+  @<label @onclick=@(() => this.valueChanged.InvokeAsync(item))>
+    <input type="checkbox" checked="@(this.value.Equals(item))" />
+    @item.ToString()
+  </label>;
+  }
+}

@@ -31,6 +31,7 @@
     <ProjectReference Include="..\LGT.Geolis.Data\LGT.Geolis.Data.csproj" />
     <ProjectReference Include="..\LGT.Geolis.Models\LGT.Geolis.Models.csproj" />
     <ProjectReference Include="..\LGT.Incidentai.Models\LGT.Incidentai.Models.csproj" />
+    <ProjectReference Include="..\LGT.Internal.DovanuDeklaravimas\LGT.Internal.DovanuDeklaravimas.csproj" />
     <ProjectReference Include="..\LGT.Intranet.Authorization.Data\LGT.Intranet.Authorization.Data.csproj" />
     <ProjectReference Include="..\LGT.Intranet.Authorization.Models\LGT.Intranet.Authorization.Models.csproj" />
     <ProjectReference Include="..\LGT.Intranet.Authorization\LGT.Intranet.Authorization.csproj" />

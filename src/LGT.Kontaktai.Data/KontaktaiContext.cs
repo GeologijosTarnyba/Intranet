@@ -3,6 +3,12 @@
 namespace LGT.Kontaktai;
 public class KontaktaiContext(DbContextOptions<KontaktaiContext> options): DbContext(options)
 {
+
+  public IQueryable<Models.Darbuotojas> LGTDirbantysDarbuotojai => this.Set<Models.Darbuotojas>()
+    .Where(item => item.DarbovieteId == "lgt")
+    .Where(item => item.Until == null || item.Until >  DateTime.Now)
+    .Where(item => item.Since == null || item.Since < DateTime.Now)
+    ;
   private static readonly string SQL_DT_NOW = "datetime()";
   protected override void OnModelCreating(ModelBuilder mb)
   {

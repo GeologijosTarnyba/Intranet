@@ -1,0 +1,102 @@
+﻿@page "/dovanos"
+@layout IntranetLayout
+@code {
+
+}
+@inject LGT.Internal.DovanuDeklaravimas.Database db
+@{
+  int i = 1;
+}
+
+<a href="/dovanos/c">Pranešti apie gautą dovaną.</a>
+<h3>Visos deklaruotos dovanos</h3>
+<ExpList 
+  
+  ParamSource=@(
+    this.db.Gifts.Select(gift => new {
+      gift.GiftedAt,
+      gift.Location,
+      gift.Gifter,
+      gift.Reason,
+      gift.Type,
+      gift.Reciever,
+      gift.Amount,
+      gift.Name,
+      gift.Description,
+      gift.Price,
+      gift.PriceApproximationMethod,
+      Statuses = gift.Statuses
+      .OrderByDescending(item => item.CreatedAt)
+      .Select(status => new {
+        status.CreatedAt,
+        status.Status
+      }),
+      gift.Comment
+    })
+  )>
+  <IfNone>
+    <div class="muted">Pranešimų apie dovanas nerasta.</div>
+  </IfNone>
+  <Wrapper Context="rows">
+    <table class="bord">
+      <tr>
+        <td>Eil. Nr.</td>
+        <td>Nurodoma ar priimta dovana, ar gautas neteisėtas atlygis</td>
+        <td>Dovanos, neteisėto atlygio pavadinimas ir apibūdinimas</td>
+        <td>Dovaną, neteisėtą atlygį priėmė (gavo) (Tarnybos darbuotojo vardas, pavardė)</td>
+        <td>Dovaną, neteisėtą atlygį įteikė (kai žinoma): vardas, pavardė / pavadinimas, dovanos įteikimo proga, vieta, data</td>
+        <td>Kiekis</td>
+        <td>Vertė, kai žinoma arba nustatoma teisės aktų nustatyta tvarka</td>
+        <td>Dovanos, neteisėto atlygio statusas (priimta ir saugoma, sunaikinta, grąžinta teikėjui, perduota teisėsaugos institucijoms, kt.)</td>
+        <td>Pastabos</td>
+      </tr>
+      @rows
+    </table>
+  </Wrapper>
+  <IfSome Context="model">
+    <tr>
+      <td>@(i++)</td>
+      <td>
+        @(model.Type)
+      </td>
+      <td>
+        @model.Name
+        @if(model.Description != null)
+        {
+          <text> (@model.Description)</text>
+        }
+      </td>
+      <td>@model.Reciever</td>
+      <td>
+        @{
+          List<string?> x = [model.Gifter, model.Reason, model.Location, model.GiftedAt.ToString()];
+        }
+        @string.Join(", ", x.Where(item => item != null && !string.IsNullOrWhiteSpace(item)))
+      </td>
+      <td>@model.Amount</td>
+      <td>@model.Price €</td>
+      <td>
+        @if (model.Statuses.Any())
+        {
+          <ul>
+            @foreach(var status in model.Statuses)
+            {
+              <li>
+                @if(status != model.Statuses.First())
+                {
+                  <s>@status.Status</s>
+                } else
+                {
+                  @status.Status
+                }
+              </li>
+            }
+          </ul>
+        }
+      </td>
+      <td>
+        @model.Comment
+      </td>
+    </tr>
+  </IfSome>
+</ExpList>

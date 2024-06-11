@@ -41,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kontaktai", "Kontaktai", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LGT.Kontaktai.Data", "LGT.Kontaktai.Data\LGT.Kontaktai.Data.csproj", "{EA9D3A48-61E4-47C3-B22C-4AB656CA3BE3}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LGT.Internal.DovanuDeklaravimas", "LGT.Internal.DovanuDeklaravimas\LGT.Internal.DovanuDeklaravimas.csproj", "{983D0BC3-78AB-4A5A-9D56-DDB618D6CB4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +105,10 @@ Global
 		{EA9D3A48-61E4-47C3-B22C-4AB656CA3BE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA9D3A48-61E4-47C3-B22C-4AB656CA3BE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA9D3A48-61E4-47C3-B22C-4AB656CA3BE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{983D0BC3-78AB-4A5A-9D56-DDB618D6CB4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{983D0BC3-78AB-4A5A-9D56-DDB618D6CB4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{983D0BC3-78AB-4A5A-9D56-DDB618D6CB4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{983D0BC3-78AB-4A5A-9D56-DDB618D6CB4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,6 +131,7 @@ Global
 		{7D7B9DBF-80A6-458E-A564-328203A01179} = {80ADD052-7832-4A7B-9DD9-D9FFCA6A06A5}
 		{7FE84388-3BA4-4E2F-9A33-1D91AFDB7E0E} = {AE6D62A1-D651-44F2-B9DC-A7D3E5A6FF1F}
 		{EA9D3A48-61E4-47C3-B22C-4AB656CA3BE3} = {7FE84388-3BA4-4E2F-9A33-1D91AFDB7E0E}
+		{983D0BC3-78AB-4A5A-9D56-DDB618D6CB4E} = {80ADD052-7832-4A7B-9DD9-D9FFCA6A06A5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {30D00B73-9901-4CA9-B704-3F7F791D9F4F}
