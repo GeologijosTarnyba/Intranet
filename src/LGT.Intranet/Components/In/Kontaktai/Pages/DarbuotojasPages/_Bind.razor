@@ -5,6 +5,12 @@
   [Parameter] public EventCallback<EditContext> OnValidSubmit { get; set; }
   [Parameter] public bool IsEdit { get; set; }
   [Parameter] public bool IsCreate { get; set; }
+
+  private DateTime now = DateTime.Now;
+  private bool Editable(DateTime? until)
+  {
+    return until == null || until > now;
+  }
 }
 @inject LGT.Kontaktai.KontaktaiContext db
 <EditForm method="post" Model="this.model" OnValidSubmit="OnValidSubmit" FormName="edit" Enhance>
@@ -91,7 +97,23 @@
         <ValidationMessage For="() => this.model.Email" class="text-danger" />
       </td>
     </tr>
-    <InputDateTime @bind-value=@this.model.Until ParamName="Dirba iki" ParamIsOptional=true ParamIsPrefered=false ParamDefaultFunc=@(() => null) />
+    @if (this.Editable(this.model.Until))
+    {
+      <InputDateTime 
+        @bind-value=@this.model.Until 
+        ParamName="Dirba iki"
+        ParamIsOptional=true
+        ParamIsPrefered=false
+        ParamDefaultFunc=@(() => null) 
+      
+      />
+    } else
+    {
+      <tr>
+        <td>Dirba iki</td>
+        <td>@this.model.Until</td>
+      </tr>
+    }
     <tr>
       <td>Kabinetas</td>
       <td>
@@ -137,5 +159,5 @@
     * <u>gimimo datą</u> nurodžius ateityje amžius nebus rodomas, bus rodomas tik gimtadienis
   </div>
     
-  <button type="submit" class="btn btn-primary">Save</button>
+  <button type="submit" class="btn btn-primary" disabled="@(!this.Editable(this.model.Until))">Save</button>
 </EditForm>
