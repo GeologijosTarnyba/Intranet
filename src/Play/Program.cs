@@ -11,6 +11,7 @@ internal class Program
   public static async Task Main(string[] args)
   {
     var argsChoices = new ArgsInterpreter(args);
+    Dialoger.SaveDir = argsChoices.Path;
     IServiceCollection services = new ServiceCollection();
     var config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
     services.AddDbContext<GeolisContext>(item => item.UseOracle(argsChoices.ConnectionString));

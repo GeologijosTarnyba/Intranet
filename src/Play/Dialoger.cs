@@ -1,10 +1,12 @@
 ﻿using LGT.Geolis.Exports;
 using LGT.Geolis;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Play;
 internal static class Dialoger
 {
+  public static string? SaveDir { get; set; }
   public static async Task InteractiveSession(GeolisContext db)
   {
     do
@@ -32,13 +34,13 @@ internal static class Dialoger
       case "1":
         await Export(
           new GreziniaiExporter(db, "BRU_GREZINIAI"),
-          "\\\\granitas\\visi\\visi\\Sarunas\\qgis\\dumps\\output.txt"
+          $"{SaveDir}\\BRU_GREZINIAI.txt"
         );
         break;
       case "2":
         await Export(
           new GreziniaiExporter(db, "ORG_GREZINIAI"),
-          "\\\\granitas\\visi\\visi\\Sarunas\\qgis\\dumps\\output2.txt"
+          $"{SaveDir}\\ORG_GREZINIAI.txt"
         );
         break;
       default:

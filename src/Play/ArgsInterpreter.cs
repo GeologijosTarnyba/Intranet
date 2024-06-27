@@ -3,6 +3,7 @@ internal class ArgsInterpreter
 {
   private readonly string username;
   private readonly string password;
+  public string Path { get; set; }
   public List<string> Choices { get; set; } = [];
   public string ConnectionString => $"User Id={username};Password={password};Data Source=geolis2:1521/geolis2";
   public ArgsInterpreter(string[] args)
@@ -26,6 +27,9 @@ internal class ArgsInterpreter
           case "--password":
             this.password = args[i + 1];
             break;
+          case "-path":
+            this.Path = args[i + 1];
+            break;
         }
         i++; // Skip next argument
       }
@@ -36,5 +40,6 @@ internal class ArgsInterpreter
     }
     this.username ??= Helpers.ReadStringOrThrow("Oracle vartotojo vardas", "Username not provided");
     this.password ??= Helpers.ReadStringOrThrow($"Oracle vartotojo \"{username}\" slaptažodis", "Password not provided");
+    this.Path ??= "\\\\granitas\\visi\\visi\\qgis\\dumps";
   }
 }
