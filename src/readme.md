@@ -1,3 +1,8 @@
+# Play
+Sukompiliuotą failą naudoja simonas susigeneruot dumpus iš db
+
+# Intranet
+
 Du paleidžiami projektai
 1. LGT.Intranet
     * Intranet puslapis
